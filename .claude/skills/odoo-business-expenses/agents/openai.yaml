@@ -1,0 +1,7 @@
+interface:
+  display_name: "Odoo Business Expenses"
+  short_description: "Expense approvals and posting"
+  default_prompt: "Use $odoo-business-expenses to expense process map from an expense-claim entrypoint, with states, roles, accounting impacts, and related hr links."
+
+policy:
+  allow_implicit_invocation: true

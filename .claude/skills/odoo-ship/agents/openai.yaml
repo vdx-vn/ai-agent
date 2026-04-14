@@ -1,0 +1,7 @@
+interface:
+  display_name: "Odoo Ship"
+  short_description: "Release and rollout prep"
+  default_prompt: "Use $odoo-ship to go or no-go rollout checklist with staging verification, release sequencing, rollback cautions, and production notes."
+
+policy:
+  allow_implicit_invocation: true

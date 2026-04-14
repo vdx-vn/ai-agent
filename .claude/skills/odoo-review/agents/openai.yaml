@@ -1,0 +1,7 @@
+interface:
+  display_name: "Odoo Review"
+  short_description: "Review Odoo changes"
+  default_prompt: "Use $odoo-review to structured findings on an existing diff or artifact, separated into required fixes, open risks, and optional improvements."
+
+policy:
+  allow_implicit_invocation: true

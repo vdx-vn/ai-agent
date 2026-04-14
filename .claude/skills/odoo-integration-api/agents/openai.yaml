@@ -1,0 +1,7 @@
+interface:
+  display_name: "Odoo Integration API"
+  short_description: "External API and sync patterns"
+  default_prompt: "Use $odoo-integration-api to integration design guidance with auth model, data flow, safety considerations, and operational constraints."
+
+policy:
+  allow_implicit_invocation: true

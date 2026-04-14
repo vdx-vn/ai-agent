@@ -1,0 +1,7 @@
+interface:
+  display_name: "Odoo Business Inventory"
+  short_description: "Warehouse and stock flows"
+  default_prompt: "Use $odoo-business-inventory to inventory process map from a warehouse or stock-document entrypoint, with route logic, valuation, and cross-app effects."
+
+policy:
+  allow_implicit_invocation: true

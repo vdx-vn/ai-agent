@@ -1,0 +1,7 @@
+interface:
+  display_name: "Odoo Think"
+  short_description: "Scope and impact analysis"
+  default_prompt: "Use $odoo-think to risk-oriented scoping brief with module map, business entrypoint, cross-app impact, and open questions."
+
+policy:
+  allow_implicit_invocation: true

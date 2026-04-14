@@ -1,0 +1,7 @@
+interface:
+  display_name: "Odoo Business Timesheet Project Services"
+  short_description: "Projects, timesheets, services"
+  default_prompt: "Use $odoo-business-timesheet-project-services to service-delivery process map with task, time, billing, and cross-app impacts."
+
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Odoo Plan"
+  short_description: "Implementation planning"
+  default_prompt: "Use $odoo-plan to ordered execution plan with file map, acceptance criteria, test matrix, rollout notes, and open decisions."
+
+policy:
+  allow_implicit_invocation: true

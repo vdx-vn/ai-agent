@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \".claude/skills/scripts/suggest_odoo_skill_setup.py\" --mode session-start",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \".claude/skills/scripts/suggest_odoo_skill_setup.py\" --mode prompt-submit",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

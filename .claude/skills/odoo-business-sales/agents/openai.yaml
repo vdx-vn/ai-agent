@@ -1,0 +1,7 @@
+interface:
+  display_name: "Odoo Business Sales"
+  short_description: "Sales lifecycle and links"
+  default_prompt: "Use $odoo-business-sales to sales process map from a backend sales entrypoint, with downstream documents, roles, and cross-app impacts."
+
+policy:
+  allow_implicit_invocation: true

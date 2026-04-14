@@ -1,0 +1,7 @@
+interface:
+  display_name: "Odoo Upgrade Migration"
+  short_description: "Schema and data migration"
+  default_prompt: "Use $odoo-upgrade-migration to migration strategy with data-preservation plan, script notes, rollout order, and validation needs."
+
+policy:
+  allow_implicit_invocation: true

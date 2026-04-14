@@ -1,0 +1,7 @@
+interface:
+  display_name: "Odoo View UI"
+  short_description: "Views, actions, and UI"
+  default_prompt: "Use $odoo-view-ui to ui guidance with view strategy, inheritance notes, and action or menu recommendations."
+
+policy:
+  allow_implicit_invocation: true

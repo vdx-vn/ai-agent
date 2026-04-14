@@ -1,0 +1,7 @@
+interface:
+  display_name: "Odoo Test"
+  short_description: "Validate Odoo changes"
+  default_prompt: "Use $odoo-test to current-change validation evidence or validation plan tied to a specific diff, addon, bug, or runtime scenario."
+
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Odoo Performance"
+  short_description: "Query and scaling guidance"
+  default_prompt: "Use $odoo-performance to performance guidance with hotspot hypotheses, optimization levers, and validation ideas."
+
+policy:
+  allow_implicit_invocation: true
