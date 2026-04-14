@@ -22,11 +22,16 @@ Paths below are relative to:
 
 ## Primary business entrypoints used for tie-breaking
 - Backend sales: opportunity, quotation, salesperson action, backend order
-- Website ecommerce: page, public form, portal, cart, checkout
+- Website ecommerce: public page, public form, shop, cart, checkout, portal
 - Inventory: receipt, delivery, transfer, route, replenishment, stock move
 - Manufacturing: BoM, MO, work center, routing, subcontracting
 - HR: employee, contract, attendance, time off, payroll prerequisite
 - Expenses: expense claim, expense sheet, reimbursement, posting
+
+## UI mechanics vs website business flow
+- **UI mechanics**: view inheritance, xpath placement, QWeb template structure, action targets, menu placement, OWL behavior, or web-client interaction details.
+- **Website business flow**: public or portal customer journey, lead capture, cart behavior, checkout behavior, downstream sales or stock effects, or portal decision points.
+- Mixed website prompts route by primary requested output. If the user asks how the customer journey behaves, use `odoo-business-website-ecommerce`. If the user asks how a template, view, action, xpath, or OWL behavior should be structured, use `odoo-view-ui`.
 
 ## Core bridge addons to watch
 - `sale_stock`

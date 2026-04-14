@@ -1,6 +1,6 @@
 ---
 name: odoo-architecture
-description: "Guide Odoo module boundaries, dependency graph, inheritance placement, and bridge-module strategy. Use when the primary question is where code should live or how addons should depend on each other."
+description: "Guide Odoo module boundaries, dependency graph, inheritance placement, and bridge-module strategy. Use when the primary output is an addon-placement or dependency decision, not field semantics or business-flow explanation."
 ---
 
 # Purpose
@@ -29,13 +29,14 @@ Use this skill only when the primary requested output is an addon-placement or d
 2. Read only the smallest relevant anchors from `references/overview.md`.
 3. Apply the rule or process checklist in `references/checklist.md`.
 4. Answer with Odoo-specific guidance, tradeoffs, downstream effects, and boundary notes.
-5. Point to sibling skills when implementation workflow or adjacent domains matter.
+5. State a boundary decision with primary skill, composed siblings, and deferred scope.
 
 # Output contract
 - recommended addon location
 - dependency rationale
 - bridge-module or extension guidance
 - architecture risks
+- boundary decision with primary skill, composed siblings, and deferred scope
 
 # Guardrails
 - Answer only the domain or technical question this skill owns.
@@ -52,6 +53,7 @@ Use this skill only when the primary requested output is an addon-placement or d
 # Compose with sibling skills
 - `odoo-plan`
 - `odoo-build`
+- `odoo-orm-modeling`
 
 # References
 - Read `references/overview.md` first for scope, anchors, and pairings.

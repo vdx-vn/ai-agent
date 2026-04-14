@@ -4,12 +4,13 @@
 - [ ] Confirm the requested artifact belongs to `odoo-view-ui`.
 - [ ] Identify main module, bridge module, or business or technical entrypoint.
 - [ ] Identify adjacent skills needed for composition.
+- [ ] Identify nearest-neighbor skill and why it does not own the request.
 
 ## Analysis
 - [ ] Prefer view inheritance over full replacements when stable.
 - [ ] Keep menus and actions aligned with business flow.
 - [ ] Call out fragile xpath or template overrides.
-- [ ] Separate backend UI concerns from website or ecommerce entrypoints when needed.
+- [ ] Keep UI mechanics separate from website or ecommerce business-flow questions.
 
 ## Production readiness
 - [ ] Anchor the answer to Odoo <ODOO_MAJOR_VERSION> docs and current source paths.
@@ -22,5 +23,6 @@
 - [ ] Return action and menu notes
 - [ ] Return inheritance or xpath cautions
 - [ ] Return UI-specific follow-up tests
+- [ ] Return boundary decision
 - [ ] Name assumptions, blockers, or missing context.
 - [ ] Redirect clearly if the request crosses this skill boundary.

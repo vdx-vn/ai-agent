@@ -29,13 +29,14 @@ Use this skill only when the primary business entrypoint is expense claim, expen
 2. Read only the smallest relevant anchors from `references/overview.md`.
 3. Apply the rule or process checklist in `references/checklist.md`.
 4. Answer with Odoo-specific guidance, tradeoffs, downstream effects, and boundary notes.
-5. Point to sibling skills when implementation workflow or adjacent domains matter.
+5. State a boundary decision with primary skill, composed siblings, and deferred scope.
 
 # Output contract
 - base expense flow
 - cross-app impacts
 - roles and decision points
 - golden-path test ideas
+- boundary decision with primary skill, composed siblings, and deferred scope
 
 # Guardrails
 - Answer only the domain or technical question this skill owns.

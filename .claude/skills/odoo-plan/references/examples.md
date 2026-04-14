@@ -9,14 +9,14 @@
    - Expected: use `odoo-plan` as primary skill.
 
 ## Negative triggers
-1. "What risks does this feature touch?"
+1. "What risks does this feature touch before we plan it?"
    - Expected: do not use `odoo-plan` as primary skill.
-2. "Run tests for this addon."
+2. "Implement this stock rule now and update the XML."
    - Expected: do not use `odoo-plan` as primary skill.
 
 ## Tie-breaker
 - Prompt: "Create implementation plan for portal invoice approval."
-- Why this skill wins: The request clearly asks for ordered steps and deliverables. `odoo-plan` should win over `odoo-think` and `odoo-build`.
+- Why this skill wins: The request clearly asks for ordered steps and delivery structure. `odoo-plan` should win over `odoo-think` and `odoo-build`.
 
 ## Nearby skills to consider
 - `odoo-think`

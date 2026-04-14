@@ -7,7 +7,7 @@ description: "Guide external integration design for Odoo, including RPC and API 
 Guide Odoo external integration patterns, auth choices, RPC or HTTP approaches, and transaction boundaries for business operations.
 
 # Primary routing rule
-Use this skill only when the primary requested output is an external integration design or RPC/API decision.
+Use this skill only when the primary requested output is an external integration design or RPC or API decision.
 
 # Use this skill when
 - design a webhook or sync job
@@ -29,13 +29,14 @@ Use this skill only when the primary requested output is an external integration
 2. Read only the smallest relevant anchors from `references/overview.md`.
 3. Apply the rule or process checklist in `references/checklist.md`.
 4. Answer with Odoo-specific guidance, tradeoffs, downstream effects, and boundary notes.
-5. Point to sibling skills when implementation workflow or adjacent domains matter.
+5. State a boundary decision with primary skill, composed siblings, and deferred scope.
 
 # Output contract
 - integration pattern recommendation
 - auth and user model
 - transaction-boundary notes
 - failure and retry considerations
+- boundary decision with primary skill, composed siblings, and deferred scope
 
 # Guardrails
 - Answer only the domain or technical question this skill owns.

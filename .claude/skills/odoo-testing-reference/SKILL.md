@@ -1,6 +1,6 @@
 ---
 name: odoo-testing-reference
-description: "Explain Odoo test framework, test tags, TransactionCase, HttpCase, tours, and JS tests. Use only for framework-selection and test-authoring guidance, not for judging whether current work is validated."
+description: "Explain Odoo test framework, test tags, TransactionCase, HttpCase, tours, and JS tests. Use only when the primary output is framework-selection or test-authoring guidance, not when judging whether current work is validated."
 ---
 
 # Purpose
@@ -29,13 +29,14 @@ Use this skill only when the primary requested output is framework or test-autho
 2. Read only the smallest relevant anchors from `references/overview.md`.
 3. Apply the rule or process checklist in `references/checklist.md`.
 4. Answer with Odoo-specific guidance, tradeoffs, downstream effects, and boundary notes.
-5. Point to sibling skills when implementation workflow or adjacent domains matter.
+5. State a boundary decision with primary skill, composed siblings, and deferred scope.
 
 # Output contract
 - recommended test types
 - relevant test tags
 - framework-specific cautions
 - example test shape
+- boundary decision with primary skill, composed siblings, and deferred scope
 
 # Guardrails
 - Answer only the domain or technical question this skill owns.
@@ -46,7 +47,7 @@ Use this skill only when the primary requested output is framework or test-autho
 
 # Must hand off when
 - If the user asks to validate a concrete diff or runtime behavior now, hand off to `odoo-test`.
-- If the question is mostly UI/browser flow behavior, compose with `odoo-view-ui`.
+- If the question is mostly UI or browser flow behavior, compose with `odoo-view-ui`.
 - If the concern is query count or speed, compose with `odoo-performance`.
 
 # Compose with sibling skills

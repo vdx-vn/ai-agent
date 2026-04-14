@@ -4,6 +4,7 @@
 - [ ] Confirm the requested artifact belongs to `odoo-business-accounting`.
 - [ ] Identify main module, bridge module, or business or technical entrypoint.
 - [ ] Identify adjacent skills needed for composition.
+- [ ] Identify nearest-neighbor skill and why it does not own the request.
 
 ## Analysis
 - [ ] Identify finance entrypoint: invoice, bill, payment, tax, reconciliation, or valuation.
@@ -22,5 +23,6 @@
 - [ ] Return cross-app impacts
 - [ ] Return roles and decision points
 - [ ] Return golden-path test ideas
+- [ ] Return boundary decision
 - [ ] Name assumptions, blockers, or missing context.
 - [ ] Redirect clearly if the request crosses this skill boundary.

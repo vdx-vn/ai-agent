@@ -1,6 +1,6 @@
 ---
 name: odoo-review
-description: "Review existing Odoo changes before merge. Use for findings on a diff, patch, or implementation artifact about architecture fit, maintainability, correctness, and broad risk. Do not use when the main ask is to execute validation."
+description: "Review existing Odoo changes before merge. Use when the primary output is review findings on a diff, patch, or implementation artifact about architecture fit, maintainability, correctness, and broad risk. Do not use when the main ask is to execute validation."
 ---
 
 # Purpose
@@ -30,13 +30,15 @@ Use this skill only when the primary requested output is review findings on an e
 2. Map the request to the smallest relevant Odoo modules, docs, and source anchors.
 3. Apply the deterministic checks in `references/checklist.md`.
 4. Produce the artifact described below, naming assumptions, blockers, and cross-app effects.
-5. Hand off or compose with sibling skills when the request crosses this skill boundary.
+5. State a boundary decision with primary skill, composed siblings, and deferred scope.
 
 # Output contract
+- evidence status: reasoned review only
 - findings by severity
 - required fixes
 - suggested improvements
 - untested risk areas
+- boundary decision with primary skill, composed siblings, and deferred scope
 
 # Guardrails
 - Stay inside this sprint-phase responsibility; do not absorb neighboring tasks.
@@ -44,14 +46,18 @@ Use this skill only when the primary requested output is review findings on an e
 - Call out docs or source mismatches instead of hiding them.
 - Name permissions impact, migration impact, and cross-app modules whenever relevant.
 - Name rollback or staging risk whenever release or data impact exists.
+- Do not imply commands were run or validation evidence exists unless execution evidence is provided separately.
 
 # Must hand off when
 - If there is no artifact yet, hand off to `odoo-think` or `odoo-plan`.
-- If the user asks to run validation or produce evidence, hand off to `odoo-test`.
+- If the user asks to run validation or produce execution evidence, hand off to `odoo-test`.
 - If permissions, exposure, or trust boundaries are central, compose with `odoo-security`.
 
 # Compose with sibling skills
+- `odoo-think`
+- `odoo-plan`
 - `odoo-security`
+- `odoo-test`
 - `odoo-testing-reference`
 
 # References

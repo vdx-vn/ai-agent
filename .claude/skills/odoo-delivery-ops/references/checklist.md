@@ -4,6 +4,7 @@
 - [ ] Confirm the requested artifact belongs to `odoo-delivery-ops`.
 - [ ] Identify main module, bridge module, or business or technical entrypoint.
 - [ ] Identify adjacent skills needed for composition.
+- [ ] Identify nearest-neighbor skill and why it does not own the request.
 
 ## Analysis
 - [ ] Separate CLI semantics from migration strategy.
@@ -22,5 +23,6 @@
 - [ ] Return runtime cautions
 - [ ] Return environment notes
 - [ ] Return follow-up release checks
+- [ ] Return boundary decision
 - [ ] Name assumptions, blockers, or missing context.
 - [ ] Redirect clearly if the request crosses this skill boundary.

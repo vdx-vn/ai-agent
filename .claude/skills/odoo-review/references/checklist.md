@@ -4,6 +4,7 @@
 - [ ] Confirm the requested artifact belongs to `odoo-review`.
 - [ ] Identify main module, bridge module, or business or technical entrypoint.
 - [ ] Identify adjacent skills needed for composition.
+- [ ] Identify nearest-neighbor skill and why it does not own the request.
 
 ## Analysis
 - [ ] Inspect module fit and dependency choices.
@@ -18,9 +19,11 @@
 - [ ] Name rollback or staging concerns when release or data risk exists.
 
 ## Output
+- [ ] Return evidence status: reasoned review only
 - [ ] Return findings by severity
 - [ ] Return required fixes
 - [ ] Return suggested improvements
 - [ ] Return untested risk areas
+- [ ] Return boundary decision
 - [ ] Name assumptions, blockers, or missing context.
 - [ ] Redirect clearly if the request crosses this skill boundary.

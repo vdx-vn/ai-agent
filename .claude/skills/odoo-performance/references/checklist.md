@@ -4,6 +4,7 @@
 - [ ] Confirm the requested artifact belongs to `odoo-performance`.
 - [ ] Identify main module, bridge module, or business or technical entrypoint.
 - [ ] Identify adjacent skills needed for composition.
+- [ ] Identify nearest-neighbor skill and why it does not own the request.
 
 ## Analysis
 - [ ] Look for searches or writes inside loops.
@@ -22,5 +23,6 @@
 - [ ] Return optimization recommendations
 - [ ] Return measurement or profiler plan
 - [ ] Return performance-test notes
+- [ ] Return boundary decision
 - [ ] Name assumptions, blockers, or missing context.
 - [ ] Redirect clearly if the request crosses this skill boundary.

@@ -4,6 +4,7 @@
 - [ ] Confirm the requested artifact belongs to `odoo-upgrade-migration`.
 - [ ] Identify main module, bridge module, or business or technical entrypoint.
 - [ ] Identify adjacent skills needed for composition.
+- [ ] Identify nearest-neighbor skill and why it does not own the request.
 
 ## Analysis
 - [ ] Name data preservation strategy explicitly.
@@ -22,5 +23,6 @@
 - [ ] Return script or data-move notes
 - [ ] Return validation checklist
 - [ ] Return rollout cautions
+- [ ] Return boundary decision
 - [ ] Name assumptions, blockers, or missing context.
 - [ ] Redirect clearly if the request crosses this skill boundary.

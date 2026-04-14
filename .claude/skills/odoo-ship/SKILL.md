@@ -1,6 +1,6 @@
 ---
 name: odoo-ship
-description: "Prepare Odoo changes for staging or release. Use when the primary output should be go or no-go readiness, rollout sequencing, staging checks, rollback considerations, and production-facing cautions, not low-level command semantics."
+description: "Prepare Odoo changes for staging or release. Use when the primary output is go or no-go readiness, rollout sequencing, staging checks, rollback considerations, and production-facing cautions, not low-level command semantics."
 ---
 
 # Purpose
@@ -30,13 +30,15 @@ Use this skill only when the user wants release readiness or rollout sequencing.
 2. Map the request to the smallest relevant Odoo modules, docs, and source anchors.
 3. Apply the deterministic checks in `references/checklist.md`.
 4. Produce the artifact described below, naming assumptions, blockers, and cross-app effects.
-5. Hand off or compose with sibling skills when the request crosses this skill boundary.
+5. State a boundary decision with primary skill, composed siblings, and deferred scope.
 
 # Output contract
+- evidence status: executed, planned, or blocked
 - go or no-go readiness summary
 - ship checklist and rollout sequence
 - staging verification list
 - rollback or production cautions
+- boundary decision with primary skill, composed siblings, and deferred scope
 
 # Guardrails
 - Stay inside this sprint-phase responsibility; do not absorb neighboring tasks.
@@ -44,6 +46,7 @@ Use this skill only when the user wants release readiness or rollout sequencing.
 - Call out docs or source mismatches instead of hiding them.
 - Name permissions impact, migration impact, and cross-app modules whenever relevant.
 - Name rollback or staging risk whenever release or data impact exists.
+- Do not call a change ready if critical validation or migration evidence is still missing.
 
 # Must hand off when
 - If the user asks what `-u`, `-i`, `--reinit`, workers, or Odoo.sh stages do, hand off to `odoo-delivery-ops`.

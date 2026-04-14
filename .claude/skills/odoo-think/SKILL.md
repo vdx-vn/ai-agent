@@ -1,6 +1,6 @@
 ---
 name: odoo-think
-description: "Diagnose Odoo request scope before planning. Use only for impacted modules, business entrypoints, risks, unknowns, and decision framing. Do not use for implementation steps or code changes."
+description: "Diagnose Odoo request scope before planning. Use when the primary output is a scoping brief with impacted modules, business entrypoints, risks, unknowns, and decision framing. Do not use for implementation steps or code changes."
 ---
 
 # Purpose
@@ -30,13 +30,14 @@ Use this skill only when the primary requested output is a scoping brief or impa
 2. Map the request to the smallest relevant Odoo modules, docs, and source anchors.
 3. Apply the deterministic checks in `references/checklist.md`.
 4. Produce the artifact described below, naming assumptions, blockers, and cross-app effects.
-5. Hand off or compose with sibling skills when the request crosses this skill boundary.
+5. State a boundary decision with primary skill, composed siblings, and deferred scope.
 
 # Output contract
 - problem statement
 - impacted modules and bridge addons
 - affected business flow and entrypoint
 - top risks and unknowns
+- boundary decision with primary skill, composed siblings, and deferred scope
 
 # Guardrails
 - Stay inside this sprint-phase responsibility; do not absorb neighboring tasks.
@@ -44,6 +45,7 @@ Use this skill only when the primary requested output is a scoping brief or impa
 - Call out docs or source mismatches instead of hiding them.
 - Name permissions impact, migration impact, and cross-app modules whenever relevant.
 - Name rollback or staging risk whenever release or data impact exists.
+- Do not drift into ordered implementation steps or code changes.
 
 # Must hand off when
 - If the user asks for ordered implementation steps, files, or acceptance criteria, hand off to `odoo-plan`.
@@ -52,6 +54,7 @@ Use this skill only when the primary requested output is a scoping brief or impa
 
 # Compose with sibling skills
 - `odoo-plan`
+- `odoo-build`
 - `odoo-architecture`
 
 # References

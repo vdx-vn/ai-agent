@@ -1,6 +1,6 @@
 ---
 name: odoo-orm-modeling
-description: "Guide Odoo model and field design, compute, onchange, constrains, API semantics, and recordset-safe ORM patterns. Use when the primary question is model behavior or ORM implementation pattern."
+description: "Guide Odoo model and field design, compute, onchange, constrains, API semantics, and recordset-safe ORM patterns. Use when the primary output is a model or ORM design decision, not UI mechanics or business-flow explanation."
 ---
 
 # Purpose
@@ -29,13 +29,14 @@ Use this skill only when the primary requested output is a model or ORM design d
 2. Read only the smallest relevant anchors from `references/overview.md`.
 3. Apply the rule or process checklist in `references/checklist.md`.
 4. Answer with Odoo-specific guidance, tradeoffs, downstream effects, and boundary notes.
-5. Point to sibling skills when implementation workflow or adjacent domains matter.
+5. State a boundary decision with primary skill, composed siblings, and deferred scope.
 
 # Output contract
 - field or method pattern recommendation
 - ORM anti-pattern warnings
 - recordset or decorator guidance
 - follow-up test notes
+- boundary decision with primary skill, composed siblings, and deferred scope
 
 # Guardrails
 - Answer only the domain or technical question this skill owns.
@@ -51,8 +52,10 @@ Use this skill only when the primary requested output is a model or ORM design d
 
 # Compose with sibling skills
 - `odoo-build`
+- `odoo-view-ui`
 - `odoo-performance`
 - `odoo-security`
+- `odoo-orm-modeling`
 
 # References
 - Read `references/overview.md` first for scope, anchors, and pairings.

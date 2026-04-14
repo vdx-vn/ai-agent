@@ -1,18 +1,19 @@
 ---
 name: odoo-view-ui
-description: "Guide Odoo views, actions, menus, QWeb, backend UI, and OWL or web-client changes. Use when the primary question is UI structure or view behavior, not business process or ORM semantics."
+description: "Guide Odoo views, actions, menus, QWeb, backend UI, website template mechanics, and OWL or web-client changes. Use when the primary question is UI structure, template behavior, xpath strategy, or action behavior, not business process or ORM semantics."
 ---
 
 # Purpose
-Guide Odoo views, actions, menus, QWeb, backend UI, and OWL or web-client UI changes.
+Guide Odoo views, actions, menus, QWeb, website template mechanics, backend UI, and OWL or web-client UI changes.
 
 # Primary routing rule
-Use this skill only when the primary requested output is a view, action, menu, template, or client-side UI decision.
+Use this skill only when the primary requested output is a view, action, menu, template, xpath, OWL, or client-side UI decision. Even on website pages, keep this skill primary when the user asks about template or UI mechanics.
 
 # Use this skill when
 - change form, tree, kanban, search, or QWeb views
 - add or adjust actions and menus
 - touch OWL or web-client UI behavior
+- decide website template, xpath, or action mechanics
 
 # Do not use this skill when
 - the primary requested output is ORM semantics
@@ -29,23 +30,25 @@ Use this skill only when the primary requested output is a view, action, menu, t
 2. Read only the smallest relevant anchors from `references/overview.md`.
 3. Apply the rule or process checklist in `references/checklist.md`.
 4. Answer with Odoo-specific guidance, tradeoffs, downstream effects, and boundary notes.
-5. Point to sibling skills when implementation workflow or adjacent domains matter.
+5. State a boundary decision with primary skill, composed siblings, and deferred scope.
 
 # Output contract
 - view strategy
 - action and menu notes
 - inheritance or xpath cautions
 - UI-specific follow-up tests
+- boundary decision with primary skill, composed siblings, and deferred scope
 
 # Guardrails
 - Answer only the domain or technical question this skill owns.
 - Use Odoo <ODOO_MAJOR_VERSION> docs as guidance and Odoo CE <ODOO_MAJOR_VERSION> source as runtime truth.
 - Do not answer from generic ERP intuition; anchor to Odoo <ODOO_MAJOR_VERSION> terms, addons, and bridge modules.
 - Highlight cross-app, accounting, or security effects when they materially change the answer.
+- Keep customer journey or checkout process meaning with `odoo-business-website-ecommerce`; keep template, xpath, and action mechanics here.
 - Redirect to task skills when the user needs planning, building, testing, or shipping.
 
 # Must hand off when
-- If the UI question starts from website cart, checkout, portal, or public form entrypoints, compose with `odoo-business-website-ecommerce`.
+- If the UI question starts from website cart, checkout, portal, or public form entrypoints but the user mainly wants process meaning, compose with `odoo-business-website-ecommerce`.
 - If model semantics dominate, hand off to `odoo-orm-modeling`.
 - If addon placement dominates, hand off to `odoo-architecture`.
 
@@ -53,6 +56,7 @@ Use this skill only when the primary requested output is a view, action, menu, t
 - `odoo-build`
 - `odoo-business-website-ecommerce`
 - `odoo-architecture`
+- `odoo-orm-modeling`
 
 # References
 - Read `references/overview.md` first for scope, anchors, and pairings.

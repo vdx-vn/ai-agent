@@ -11,13 +11,14 @@
 ## Negative triggers
 1. "Explain Odoo test tags and HttpCase."
    - Expected: do not use `odoo-test` as primary skill.
-2. "Review security rules in this patch."
+2. "Review this diff for maintainability and risk before merge."
    - Expected: do not use `odoo-test` as primary skill.
 
 ## Tie-breaker
 - Prompt: "Validate this checkout change in install, update, and key workflows."
-- Why this skill wins: The user wants current-change validation, not framework education. `odoo-test` should win over `odoo-testing-reference`.
+- Why this skill wins: The user wants current-change validation evidence, not framework education or review findings. `odoo-test` should win over `odoo-testing-reference` and `odoo-review`.
 
 ## Nearby skills to consider
+- `odoo-review`
 - `odoo-testing-reference`
 - `odoo-performance`

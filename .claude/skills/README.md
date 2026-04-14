@@ -16,6 +16,13 @@ Repos used by these skills:
 - The materializer will auto-detect version from git branch or repo path when possible; otherwise pass `--version 18.0` or similar.
 - Project hooks can suggest this command automatically when you start a new Odoo project or ask to set one up.
 
+## Authoring rules
+- Route by primary artifact or primary business entrypoint, not by loose keyword overlap.
+- Keep `SKILL.md` concise; put detailed checks and examples in `references/overview.md`, `references/checklist.md`, and `references/examples.md`.
+- Keep references one hop from `SKILL.md`.
+- Keep descriptions trigger-rich and artifact-specific.
+- For task skills, mirror each `SKILL.md` output contract in the matching checklist output block.
+
 ## Artifact-first routing
 - Risks, impact, unknowns → `odoo-think`
 - Ordered implementation steps and acceptance criteria → `odoo-plan`
@@ -32,7 +39,8 @@ Repos used by these skills:
 - Anchor functional meaning to Odoo <ODOO_MAJOR_VERSION> docs and implementation truth to Odoo CE <ODOO_MAJOR_VERSION> source.
 - Use entrypoints to break ties between adjacent business skills.
 - Use requested output artifact to break ties between adjacent task skills.
-- If a prompt mixes multiple asks, declare the primary skill and compose in order.
+- If a prompt mixes multiple asks, state a boundary decision with `Primary skill`, `Composed siblings`, and `Deferred scope`.
+- For `odoo-review`, `odoo-test`, and `odoo-ship`, state evidence status as `reasoned review only`, `executed`, `planned`, or `blocked`.
 
 ## Common composition recipes
 - `odoo-think` → `odoo-plan` → `odoo-build` → `odoo-test` → `odoo-review` → `odoo-ship` → `odoo-reflect`

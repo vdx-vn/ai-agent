@@ -16,7 +16,7 @@
 
 ## Tie-breaker
 - Prompt: "Are we ready to deploy this schema change?"
-- Why this skill wins: The user wants go or no-go readiness and rollout sequencing, not command semantics. `odoo-ship` should win over `odoo-delivery-ops`.
+- Why this skill wins: The user wants go or no-go readiness and rollout sequencing, not command semantics. `odoo-ship` should win over `odoo-delivery-ops` and compose with migration or test skills if evidence is still missing.
 
 ## Nearby skills to consider
 - `odoo-delivery-ops`

@@ -4,6 +4,7 @@
 - [ ] Confirm the requested artifact belongs to `odoo-plan`.
 - [ ] Identify main module, bridge module, or business or technical entrypoint.
 - [ ] Identify adjacent skills needed for composition.
+- [ ] Identify nearest-neighbor skill and why it does not own the request.
 
 ## Analysis
 - [ ] Define the smallest safe change surface.
@@ -22,5 +23,6 @@
 - [ ] Return target files and modules
 - [ ] Return acceptance criteria and open decisions
 - [ ] Return test matrix and rollout notes
+- [ ] Return boundary decision
 - [ ] Name assumptions, blockers, or missing context.
 - [ ] Redirect clearly if the request crosses this skill boundary.

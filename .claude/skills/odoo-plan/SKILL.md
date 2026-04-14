@@ -1,6 +1,6 @@
 ---
 name: odoo-plan
-description: "Turn Odoo requests into execution plans. Use when the primary output should be ordered implementation steps, file and module mapping, acceptance criteria, test strategy, and rollout notes. Do not use for code changes."
+description: "Turn Odoo requests into execution plans. Use when the primary output is an ordered plan with file and module mapping, acceptance criteria, test strategy, rollout notes, and open decisions. Do not use for code changes."
 ---
 
 # Purpose
@@ -18,7 +18,7 @@ Use this skill only when the user wants a plan artifact. If the user wants a ris
 # Do not use this skill when
 - the primary requested output is only impact analysis or risk discovery
 - the user wants direct implementation or patch generation
-- the task is a retrospective or release go/no-go call
+- the task is a retrospective or release go or no-go call
 
 # Required inputs
 - user request and desired output artifact
@@ -30,13 +30,14 @@ Use this skill only when the user wants a plan artifact. If the user wants a ris
 2. Map the request to the smallest relevant Odoo modules, docs, and source anchors.
 3. Apply the deterministic checks in `references/checklist.md`.
 4. Produce the artifact described below, naming assumptions, blockers, and cross-app effects.
-5. Hand off or compose with sibling skills when the request crosses this skill boundary.
+5. State a boundary decision with primary skill, composed siblings, and deferred scope.
 
 # Output contract
 - ordered implementation steps
 - target files and modules
 - acceptance criteria and open decisions
 - test matrix and rollout notes
+- boundary decision with primary skill, composed siblings, and deferred scope
 
 # Guardrails
 - Stay inside this sprint-phase responsibility; do not absorb neighboring tasks.
@@ -44,6 +45,7 @@ Use this skill only when the user wants a plan artifact. If the user wants a ris
 - Call out docs or source mismatches instead of hiding them.
 - Name permissions impact, migration impact, and cross-app modules whenever relevant.
 - Name rollback or staging risk whenever release or data impact exists.
+- Keep this skill at planning depth; do not drift into code generation.
 
 # Must hand off when
 - If the user asks for code, XML, manifest, or security changes now, hand off to `odoo-build`.
@@ -52,6 +54,7 @@ Use this skill only when the user wants a plan artifact. If the user wants a ris
 
 # Compose with sibling skills
 - `odoo-think`
+- `odoo-build`
 - `odoo-test`
 - `odoo-upgrade-migration`
 

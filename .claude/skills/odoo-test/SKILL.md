@@ -1,13 +1,13 @@
 ---
 name: odoo-test
-description: "Validate a concrete Odoo change with install, update, workflow, security, and performance checks. Use when the primary output should be current validation evidence or a current-change validation plan, not general framework guidance."
+description: "Validate a concrete Odoo change with install, update, workflow, security, and performance checks. Use when the primary output is current validation evidence or a current-change validation plan, not general framework guidance."
 ---
 
 # Purpose
 Define and run validation for a current Odoo change, including install, update, workflow, security, and performance checks.
 
 # Primary routing rule
-Use this skill only when the primary requested output is validation for a concrete change now. If the user asks which Odoo test framework or tags to use in general, hand off to `odoo-testing-reference`.
+Use this skill only when the primary requested output is validation for a concrete change now. If the user asks which Odoo test framework or tags to use in general, hand off to `odoo-testing-reference`. If the user wants findings on an existing artifact without execution, use `odoo-review`.
 
 # Use this skill when
 - run or choose validation for current Odoo work
@@ -30,13 +30,15 @@ Use this skill only when the primary requested output is validation for a concre
 2. Map the request to the smallest relevant Odoo modules, docs, and source anchors.
 3. Apply the deterministic checks in `references/checklist.md`.
 4. Produce the artifact described below, naming assumptions, blockers, and cross-app effects.
-5. Hand off or compose with sibling skills when the request crosses this skill boundary.
+5. State a boundary decision with primary skill, composed siblings, and deferred scope.
 
 # Output contract
+- evidence status: executed, planned, or blocked
 - test matrix
 - commands or suites run
-- observed failures
+- observed failures or outcomes
 - remaining validation gaps
+- boundary decision with primary skill, composed siblings, and deferred scope
 
 # Guardrails
 - Stay inside this sprint-phase responsibility; do not absorb neighboring tasks.
@@ -44,13 +46,15 @@ Use this skill only when the primary requested output is validation for a concre
 - Call out docs or source mismatches instead of hiding them.
 - Name permissions impact, migration impact, and cross-app modules whenever relevant.
 - Name rollback or staging risk whenever release or data impact exists.
+- Separate executed evidence from planned validation. If nothing ran, say so plainly.
 
 # Must hand off when
 - If the user asks how Odoo testing primitives work in general, hand off to `odoo-testing-reference`.
-- If the ask is a pre-merge reasoning review rather than evidence, hand off to `odoo-review`.
+- If the ask is a pre-merge reasoning review rather than validation evidence, hand off to `odoo-review`.
 - Compose with business skills when workflow validation depends on domain process.
 
 # Compose with sibling skills
+- `odoo-review`
 - `odoo-testing-reference`
 - `odoo-performance`
 

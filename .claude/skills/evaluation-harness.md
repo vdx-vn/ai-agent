@@ -2,9 +2,12 @@
 
 ## Per-skill production gates
 - Validate frontmatter and naming rules.
-- Confirm the description is narrow and trigger-rich.
+- Confirm the description is narrow, trigger-rich, and names the primary artifact or entrypoint.
 - Confirm `SKILL.md` stays lean and pushes detail into `references/`.
 - Confirm the primary routing rule names the requested output artifact or business entrypoint.
+- For task skills, confirm the checklist output section mirrors the `SKILL.md` output contract.
+- Confirm mixed prompts produce an explicit boundary decision with `Primary skill`, `Composed siblings`, and `Deferred scope`.
+- For `odoo-review`, `odoo-test`, and `odoo-ship`, confirm evidence status is explicit: `reasoned review only`, `executed`, `planned`, or `blocked`.
 - Test at least 3 positive prompts, 2 negative prompts, and 1 tie-breaker prompt.
 - Check the closest neighboring skills for overlap and handoff clarity.
 
@@ -54,9 +57,16 @@
 15. "How are employee-paid expenses reimbursed and posted?"
     - Primary: `odoo-business-expenses`
     - Why: entrypoint is expense claim lifecycle
+16. "Should this checkout template use xpath inheritance or a full QWeb override?"
+    - Primary: `odoo-view-ui`
+    - Why: asks for template mechanics, not customer journey meaning
+17. "What business steps fire after a portal user completes checkout?"
+    - Primary: `odoo-business-website-ecommerce`
+    - Why: asks for public or portal flow and downstream business effects
 
 ## Manual production check
 1. Read the skill description only. Decide which skill should trigger for each collision prompt.
 2. Read `references/examples.md` only for ambiguous cases.
-3. Tighten descriptions or exclusions if two skills still plausibly own the same prompt.
-4. Re-run quick validation on each changed skill directory.
+3. Verify the expected output shape, boundary decision, and evidence-status wording for the changed skill.
+4. Tighten descriptions, exclusions, or examples if two skills still plausibly own the same prompt.
+5. Re-run quick validation on each changed skill directory.

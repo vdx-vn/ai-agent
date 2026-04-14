@@ -1,6 +1,6 @@
 ---
 name: odoo-build
-description: "Implement Odoo changes in Python, XML, security, manifest, and controller files. Use only when the user wants code or configuration changes produced, not when they still need planning or comparison."
+description: "Implement Odoo changes in Python, XML, security, manifest, and controller files. Use when the primary output is changed code or configuration artifacts, not when the user still needs planning or comparison."
 ---
 
 # Purpose
@@ -30,12 +30,13 @@ Use this skill only when the primary requested output is changed code or config 
 2. Map the request to the smallest relevant Odoo modules, docs, and source anchors.
 3. Apply the deterministic checks in `references/checklist.md`.
 4. Produce the artifact described below, naming assumptions, blockers, and cross-app effects.
-5. Hand off or compose with sibling skills when the request crosses this skill boundary.
+5. State a boundary decision with primary skill, composed siblings, and deferred scope.
 
 # Output contract
 - code changes
 - changed file list
-- assumptions or follow-up validation needs
+- follow-up validation needs
+- boundary decision with primary skill, composed siblings, and deferred scope
 
 # Guardrails
 - Stay inside this sprint-phase responsibility; do not absorb neighboring tasks.
@@ -43,16 +44,21 @@ Use this skill only when the primary requested output is changed code or config 
 - Call out docs or source mismatches instead of hiding them.
 - Name permissions impact, migration impact, and cross-app modules whenever relevant.
 - Name rollback or staging risk whenever release or data impact exists.
+- Avoid speculative abstractions and keep changes inside approved scope.
 
 # Must hand off when
 - If scope or approach is still undecided, hand off to `odoo-plan`.
 - If the user asks for findings on an existing diff, hand off to `odoo-review`.
+- If migration strategy dominates the request, compose with `odoo-upgrade-migration`.
 - Compose with technical specialists whenever implementation crosses ORM, UI, security, migration, or performance boundaries.
 
 # Compose with sibling skills
+- `odoo-plan`
+- `odoo-review`
 - `odoo-orm-modeling`
 - `odoo-view-ui`
 - `odoo-security`
+- `odoo-upgrade-migration`
 
 # References
 - Read `references/overview.md` first for scope, anchors, and pairings.

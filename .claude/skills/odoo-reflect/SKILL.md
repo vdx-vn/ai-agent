@@ -1,6 +1,6 @@
 ---
 name: odoo-reflect
-description: "Reflect on completed Odoo work. Use for retrospectives, missed assumptions, lessons learned, and follow-up hardening after review, testing, or release."
+description: "Reflect on completed Odoo work. Use when the primary output is a retrospective with lessons learned, missed assumptions, and concrete follow-up actions after review, testing, or release."
 ---
 
 # Purpose
@@ -30,13 +30,14 @@ Use this skill only when the primary requested output is a retrospective or less
 2. Map the request to the smallest relevant Odoo modules, docs, and source anchors.
 3. Apply the deterministic checks in `references/checklist.md`.
 4. Produce the artifact described below, naming assumptions, blockers, and cross-app effects.
-5. Hand off or compose with sibling skills when the request crosses this skill boundary.
+5. State a boundary decision with primary skill, composed siblings, and deferred scope.
 
 # Output contract
 - summary of what happened
 - gaps or misses
 - lessons learned
 - follow-up tasks
+- boundary decision with primary skill, composed siblings, and deferred scope
 
 # Guardrails
 - Stay inside this sprint-phase responsibility; do not absorb neighboring tasks.
@@ -44,6 +45,7 @@ Use this skill only when the primary requested output is a retrospective or less
 - Call out docs or source mismatches instead of hiding them.
 - Name permissions impact, migration impact, and cross-app modules whenever relevant.
 - Name rollback or staging risk whenever release or data impact exists.
+- Produce concrete lessons and follow-up actions, not vague commentary.
 
 # Must hand off when
 - If the user is still deciding what to build, hand off to `odoo-think` or `odoo-plan`.
@@ -51,6 +53,8 @@ Use this skill only when the primary requested output is a retrospective or less
 - Compose with business skills when the lesson depends on domain process misunderstanding.
 
 # Compose with sibling skills
+- `odoo-think`
+- `odoo-plan`
 - `odoo-review`
 - `odoo-test`
 

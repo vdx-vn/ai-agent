@@ -4,6 +4,7 @@
 - [ ] Confirm the requested artifact belongs to `odoo-orm-modeling`.
 - [ ] Identify main module, bridge module, or business or technical entrypoint.
 - [ ] Identify adjacent skills needed for composition.
+- [ ] Identify nearest-neighbor skill and why it does not own the request.
 
 ## Analysis
 - [ ] Prefer batch-safe recordset operations.
@@ -22,5 +23,6 @@
 - [ ] Return ORM anti-pattern warnings
 - [ ] Return recordset or decorator guidance
 - [ ] Return follow-up test notes
+- [ ] Return boundary decision
 - [ ] Name assumptions, blockers, or missing context.
 - [ ] Redirect clearly if the request crosses this skill boundary.
