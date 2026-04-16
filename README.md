@@ -2,4 +2,4 @@
 
 + [Caveman](https://github.com/JuliusBrussee/caveman): reduce token usage
 + [Karpathy-Inspired Claude Code Guidelines](https://github.com/forrestchang/andrej-karpathy-skills): A single CLAUDE.md file to improve Claude Code behavior
-+ [Agent skills](https://github.com/addyosmani/agent-skills): production-grade agent skills
++ [Super powers](https://github.com/obra/superpowers): Composable ai agent skills
