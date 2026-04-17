@@ -22,3 +22,4 @@
 - `odoo-review`
 - `odoo-testing-reference`
 - `odoo-performance`
+- `odoo-local-test-harness`

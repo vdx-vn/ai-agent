@@ -1,7 +1,7 @@
 interface:
   display_name: "Odoo Delivery Ops"
   short_description: "CLI and runtime operations"
-  default_prompt: "Use $odoo-delivery-ops to operational mechanics guidance covering commands, flags, environment behavior, and runtime cautions."
+  default_prompt: "Use $odoo-delivery-ops to operational mechanics guidance covering commands, flags, environment behavior, and runtime cautions. Compose with $odoo-local-test-harness when the answer depends on a project-local Odoo base command or shared cleanup."
 
 policy:
   allow_implicit_invocation: true

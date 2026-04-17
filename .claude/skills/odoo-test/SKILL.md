@@ -1,6 +1,6 @@
 ---
 name: odoo-test
-description: "Validate a concrete Odoo change with install, update, workflow, security, and performance checks. Use when the primary output is current validation evidence or a current-change validation plan, not general framework guidance."
+description: "Validate a concrete Odoo change with install, update, workflow, security, and performance checks. Compose with `odoo-local-test-harness` when local execution depends on a project-specific base Odoo test command or shared DB and filestore cleanup."
 ---
 
 # Purpose
@@ -52,11 +52,13 @@ Use this skill only when the primary requested output is validation for a concre
 - If the user asks how Odoo testing primitives work in general, hand off to `odoo-testing-reference`.
 - If the ask is a pre-merge reasoning review rather than validation evidence, hand off to `odoo-review`.
 - Compose with business skills when workflow validation depends on domain process.
+- If local execution depends on a project-specific base command or shared cleanup harness, compose with `odoo-local-test-harness`.
 
 # Compose with sibling skills
 - `odoo-review`
 - `odoo-testing-reference`
 - `odoo-performance`
+- `odoo-local-test-harness`
 
 # References
 - Read `references/overview.md` first for scope, anchors, and pairings.

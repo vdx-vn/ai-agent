@@ -20,6 +20,7 @@ Current-change validation evidence or validation plan tied to a specific diff, a
 - Cover install and update paths when relevant.
 - Include security and multi-company checks when behavior changes.
 - Report gaps, not only pass/fail.
+- Compose with `odoo-local-test-harness` when current-change validation depends on `ODOO_TEST_BASE_CMD` or shared disposable-db cleanup.
 
 ## Key docs anchors
 - `content/developer/reference/backend/testing.rst`

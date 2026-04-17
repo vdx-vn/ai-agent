@@ -22,3 +22,4 @@
 - `odoo-ship`
 - `odoo-test`
 - `odoo-upgrade-migration`
+- `odoo-local-test-harness`

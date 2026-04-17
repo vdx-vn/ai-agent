@@ -30,3 +30,18 @@ Set these values for your environment before using the skill library:
 This library was authored against:
 - Odoo documentation branch <ODOO_SERIES>
 - Odoo Community source branch <ODOO_SERIES>
+
+## Local test harness config
+
+For each Odoo project, keep the local base test command in `.claude/settings.local.json`:
+
+```json
+{
+  "env": {
+    "ODOO_TEST_BASE_CMD": "/path/to/python /path/to/odoo-bin -c /path/to/odoo.conf"
+  }
+}
+```
+
+`odoo-local-test-harness` treats this as the immutable base command, then appends `-d`, `--test-tags`, `--test-enable`, `-i` or `-u`, and `--stop-after-init` safely.
+Keep this file local and uncommitted.

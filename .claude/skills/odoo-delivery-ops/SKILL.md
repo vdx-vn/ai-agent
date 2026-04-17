@@ -1,6 +1,6 @@
 ---
 name: odoo-delivery-ops
-description: "Guide Odoo CLI and runtime operations, including odoo-bin flags, module update and install semantics, worker settings, and Odoo.sh stage behavior. Use when the primary question is command semantics or environment mechanics, not release readiness."
+description: "Guide Odoo CLI and runtime operations, including odoo-bin flags, module update and install semantics, worker settings, and Odoo.sh stage behavior. Compose with `odoo-local-test-harness` when a local project-specific base test command is part of the answer."
 ---
 
 # Purpose
@@ -49,11 +49,13 @@ Use this skill only when the primary requested output is command, flag, worker, 
 - If the user asks whether the change is ready to ship, hand off to `odoo-ship`.
 - If schema or data evolution is central, hand off to `odoo-upgrade-migration`.
 - If test evidence is still missing, compose with `odoo-test`.
+- If the answer depends on a project-local base Odoo test command or shared local cleanup harness, compose with `odoo-local-test-harness`.
 
 # Compose with sibling skills
 - `odoo-ship`
 - `odoo-test`
 - `odoo-upgrade-migration`
+- `odoo-local-test-harness`
 
 # References
 - Read `references/overview.md` first for scope, anchors, and pairings.
