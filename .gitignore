@@ -2,7 +2,8 @@
 *.zip
 AGENTS.md
 .idea
-.worktrees/
 .claude/settings.local.json
 .claude/odoo-skill-paths.json
+
+.obsidian
 
