@@ -20,6 +20,7 @@ Operational mechanics guidance covering commands, flags, environment behavior, a
 - Call out dangerous module reinit or update behavior.
 - Mention worker and cron implications where relevant.
 - Keep environment-specific cautions explicit.
+- Compose with `odoo-local-test-harness` when local runtime guidance depends on a project-specific `ODOO_TEST_BASE_CMD`.
 
 ## Key docs anchors
 - `content/developer/reference/cli.rst`
