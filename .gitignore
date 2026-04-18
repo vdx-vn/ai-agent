@@ -4,6 +4,7 @@ AGENTS.md
 .idea
 .claude/settings.local.json
 .claude/odoo-skill-paths.json
+.worktrees/
 
 .obsidian
 
