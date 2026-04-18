@@ -14,6 +14,7 @@ dependencies = [
 [project.scripts]
 odoo-skills-verify = "tooling.cli:verify_main"
 odoo-skills-build = "tooling.cli:build_main"
+odoo-skills-smoke-install = "tooling.cli:smoke_install_main"
 
 [tool.setuptools.packages.find]
 include = ["tooling*"]

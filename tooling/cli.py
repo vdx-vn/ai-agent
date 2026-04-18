@@ -6,6 +6,7 @@ import sys
 from pathlib import Path
 
 from tooling.build_plugin import build_marketplace
+from tooling.smoke_install import smoke_install
 from tooling.validate_plugin import validate_plugin
 
 
@@ -39,17 +40,24 @@ def build_main() -> int:
     return 0
 
 
+def smoke_install_main() -> int:
+    return smoke_install()
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="odoo-skills")
     subparsers = parser.add_subparsers(dest="command")
     subparsers.add_parser("verify")
     subparsers.add_parser("build")
+    subparsers.add_parser("smoke-install")
 
     args = parser.parse_args(argv)
     if args.command == "verify":
         return verify_main()
     if args.command == "build":
         return build_main()
+    if args.command == "smoke-install":
+        return smoke_install_main()
 
     parser.print_help()
     return 1
