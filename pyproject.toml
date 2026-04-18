@@ -11,5 +11,8 @@ dependencies = [
   "PyYAML>=6.0",
 ]
 
+[project.scripts]
+odoo-skills-verify = "tooling.cli:verify_main"
+
 [tool.setuptools.packages.find]
 include = ["tooling*"]
