@@ -6,6 +6,8 @@ import unittest
 from pathlib import Path
 from unittest.mock import call, patch
 
+sys.dont_write_bytecode = True
+
 sys.path.insert(
     0,
     str(

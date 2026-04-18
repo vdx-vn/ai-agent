@@ -14,7 +14,7 @@ class OdooLocalTestHarnessDocsTests(unittest.TestCase):
         self.assertIn("ODOO_TEST_BASE_CMD", harness_text)
         self.assertIn("odoo-test", harness_text)
         self.assertIn("odoo-delivery-ops", harness_text)
-        self.assertIn("## Output contract", harness_text)
+        self.assertIn("# Output contract", harness_text)
         self.assertIn("references/overview.md", harness_text)
 
         overview_text = overview.read_text()
