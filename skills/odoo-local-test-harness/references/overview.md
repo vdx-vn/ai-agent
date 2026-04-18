@@ -1,13 +1,13 @@
 # Overview
 
 Paths below are relative to:
-- Docs repo: `<ODOO_DOCS_ROOT>`
-- Source repo: `<ODOO_SOURCE_ROOT>`
+- Docs tree: `current Odoo docs tree`
+- Source tree: `current Odoo CE source tree`
 
 ## Primary routing rule
 Use this skill when the task depends on a project-local Odoo test command or shared local cleanup behavior. If the primary output is current-change validation evidence, compose with `odoo-test`. If the primary output is only CLI semantics, compose with `odoo-delivery-ops`.
 
-Replace the placeholders above with your local repo paths. All anchors below are relative to those roots. See `../../odoo-paths.md` for shared setup.
+Treat docs anchors as relative to the current Odoo docs tree and source anchors as relative to the current Odoo CE source tree. See `../../odoo-paths.md` for shared setup.
 
 ## Scope
 Provide a shared local harness for multi-project Odoo test execution where each project keeps its own `ODOO_TEST_BASE_CMD` and the harness owns appended runtime flags plus shared cleanup behavior.

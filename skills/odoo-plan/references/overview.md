@@ -1,13 +1,13 @@
 # Overview
 
 Paths below are relative to:
-- Docs repo: `<ODOO_DOCS_ROOT>`
-- Source repo: `<ODOO_SOURCE_ROOT>`
+- Docs tree: `current Odoo docs tree`
+- Source tree: `current Odoo CE source tree`
 
 ## Primary routing rule
 Use this skill only when the user wants a plan artifact. If the user wants a risk brief, use `odoo-think`. If the user wants code edits, use `odoo-build`.
 
-Replace the placeholders above with your local repo paths. All anchors below are relative to those roots. See `../../odoo-paths.md` for shared setup.
+Treat docs anchors as relative to the current Odoo docs tree and source anchors as relative to the current Odoo CE source tree. See `../../odoo-paths.md` for shared setup.
 
 ## Scope
 Convert an Odoo request into an execution plan with files, modules, acceptance criteria, validation, rollout notes, and unresolved decisions.

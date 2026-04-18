@@ -42,7 +42,7 @@ Use this skill only when the user wants release readiness or rollout sequencing.
 
 # Guardrails
 - Stay inside this sprint-phase responsibility; do not absorb neighboring tasks.
-- Prefer Odoo <ODOO_MAJOR_VERSION> docs for functional rules and Odoo CE <ODOO_MAJOR_VERSION> source for implementation truth.
+- Prefer current Odoo docs for functional rules and current Odoo CE source for implementation truth.
 - Call out docs or source mismatches instead of hiding them.
 - Name permissions impact, migration impact, and cross-app modules whenever relevant.
 - Name rollback or staging risk whenever release or data impact exists.

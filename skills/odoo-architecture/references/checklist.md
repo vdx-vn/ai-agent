@@ -13,7 +13,7 @@
 - [ ] Name upgrade and test implications of placement.
 
 ## Production readiness
-- [ ] Anchor the answer to Odoo <ODOO_MAJOR_VERSION> docs and current source paths.
+- [ ] Anchor the answer to current Odoo docs and current source paths.
 - [ ] Separate this skill from the nearest neighbor skill explicitly.
 - [ ] Name cross-app, security, or accounting effects when relevant.
 - [ ] Redirect to task skills if the user needs workflow execution.

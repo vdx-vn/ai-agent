@@ -1,13 +1,13 @@
 # Overview
 
 Paths below are relative to:
-- Docs repo: `<ODOO_DOCS_ROOT>`
-- Source repo: `<ODOO_SOURCE_ROOT>`
+- Docs tree: `current Odoo docs tree`
+- Source tree: `current Odoo CE source tree`
 
 ## Primary routing rule
 Use this skill only when the user wants release readiness or rollout sequencing. If the user needs CLI flag semantics or environment mechanics, hand off to `odoo-delivery-ops`. If the primary issue is data or schema evolution, compose with `odoo-upgrade-migration`.
 
-Replace the placeholders above with your local repo paths. All anchors below are relative to those roots. See `../../odoo-paths.md` for shared setup.
+Treat docs anchors as relative to the current Odoo docs tree and source anchors as relative to the current Odoo CE source tree. See `../../odoo-paths.md` for shared setup.
 
 ## Scope
 Prepare release readiness for Odoo changes, including go or no-go criteria, staging checks, rollout sequencing, rollback considerations, and production-facing cautions.
