@@ -1,0 +1,16 @@
+{
+  "name": "odoo-skills-dev",
+  "owner": {"name": "TruongPX"},
+  "metadata": {
+    "description": "Local development marketplace for the odoo-skills Claude Code plugin",
+    "pluginRoot": "./"
+  },
+  "plugins": [
+    {
+      "name": "odoo-skills",
+      "source": "./",
+      "description": "Odoo-focused Claude Code skill library",
+      "version": "1.0.0"
+    }
+  ]
+}
