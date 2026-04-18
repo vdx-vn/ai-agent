@@ -5,6 +5,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+from tooling.build_plugin import build_marketplace
 from tooling.validate_plugin import validate_plugin
 
 
@@ -32,14 +33,23 @@ def verify_main() -> int:
     return run_verify(root)
 
 
+def build_main() -> int:
+    root = Path(__file__).resolve().parents[1]
+    build_marketplace(root, root / "dist" / "marketplace")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(prog="odoo-skills-verify")
+    parser = argparse.ArgumentParser(prog="odoo-skills")
     subparsers = parser.add_subparsers(dest="command")
     subparsers.add_parser("verify")
+    subparsers.add_parser("build")
 
     args = parser.parse_args(argv)
     if args.command == "verify":
         return verify_main()
+    if args.command == "build":
+        return build_main()
 
     parser.print_help()
     return 1
