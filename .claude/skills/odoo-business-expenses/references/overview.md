@@ -1,13 +1,13 @@
 # Overview
 
 Paths below are relative to:
-- Docs repo: `<ODOO_DOCS_ROOT>`
-- Source repo: `<ODOO_SOURCE_ROOT>`
+- Docs repo: current Odoo documentation repository checkout
+- Source repo: current Odoo CE source repository checkout
 
 ## Primary routing rule
 Use this skill only when the primary business entrypoint is expense claim, expense sheet, reimbursement, or expense posting. If the entrypoint is employee contract, attendance, time off, or payroll prerequisite, use `odoo-business-hr`.
 
-Replace the placeholders above with your local repo paths. All anchors below are relative to those roots. See `../../odoo-paths.md` for shared setup.
+Set both roots to your local current Odoo and current Odoo CE checkouts. All anchors below are relative to those roots. See `../../odoo-paths.md` for shared setup.
 
 ## Scope
 Explain Odoo expense flow from submission through approval, posting, and reimbursement, including HR and accounting links.

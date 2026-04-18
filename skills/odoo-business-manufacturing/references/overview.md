@@ -1,13 +1,13 @@
 # Overview
 
 Paths below are relative to:
-- Docs repo: `<ODOO_DOCS_ROOT>`
-- Source repo: `<ODOO_SOURCE_ROOT>`
+- Docs repo: current Odoo documentation repository checkout
+- Source repo: current Odoo CE source repository checkout
 
 ## Primary routing rule
 Use this skill only when the primary business entrypoint is BoM, MO, work center, routing, subcontracting, or production planning. If the entrypoint is warehouse documents or routes without production-control logic, use `odoo-business-inventory`.
 
-Replace the placeholders above with your local repo paths. All anchors below are relative to those roots. See `../../odoo-paths.md` for shared setup.
+Set both roots to your local current Odoo and current Odoo CE checkouts. All anchors below are relative to those roots. See `../../odoo-paths.md` for shared setup.
 
 ## Scope
 Explain Odoo manufacturing process and its cross-app behavior across stock, procurement, sales, and accounting.

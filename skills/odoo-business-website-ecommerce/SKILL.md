@@ -42,8 +42,8 @@ Use this skill only when the primary entrypoint is a public page, public form, p
 
 # Guardrails
 - Answer only the domain or technical question this skill owns.
-- Use Odoo <ODOO_MAJOR_VERSION> docs as guidance and Odoo CE <ODOO_MAJOR_VERSION> source as runtime truth.
-- Do not answer from generic ERP intuition; anchor to Odoo <ODOO_MAJOR_VERSION> terms, addons, and bridge modules.
+- Use current Odoo docs as guidance and current Odoo CE source as runtime truth.
+- Do not answer from generic ERP intuition; anchor to current Odoo terms, addons, and bridge modules.
 - Highlight cross-app, accounting, or security effects when they materially change the answer.
 - Keep public or portal customer journey here. Keep template, xpath, and other UI mechanics with `odoo-view-ui` unless they directly change process meaning.
 - Redirect to task skills when the user needs planning, building, testing, or shipping.

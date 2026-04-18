@@ -1,13 +1,13 @@
 # Overview
 
 Paths below are relative to:
-- Docs repo: `<ODOO_DOCS_ROOT>`
-- Source repo: `<ODOO_SOURCE_ROOT>`
+- Docs repo: current Odoo documentation repository checkout
+- Source repo: current Odoo CE source repository checkout
 
 ## Primary routing rule
 Use this skill only when the primary business entrypoint is lead, opportunity, quotation, salesperson action, or backend sales order. If the entrypoint is page, form, cart, checkout, or portal, use `odoo-business-website-ecommerce`.
 
-Replace the placeholders above with your local repo paths. All anchors below are relative to those roots. See `../../odoo-paths.md` for shared setup.
+Set both roots to your local current Odoo and current Odoo CE checkouts. All anchors below are relative to those roots. See `../../odoo-paths.md` for shared setup.
 
 ## Scope
 Explain Odoo backend sales lifecycle and the cross-app links from CRM through quotation, order, delivery, and invoicing.
