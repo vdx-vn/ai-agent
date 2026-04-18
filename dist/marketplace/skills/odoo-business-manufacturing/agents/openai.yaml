@@ -1,0 +1,7 @@
+interface:
+  display_name: "Odoo Business Manufacturing"
+  short_description: "MRP and production flows"
+  default_prompt: "Use $odoo-business-manufacturing to manufacturing process map from a bom or mo entrypoint, with operations, stock effects, and downstream cross-app impacts."
+
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Odoo ORM Modeling"
+  short_description: "Models and field patterns"
+  default_prompt: "Use $odoo-orm-modeling to orm modeling guidance with field or method recommendations and anti-pattern checks."
+
+policy:
+  allow_implicit_invocation: true

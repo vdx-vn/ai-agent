@@ -1,0 +1,7 @@
+interface:
+  display_name: "Odoo Testing Reference"
+  short_description: "Odoo test framework guidance"
+  default_prompt: "Use $odoo-testing-reference to framework and test-authoring guidance for future or current test design, without claiming current-change readiness."
+
+policy:
+  allow_implicit_invocation: true

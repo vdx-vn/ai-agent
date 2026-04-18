@@ -1,0 +1,7 @@
+interface:
+  display_name: "Odoo Security"
+  short_description: "ACL, rules, and auth safety"
+  default_prompt: "Use $odoo-security to security assessment with trust boundaries, permission checks, exposure risks, and required safeguards."
+
+policy:
+  allow_implicit_invocation: true

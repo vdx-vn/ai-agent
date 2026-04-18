@@ -1,0 +1,11 @@
+{
+  "name": "odoo-skills",
+  "version": "1.0.0",
+  "description": "Claude Code plugin that packages Odoo-focused skills for development and delivery workflows.",
+  "license": "Apache-2.0",
+  "keywords": [
+    "odoo",
+    "claude-code",
+    "skills"
+  ]
+}

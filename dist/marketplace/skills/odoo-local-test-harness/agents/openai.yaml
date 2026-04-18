@@ -1,0 +1,7 @@
+interface:
+  display_name: "Odoo Local Test Harness"
+  short_description: "Local multi-project Odoo test harness"
+  default_prompt: "Use $odoo-local-test-harness when a local Odoo project needs its project-specific base test command from ODOO_TEST_BASE_CMD plus shared database or filestore cleanup and appended runtime test flags."
+
+policy:
+  allow_implicit_invocation: true

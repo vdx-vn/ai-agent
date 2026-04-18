@@ -1,0 +1,7 @@
+interface:
+  display_name: "Odoo Architecture"
+  short_description: "Module and dependency design"
+  default_prompt: "Use $odoo-architecture to architecture recommendation with target addon, dependency rationale, and bridge-module guidance."
+
+policy:
+  allow_implicit_invocation: true
