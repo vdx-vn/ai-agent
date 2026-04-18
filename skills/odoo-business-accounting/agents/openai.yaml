@@ -1,0 +1,7 @@
+interface:
+  display_name: "Odoo Business Accounting"
+  short_description: "Invoices, taxes, and moves"
+  default_prompt: "Use $odoo-business-accounting to accounting process map with finance documents, posting impacts, and cross-app implications."
+
+policy:
+  allow_implicit_invocation: true

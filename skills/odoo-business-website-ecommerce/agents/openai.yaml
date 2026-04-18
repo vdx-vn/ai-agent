@@ -1,0 +1,7 @@
+interface:
+  display_name: "Odoo Business Website Ecommerce"
+  short_description: "Website and cart-to-order flow"
+  default_prompt: "Use $odoo-business-website-ecommerce to website and ecommerce process map from a public or portal entrypoint, with customer journey, downstream sales flow, and cross-app impacts."
+
+policy:
+  allow_implicit_invocation: true

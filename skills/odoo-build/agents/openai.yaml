@@ -1,0 +1,7 @@
+interface:
+  display_name: "Odoo Build"
+  short_description: "Implement Odoo changes"
+  default_prompt: "Use $odoo-build to concrete in-scope code or configuration changes plus noted assumptions and follow-up validation needs."
+
+policy:
+  allow_implicit_invocation: true

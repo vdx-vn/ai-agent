@@ -1,0 +1,7 @@
+interface:
+  display_name: "Odoo Business Purchase"
+  short_description: "Purchase lifecycle and links"
+  default_prompt: "Use $odoo-business-purchase to purchase process map with entrypoint, downstream documents, roles, and cross-app impacts."
+
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Odoo Reflect"
+  short_description: "Retrospective and lessons"
+  default_prompt: "Use $odoo-reflect to retrospective with lessons, remaining gaps, and concrete follow-up actions."
+
+policy:
+  allow_implicit_invocation: true

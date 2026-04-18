@@ -1,0 +1,7 @@
+interface:
+  display_name: "Odoo Business HR"
+  short_description: "Employees and HR process links"
+  default_prompt: "Use $odoo-business-hr to hr process map from a workforce entrypoint, with employee lifecycle touchpoints and cross-app dependencies."
+
+policy:
+  allow_implicit_invocation: true
