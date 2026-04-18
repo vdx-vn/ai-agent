@@ -1,27 +1,26 @@
-# odoo-skills publish checklist
+# Publish Checklist for `odoo-skills`
 
-Use this checklist before publishing the `odoo-skills` plugin.
+## Before tagging
+- Run `python3 -m pip install -e .`
+- Run `odoo-skills-verify`
+- Run `odoo-skills-build`
+- Run `odoo-skills-smoke-install`
+- Run `claude --plugin-dir .`
+- Run `claude plugin validate dist/marketplace`
 
-## Scope confirmation
-- [ ] Changes are limited to approved release scope for this iteration.
-- [ ] Business skill frontmatter descriptions are normalized to approved wording.
-- [ ] Business skill docs contain no unresolved release placeholders or TODO/TBD markers.
+## Marketplace metadata
+- Confirm `.claude-plugin/plugin.json` version bumped
+- Confirm `.claude-plugin/marketplace.json` plugin version matches
+- Confirm plugin name is `odoo-skills`
+- Confirm marketplace name is `odoo-skills-dev`
 
-## Required verification commands
-- [ ] `python3 -m unittest tests.unit.test_business_skill_contracts -v`
-- [ ] `python3 -m unittest tests.unit.test_validate_frontmatter tests.unit.test_validate_release tests.unit.test_verify_command -v`
-- [ ] `python3 -m venv /tmp/odoo-skills-task10-venv`
-- [ ] `/tmp/odoo-skills-task10-venv/bin/pip install -e .`
-- [ ] `/tmp/odoo-skills-task10-venv/bin/odoo-skills-verify`
-- [ ] `claude plugin validate .`
+## Public docs
+- Confirm `README.md` install instructions still work
+- Confirm `LICENSE` is Apache-2.0
+- Confirm `docs/reference/skill-inventory.json` matches the root `skills/` tree exactly
 
-## Publish readiness checks
-- [ ] `skills/` and `.claude/skills/` business skill content are aligned.
-- [ ] `docs/release/publish.md` exists and is up to date.
-- [ ] Working tree is reviewed and contains only intended changes.
-- [ ] Any `__pycache__` created during verification has been removed.
-
-## Evidence to capture in release note or handoff
-- [ ] Command outputs for all required verification commands.
-- [ ] Final status recorded as `DONE`, `DONE_WITH_CONCERNS`, `NEEDS_CONTEXT`, or `BLOCKED`.
-- [ ] Any blockers or concerns documented with impact and next action.
+## Manual spot checks
+- `/odoo-skills:odoo-think`
+- `/odoo-skills:odoo-build`
+- `/odoo-skills:odoo-test`
+- `/odoo-skills:odoo-business-sales`

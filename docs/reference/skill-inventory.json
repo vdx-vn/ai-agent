@@ -37,97 +37,97 @@
   },
   {
     "name": "odoo-architecture",
-    "family": "technical-reference",
+    "family": "technical",
     "artifact": "Architecture recommendation with target addon, dependency rationale, and bridge-module guidance."
   },
   {
     "name": "odoo-orm-modeling",
-    "family": "technical-reference",
+    "family": "technical",
     "artifact": "ORM modeling guidance with field or method recommendations and anti-pattern checks."
   },
   {
     "name": "odoo-view-ui",
-    "family": "technical-reference",
+    "family": "technical",
     "artifact": "UI guidance with view strategy, inheritance notes, and action or menu recommendations."
   },
   {
     "name": "odoo-security",
-    "family": "technical-reference",
+    "family": "technical",
     "artifact": "Security assessment with trust boundaries, permission checks, exposure risks, and required safeguards."
   },
   {
     "name": "odoo-testing-reference",
-    "family": "technical-reference",
+    "family": "technical",
     "artifact": "Framework and test-authoring guidance for future or current test design, without claiming current-change readiness."
   },
   {
     "name": "odoo-performance",
-    "family": "technical-reference",
+    "family": "technical",
     "artifact": "Performance guidance with hotspot hypotheses, optimization levers, and validation ideas."
   },
   {
     "name": "odoo-integration-api",
-    "family": "technical-reference",
+    "family": "technical",
     "artifact": "Integration design guidance with auth model, data flow, safety considerations, and operational constraints."
   },
   {
     "name": "odoo-upgrade-migration",
-    "family": "technical-reference",
+    "family": "technical",
     "artifact": "Migration strategy with data-preservation plan, script notes, rollout order, and validation needs."
   },
   {
     "name": "odoo-delivery-ops",
-    "family": "technical-reference",
+    "family": "technical",
     "artifact": "Operational mechanics guidance covering commands, flags, environment behavior, and runtime cautions."
   },
   {
     "name": "odoo-business-sales",
-    "family": "business-reference",
+    "family": "business",
     "artifact": "Sales process map from a backend sales entrypoint, with downstream documents, roles, and cross-app impacts."
   },
   {
     "name": "odoo-business-purchase",
-    "family": "business-reference",
+    "family": "business",
     "artifact": "Purchase process map with entrypoint, downstream documents, roles, and cross-app impacts."
   },
   {
     "name": "odoo-business-inventory",
-    "family": "business-reference",
+    "family": "business",
     "artifact": "Inventory process map from a warehouse or stock-document entrypoint, with route logic, valuation, and cross-app effects."
   },
   {
     "name": "odoo-business-manufacturing",
-    "family": "business-reference",
+    "family": "business",
     "artifact": "Manufacturing process map from a BoM or MO entrypoint, with operations, stock effects, and downstream cross-app impacts."
   },
   {
     "name": "odoo-business-accounting",
-    "family": "business-reference",
+    "family": "business",
     "artifact": "Accounting process map with finance documents, posting impacts, and cross-app implications."
   },
   {
     "name": "odoo-business-hr",
-    "family": "business-reference",
+    "family": "business",
     "artifact": "HR process map from a workforce entrypoint, with employee lifecycle touchpoints and cross-app dependencies."
   },
   {
     "name": "odoo-business-timesheet-project-services",
-    "family": "business-reference",
+    "family": "business",
     "artifact": "Service-delivery process map with task, time, billing, and cross-app impacts."
   },
   {
     "name": "odoo-business-expenses",
-    "family": "business-reference",
+    "family": "business",
     "artifact": "Expense process map from an expense-claim entrypoint, with states, roles, accounting impacts, and related HR links."
   },
   {
     "name": "odoo-business-website-ecommerce",
-    "family": "business-reference",
+    "family": "business",
     "artifact": "Website and ecommerce process map from a public or portal entrypoint, with customer journey, downstream sales flow, and cross-app impacts."
   },
   {
     "name": "odoo-local-test-harness",
-    "family": "technical-reference",
+    "family": "technical",
     "artifact": "Operational mechanics guidance covering local Odoo test harness setup and command construction."
     }
   ]
