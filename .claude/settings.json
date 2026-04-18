@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \".claude/skills/scripts/suggest_odoo_skill_setup.py\" --mode session-start",
+            "command": "python3 \"tooling/materialization/suggest_odoo_skill_setup.py\" --mode session-start",
             "timeout": 5
           }
         ]
@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \".claude/skills/scripts/suggest_odoo_skill_setup.py\" --mode prompt-submit",
+            "command": "python3 \"tooling/materialization/suggest_odoo_skill_setup.py\" --mode prompt-submit",
             "timeout": 5
           }
         ]
