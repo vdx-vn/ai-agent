@@ -18,7 +18,7 @@ If the primary output is only CLI semantics, compose with `odoo-delivery-ops`.
 - a local Odoo project has its own base command and config path
 - the user provides or updates a project-local `ODOO_TEST_BASE_CMD`
 - tests need database names, test tags, install or update flags, or `--stop-after-init` appended safely
-- local test setup must clean disposable databases or matching filestore state before or after runs
+- local test setup must clean disposable databases or matching filestore state automatically after runs, with optional pre-run cleanup
 
 # Do not use this skill when
 - the task is only about Odoo testing primitives or framework selection
@@ -28,7 +28,7 @@ If the primary output is only CLI semantics, compose with `odoo-delivery-ops`.
 # Required inputs
 - current repository root and local Odoo project context
 - `.claude/settings.local.json` or the resolved `ODOO_TEST_BASE_CMD` value
-- requested database name, test tags, install or update targets, and whether cleanup or dry-run is needed
+- requested database name, test tags, install or update targets, and whether pre-run cleanup or dry-run is needed
 
 ## Config contract
 Store per-project base command in `.claude/settings.local.json`:
@@ -51,7 +51,7 @@ Do not pre-configure runtime-managed flags in `ODOO_TEST_BASE_CMD`; the harness 
 2. Read `references/overview.md` for routing, boundaries, and local execution anchors.
 3. Parse it into argv through `scripts/run_odoo_test.py`, not shell concatenation.
 4. Normalize `-d`, `--test-tags`, `--test-enable`, `-i`, `-u`, and `--stop-after-init`.
-5. Run shared cleanup through `scripts/delete_unused_odoo_db.py` when the flow uses a disposable local database.
+5. Run optional pre-run cleanup plus automatic post-run cleanup through `scripts/delete_unused_odoo_db.py` when the flow uses a disposable local database.
 6. Return the resolved base command source, appended arguments, cleanup action, and boundary decision.
 
 # Output contract

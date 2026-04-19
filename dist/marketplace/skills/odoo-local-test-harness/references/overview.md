@@ -20,7 +20,8 @@ A local execution-oriented answer that identifies the configured base command so
 - Confirm the base command already includes `-c` or `--config`.
 - Confirm `ODOO_TEST_BASE_CMD` does not already include runtime-managed flags such as `-d`, `--test-tags`, `--test-enable`, `-i`, `-u`, or `--stop-after-init`.
 - Preserve the configured config path from the base command.
-- Use shared cleanup only for disposable local database flows.
+- Use `--cleanup-before` only when a disposable local database must be cleared before the run.
+- Use shared automatic post-run cleanup only for disposable local database flows.
 - In dry-run mode, print resolved and final commands but skip cleanup execution and subprocess execution.
 
 ## Key docs anchors
