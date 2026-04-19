@@ -1,3 +1,4 @@
+import io
 import subprocess
 import sys
 import tempfile
@@ -125,26 +126,24 @@ class RunOdooTestTests(unittest.TestCase):
 
     @patch("run_odoo_test.cleanup_database")
     @patch("run_odoo_test.subprocess.run")
-    def test_main_runs_cleanup_before_and_after(self, run_mock, cleanup_mock) -> None:
+    def test_main_runs_automatic_cleanup_after_success(self, run_mock, cleanup_mock) -> None:
         exit_code = run_odoo_test.main(
             [
                 "--db",
                 "tmp_odoo_test",
                 "--test-tags",
                 "/sale",
-                "--cleanup-before",
-                "--cleanup-after",
             ],
             env={
                 "ODOO_TEST_BASE_CMD": "python3 /opt/odoo/odoo-bin -c /tmp/odoo.conf"
             },
         )
+
         self.assertEqual(exit_code, 0)
-        cleanup_mock.assert_has_calls(
-            [
-                call(db_name="tmp_odoo_test", config_path=Path("/tmp/odoo.conf"), dry_run=False),
-                call(db_name="tmp_odoo_test", config_path=Path("/tmp/odoo.conf"), dry_run=False),
-            ]
+        cleanup_mock.assert_called_once_with(
+            db_name="tmp_odoo_test",
+            config_path=Path("/tmp/odoo.conf"),
+            dry_run=False,
         )
         run_mock.assert_called_once_with(
             [
@@ -163,6 +162,41 @@ class RunOdooTestTests(unittest.TestCase):
         )
 
     @patch("run_odoo_test.cleanup_database")
+    @patch("run_odoo_test.subprocess.run")
+    def test_main_runs_cleanup_before_and_automatic_after(self, run_mock, cleanup_mock) -> None:
+        exit_code = run_odoo_test.main(
+            [
+                "--db",
+                "tmp_odoo_test",
+                "--cleanup-before",
+            ],
+            env={
+                "ODOO_TEST_BASE_CMD": "python3 /opt/odoo/odoo-bin -c /tmp/odoo.conf"
+            },
+        )
+
+        self.assertEqual(exit_code, 0)
+        cleanup_mock.assert_has_calls(
+            [
+                call(db_name="tmp_odoo_test", config_path=Path("/tmp/odoo.conf"), dry_run=False),
+                call(db_name="tmp_odoo_test", config_path=Path("/tmp/odoo.conf"), dry_run=False),
+            ]
+        )
+        self.assertEqual(cleanup_mock.call_count, 2)
+        run_mock.assert_called_once_with(
+            [
+                "python3",
+                "/opt/odoo/odoo-bin",
+                "-c",
+                "/tmp/odoo.conf",
+                "-d",
+                "tmp_odoo_test",
+                "--stop-after-init",
+            ],
+            check=True,
+        )
+
+    @patch("run_odoo_test.cleanup_database")
     @patch("run_odoo_test.subprocess.run", side_effect=subprocess.CalledProcessError(returncode=1, cmd=["odoo"]))
     def test_main_runs_cleanup_after_when_subprocess_fails(self, run_mock, cleanup_mock) -> None:
         with self.assertRaises(subprocess.CalledProcessError):
@@ -170,7 +204,6 @@ class RunOdooTestTests(unittest.TestCase):
                 [
                     "--db",
                     "tmp_odoo_test",
-                    "--cleanup-after",
                 ],
                 env={
                     "ODOO_TEST_BASE_CMD": "python3 /opt/odoo/odoo-bin -c /tmp/odoo.conf"
@@ -183,6 +216,85 @@ class RunOdooTestTests(unittest.TestCase):
             dry_run=False,
         )
         run_mock.assert_called_once()
+
+    @patch("run_odoo_test.cleanup_database", side_effect=RuntimeError("cleanup failed"))
+    @patch("run_odoo_test.subprocess.run", side_effect=subprocess.CalledProcessError(returncode=1, cmd=["odoo"]))
+    def test_main_preserves_subprocess_error_when_cleanup_also_fails(self, run_mock, cleanup_mock) -> None:
+        stderr = io.StringIO()
+
+        with patch("sys.stderr", stderr):
+            with self.assertRaises(subprocess.CalledProcessError):
+                run_odoo_test.main(
+                    [
+                        "--db",
+                        "tmp_odoo_test",
+                    ],
+                    env={
+                        "ODOO_TEST_BASE_CMD": "python3 /opt/odoo/odoo-bin -c /tmp/odoo.conf"
+                    },
+                )
+
+        self.assertIn("cleanup failed", stderr.getvalue())
+        cleanup_mock.assert_called_once_with(
+            db_name="tmp_odoo_test",
+            config_path=Path("/tmp/odoo.conf"),
+            dry_run=False,
+        )
+        run_mock.assert_called_once()
+
+    @patch("run_odoo_test.cleanup_database", side_effect=RuntimeError("cleanup failed"))
+    @patch("run_odoo_test.subprocess.run", side_effect=KeyboardInterrupt())
+    def test_main_preserves_keyboard_interrupt_when_cleanup_also_fails(self, run_mock, cleanup_mock) -> None:
+        with self.assertRaises(KeyboardInterrupt):
+            run_odoo_test.main(
+                [
+                    "--db",
+                    "tmp_odoo_test",
+                ],
+                env={
+                    "ODOO_TEST_BASE_CMD": "python3 /opt/odoo/odoo-bin -c /tmp/odoo.conf"
+                },
+            )
+
+        cleanup_mock.assert_called_once_with(
+            db_name="tmp_odoo_test",
+            config_path=Path("/tmp/odoo.conf"),
+            dry_run=False,
+        )
+        run_mock.assert_called_once()
+
+    @patch("run_odoo_test.cleanup_database", side_effect=RuntimeError("cleanup failed"))
+    @patch("run_odoo_test.subprocess.run")
+    def test_main_surfaces_cleanup_error_when_subprocess_succeeds(self, run_mock, cleanup_mock) -> None:
+        with self.assertRaises(RuntimeError) as exc:
+            run_odoo_test.main(
+                [
+                    "--db",
+                    "tmp_odoo_test",
+                ],
+                env={
+                    "ODOO_TEST_BASE_CMD": "python3 /opt/odoo/odoo-bin -c /tmp/odoo.conf"
+                },
+            )
+
+        self.assertIn("cleanup failed", str(exc.exception))
+        cleanup_mock.assert_called_once_with(
+            db_name="tmp_odoo_test",
+            config_path=Path("/tmp/odoo.conf"),
+            dry_run=False,
+        )
+        run_mock.assert_called_once_with(
+            [
+                "python3",
+                "/opt/odoo/odoo-bin",
+                "-c",
+                "/tmp/odoo.conf",
+                "-d",
+                "tmp_odoo_test",
+                "--stop-after-init",
+            ],
+            check=True,
+        )
 
     @patch("run_odoo_test.cleanup_database")
     @patch("run_odoo_test.subprocess.run")
