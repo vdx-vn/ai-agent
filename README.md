@@ -4,10 +4,10 @@ Public Claude Code plugin for Odoo-focused skills.
 
 ## Local development
 
-Run Claude Code with this repository as a local plugin source:
+Run Claude Code with this repository as a local plugin source, plus default claude plugin sources:
 
 ```bash
-claude --plugin-dir .
+claude --plugin-dir ~/.claude/plugins --plugin-dir .
 ```
 
 ## Local marketplace install test
