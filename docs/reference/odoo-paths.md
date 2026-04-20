@@ -23,9 +23,8 @@ Set these values for your environment before using the skill library:
    `python3 .claude/skills/scripts/materialize_odoo_skill_paths.py --docs-root /path/to/odoo/documentation --source-root /path/to/odoo/source`
 3. The script will try to detect `<ODOO_SERIES>` automatically from git branch names or repo path names. If detection fails, pass `--version 18.0` or another supported series.
 4. This writes `.claude/odoo-skill-paths.json` and replaces placeholders inside this project copy.
-5. Keep local test harness base command in `.claude/settings.local.json` under `ODOO_TEST_BASE_CMD` for `odoo-local-test-harness`.
-6. Project hooks can suggest this command automatically when you start a new Odoo project or ask to set one up.
-7. If you prefer to keep placeholders, mentally substitute `<ODOO_DOCS_ROOT>` and `<ODOO_SOURCE_ROOT>` when reading skill references.
+5. Project hooks can suggest this command automatically when you start a new Odoo project or ask to set one up.
+6. If you prefer to keep placeholders, mentally substitute `<ODOO_DOCS_ROOT>` and `<ODOO_SOURCE_ROOT>` when reading skill references.
 
 ## Version target
 This library was authored against:

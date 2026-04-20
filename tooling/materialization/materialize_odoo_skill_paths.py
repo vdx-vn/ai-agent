@@ -5,6 +5,7 @@ import argparse
 import json
 import re
 import subprocess
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable
@@ -20,6 +21,15 @@ VERSION_PLACEHOLDERS = {
 TEXT_SUFFIXES = {".md", ".yaml", ".yml"}
 SERIES_RE = re.compile(r"(?<!\d)(\d{2})[._-]0(?!\d)")
 MAJOR_RE = re.compile(r"(?<!\d)(\d{2})(?!\d)")
+
+
+@dataclass(frozen=True)
+class MaterializationResult:
+    version: str
+    major_version: str
+    version_source: str
+    mode: str
+    materialized_files: list[Path]
 
 
 def parse_args() -> argparse.Namespace:
@@ -123,7 +133,7 @@ def resolve_series(args_version: str | None, docs_root: Path, source_root: Path)
 def resolve_existing_config(config_path: Path) -> dict[str, str]:
     if not config_path.exists():
         return {}
-    data = json.loads(config_path.read_text())
+    data = json.loads(config_path.read_text(encoding="utf-8"))
     return {
         "docsRoot": data.get("docsRoot", ""),
         "sourceRoot": data.get("sourceRoot", ""),
@@ -180,6 +190,8 @@ def replace_existing_materialized(
         f"Odoo CE {old_major}": f"Odoo CE {major}",
         f"Odoo {old_major}": f"Odoo {major}",
         f"branch {old_series}": f"branch {version}",
+        f"Series: {old_series}": f"Series: {version}",
+        f"Major: {old_major}": f"Major: {major}",
     }
     for old, new in phrase_replacements.items():
         if old and old in updated:
@@ -189,13 +201,7 @@ def replace_existing_materialized(
     return updated, changed
 
 
-def main() -> int:
-    args = parse_args()
-    docs_root = Path(args.docs_root).expanduser().resolve()
-    source_root = Path(args.source_root).expanduser().resolve()
-    skills_root = Path(args.skills_root).expanduser().resolve()
-    config_path = Path(args.config_path).expanduser().resolve()
-
+def validate_inputs(docs_root: Path, source_root: Path, skills_root: Path) -> None:
     if not docs_root.exists() or not docs_root.is_dir():
         raise SystemExit(f"Docs root not found or not a directory: {docs_root}")
     if not source_root.exists() or not source_root.is_dir():
@@ -203,7 +209,25 @@ def main() -> int:
     if not skills_root.exists() or not skills_root.is_dir():
         raise SystemExit(f"Skills root not found or not a directory: {skills_root}")
 
-    series, version_source = resolve_series(args.version, docs_root, source_root)
+
+def materialize_skills(
+    *,
+    docs_root: Path,
+    source_root: Path,
+    skills_root: Path,
+    config_path: Path,
+    version: str | None = None,
+    dry_run: bool = False,
+    force: bool = False,
+    extra_metadata: dict[str, object] | None = None,
+) -> MaterializationResult:
+    docs_root = docs_root.expanduser().resolve()
+    source_root = source_root.expanduser().resolve()
+    skills_root = skills_root.expanduser().resolve()
+    config_path = config_path.expanduser().resolve()
+    validate_inputs(docs_root, source_root, skills_root)
+
+    series, version_source = resolve_series(version, docs_root, source_root)
     major = major_from_series(series)
     existing = resolve_existing_config(config_path)
 
@@ -213,11 +237,11 @@ def main() -> int:
     saw_force_update = False
 
     for path in iter_text_files(skills_root):
-        text = path.read_text()
+        text = path.read_text(encoding="utf-8")
         if any(token in text for token in [*PATH_PLACEHOLDERS, *VERSION_PLACEHOLDERS]):
             saw_placeholder = True
             new_text, changed = replace_placeholders(text, str(docs_root), str(source_root), series, major)
-        elif args.force and existing:
+        elif force and existing:
             new_text, changed = replace_existing_materialized(
                 text,
                 existing,
@@ -238,20 +262,26 @@ def main() -> int:
     if not changed_files:
         if saw_placeholder:
             raise SystemExit("No writable placeholder replacements were found.")
-        if config_path.exists() and not args.force:
+        if config_path.exists() and not force:
             raise SystemExit(
                 "This skill copy already looks materialized. Re-run with --force to replace previously written paths and version phrases."
             )
         raise SystemExit("No placeholder values found. Nothing to materialize.")
 
-    if args.dry_run:
-        for path in changed_files:
-            print(path)
-        print(f"Detected Odoo version {series} from {version_source}")
-        return 0
+    mode = "dry-run" if dry_run else "force" if saw_force_update else "initial"
+    result = MaterializationResult(
+        version=series,
+        major_version=major,
+        version_source=version_source,
+        mode=mode,
+        materialized_files=changed_files,
+    )
+
+    if dry_run:
+        return result
 
     for path, content in updated_content.items():
-        path.write_text(content)
+        path.write_text(content, encoding="utf-8")
 
     config_path.parent.mkdir(parents=True, exist_ok=True)
     config = {
@@ -262,13 +292,36 @@ def main() -> int:
         "versionSource": version_source,
         "skillsRoot": str(skills_root),
         "materializedAt": datetime.now(timezone.utc).isoformat(),
-        "mode": "force" if saw_force_update else "initial",
+        "mode": mode,
+        "materializedFiles": [str(path) for path in changed_files],
     }
-    config_path.write_text(json.dumps(config, indent=2) + "\n")
+    if extra_metadata:
+        config.update(extra_metadata)
+    config_path.write_text(json.dumps(config, indent=2) + "\n", encoding="utf-8")
+    return result
 
-    print(f"Materialized {len(changed_files)} files in {skills_root}")
-    print(f"Using Odoo version {series} ({version_source})")
-    print(f"Wrote config to {config_path}")
+
+def main() -> int:
+    args = parse_args()
+    result = materialize_skills(
+        docs_root=Path(args.docs_root),
+        source_root=Path(args.source_root),
+        version=args.version,
+        skills_root=Path(args.skills_root),
+        config_path=Path(args.config_path),
+        dry_run=args.dry_run,
+        force=args.force,
+    )
+
+    if args.dry_run:
+        for path in result.materialized_files:
+            print(path)
+        print(f"Detected Odoo version {result.version} from {result.version_source}")
+        return 0
+
+    print(f"Materialized {len(result.materialized_files)} files in {Path(args.skills_root).expanduser().resolve()}")
+    print(f"Using Odoo version {result.version} ({result.version_source})")
+    print(f"Wrote config to {Path(args.config_path).expanduser().resolve()}")
     return 0
 
 

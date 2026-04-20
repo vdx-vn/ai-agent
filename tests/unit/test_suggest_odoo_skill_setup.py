@@ -1,13 +1,24 @@
+import importlib.util
 import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
 
 from tooling.materialization.materialize_odoo_skill_paths import parse_args
-from tooling.materialization.suggest_odoo_skill_setup import build_system_message
 
 
 ROOT = Path(__file__).resolve().parents[2]
+COPIED_SUGGEST_PATH = ROOT / ".claude" / "skills" / "scripts" / "suggest_odoo_skill_setup.py"
+_spec = importlib.util.spec_from_file_location("copied_suggest_odoo_skill_setup", COPIED_SUGGEST_PATH)
+assert _spec and _spec.loader
+_copied_suggest = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_copied_suggest)
+build_system_message = _copied_suggest.build_system_message
+
+COPIED_PATH_COMMAND = (
+    "python3 .claude/skills/scripts/materialize_odoo_skill_paths.py "
+    "--docs-root /path/to/odoo/documentation --source-root /path/to/odoo/source"
+)
 
 
 class SuggestOdooSkillSetupTests(unittest.TestCase):
@@ -31,7 +42,7 @@ class SuggestOdooSkillSetupTests(unittest.TestCase):
             settings,
         )
 
-    def test_setup_guidance_points_to_tooling_materialization_script(self) -> None:
+    def test_setup_guidance_points_to_copied_skill_materialization_command(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             repo_root = Path(tmp)
 
@@ -41,10 +52,31 @@ class SuggestOdooSkillSetupTests(unittest.TestCase):
                 mode="prompt-submit",
             )
 
-            self.assertIn(
+            self.assertIn(COPIED_PATH_COMMAND, message)
+            self.assertNotIn("python3 tooling/setup_local.py", message)
+            self.assertNotIn(
                 "python3 tooling/materialization/materialize_odoo_skill_paths.py",
                 message,
             )
+            self.assertIn(".claude/settings.local.json", message)
+            self.assertIn("ODOO_TEST_BASE_CMD", message)
+
+    def test_copied_path_docs_match_expected_guidance(self) -> None:
+        for doc_path in [
+            ROOT / ".claude" / "skills" / "odoo-paths.md",
+            ROOT / "docs" / "reference" / "odoo-paths.md",
+            ROOT / "docs" / "authoring" / "odoo-paths.md",
+        ]:
+            with self.subTest(doc=str(doc_path)):
+                content = doc_path.read_text(encoding="utf-8")
+                self.assertIn(COPIED_PATH_COMMAND, content)
+                self.assertNotIn("python3 tooling/setup_local.py", content)
+                self.assertNotIn(
+                    "python3 tooling/materialization/materialize_odoo_skill_paths.py",
+                    content,
+                )
+                self.assertIn(".claude/settings.local.json", content)
+                self.assertIn("ODOO_TEST_BASE_CMD", content)
 
     def test_materialize_parse_args_defaults_use_repo_claude_paths(self) -> None:
         with patch(
