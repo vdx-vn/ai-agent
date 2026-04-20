@@ -4,10 +4,14 @@ from __future__ import annotations
 import argparse
 import shutil
 import subprocess
+import sys
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+if __package__ in {None, ""}:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from tooling.build_plugin import build_marketplace
 from tooling.local_setup_common import (

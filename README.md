@@ -19,7 +19,7 @@ Claude Code does not need these skills to live in your Odoo project or in `~/.cl
 
 Recommended setup works like this:
 1. clone this repository anywhere convenient
-2. run `tooling/setup_local.py`
+2. run `python3 -m tooling.setup_local` from repo root
 3. the script builds runtime bundle at `dist/marketplace/`
 4. the script registers that bundle as a local Claude marketplace
 5. the script installs `odoo-skills` into Claude Code from that marketplace
@@ -38,7 +38,7 @@ Clone this repository anywhere convenient, then run the guided setup from repo r
 ```bash
 git clone git@github.com:vdx-vn/ai-agent
 cd ai-agent
-python3 tooling/setup_local.py
+python3 -m tooling.setup_local
 ```
 
 You do not clone this repository into your Odoo project.
@@ -70,7 +70,7 @@ Your custom addons repository can live anywhere and is usually referenced throug
 ### Non-interactive example
 
 ```bash
-python3 tooling/setup_local.py \
+python3 -m tooling.setup_local \
   --docs-root /path/to/odoo/documentation \
   --source-root /path/to/odoo/source \
   --version 18.0 \
@@ -84,7 +84,7 @@ python3 tooling/setup_local.py \
 If your project code lives outside Odoo core, keep using Odoo core for `--source-root` and your project config for `--config`:
 
 ```bash
-python3 tooling/setup_local.py \
+python3 -m tooling.setup_local \
   --docs-root /home/xmars/src/odoo/documentation \
   --source-root /home/xmars/src/odoo/odoo-community \
   --version 18.0 \
@@ -126,7 +126,7 @@ odoo-skills project-setup --force
 
 ## What setup changes
 
-`tooling/setup_local.py` changes files in this repository and Claude plugin state.
+`tooling.setup_local` changes files in this repository and Claude plugin state.
 
 It writes or updates:
 - `.claude/settings.local.json`
@@ -191,7 +191,7 @@ Business reference skills:
 Remove local setup and installed local plugin:
 
 ```bash
-python3 tooling/setup_local.py --uninstall
+python3 -m tooling.setup_local --uninstall
 ```
 
 This removes managed local setup state from this repository and attempts to uninstall local Claude plugin registration created by setup.
@@ -291,4 +291,4 @@ Recommended local setup expects:
 - local Odoo core source clone
 - Odoo config file for your project
 
-If `claude` is not installed, `tooling/setup_local.py` exits with error.
+If `claude` is not installed, `tooling.setup_local` exits with error.

@@ -23,6 +23,9 @@ from tooling.setup_local import (
 )
 
 
+ROOT = Path(__file__).resolve().parents[2]
+
+
 class ParseArgsTests(unittest.TestCase):
     def test_parse_args_supports_setup_local_options(self) -> None:
         args = parse_args(
@@ -945,6 +948,19 @@ class SetupOrchestrationTests(unittest.TestCase):
         self.assertEqual(saved_settings, {"env": {"KEEP": "value"}})
         self.assertFalse(marketplace_path.exists())
         self.assertFalse(state_path.exists())
+
+
+class DirectExecutionTests(unittest.TestCase):
+    def test_setup_local_script_runs_when_invoked_by_file_path(self) -> None:
+        result = subprocess.run(
+            ["python3", str(ROOT / "tooling" / "setup_local.py"), "--help"],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+
+        self.assertEqual(result.returncode, 0, msg=result.stderr or result.stdout)
+        self.assertIn("Collect local Odoo setup inputs", result.stdout)
 
 
 class MainTests(unittest.TestCase):

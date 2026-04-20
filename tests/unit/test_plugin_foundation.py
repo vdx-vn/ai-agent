@@ -36,11 +36,11 @@ class PluginFoundationTests(unittest.TestCase):
         readme_text = (ROOT / "README.md").read_text(encoding="utf-8")
         self.assertIn("git clone git@github.com:vdx-vn/ai-agent", readme_text)
         self.assertIn("cd ai-agent", readme_text)
-        self.assertIn("python3 tooling/setup_local.py", readme_text)
+        self.assertIn("python3 -m tooling.setup_local", readme_text)
         self.assertIn("odoo-skills project-setup", readme_text)
         self.assertIn("cd /path/to/odoo-project", readme_text)
         self.assertIn("--docs-root /path/to/odoo/documentation", readme_text)
-        self.assertIn("python3 tooling/setup_local.py --uninstall", readme_text)
+        self.assertIn("python3 -m tooling.setup_local --uninstall", readme_text)
         self.assertIn("python3 tooling/materialization/materialize_odoo_skill_paths.py", readme_text)
         self.assertIn("claude --plugin-dir ~/.claude/plugins --plugin-dir .", readme_text)
 
