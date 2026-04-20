@@ -98,6 +98,32 @@ In this shape:
 - custom addons might be `/home/xmars/dev/vdx-vn/g10-qms/addons`
 - `addons_path` inside `/etc/odoo/odoo.conf` points at both Odoo core addons and your custom addons
 
+## Configure each Odoo project once
+
+After you install the tooling once, enter each Odoo project and save its local Odoo paths with:
+
+```bash
+cd /path/to/odoo-project
+odoo-skills project-setup
+```
+
+The command prompts for:
+- your local Odoo documentation clone path
+- your local Odoo core source clone path
+- the Odoo version if auto-detection cannot infer it
+- the `odoo-bin` path from that Odoo core source tree
+- the Odoo config file path used by that project
+
+It writes only project-local files:
+- `.claude/settings.local.json`
+- `.claude/odoo-skill-paths.json`
+
+Run it again later with `--force` if the project moves to a different Odoo version or config path:
+
+```bash
+odoo-skills project-setup --force
+```
+
 ## What setup changes
 
 `tooling/setup_local.py` changes files in this repository and Claude plugin state.

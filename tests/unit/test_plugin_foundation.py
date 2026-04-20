@@ -37,6 +37,8 @@ class PluginFoundationTests(unittest.TestCase):
         self.assertIn("git clone git@github.com:vdx-vn/ai-agent", readme_text)
         self.assertIn("cd ai-agent", readme_text)
         self.assertIn("python3 tooling/setup_local.py", readme_text)
+        self.assertIn("odoo-skills project-setup", readme_text)
+        self.assertIn("cd /path/to/odoo-project", readme_text)
         self.assertIn("--docs-root /path/to/odoo/documentation", readme_text)
         self.assertIn("python3 tooling/setup_local.py --uninstall", readme_text)
         self.assertIn("python3 tooling/materialization/materialize_odoo_skill_paths.py", readme_text)

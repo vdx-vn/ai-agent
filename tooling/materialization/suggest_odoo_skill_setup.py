@@ -7,6 +7,8 @@ import re
 import sys
 from pathlib import Path
 
+from tooling.local_setup_common import repo_looks_odoo
+
 PROMPT_PATTERNS = [
     r"\bnew\s+odoo\s+(project|addon|module)\b",
     r"\bsetup\s+(an?\s+)?(new\s+)?odoo\b",
@@ -16,8 +18,6 @@ PROMPT_PATTERNS = [
     r"\binit(ialize)?\s+(an?\s+)?(new\s+)?odoo\s+(project|addon|module)\b",
 ]
 
-ODOO_MARKERS = ["odoo-bin", "addons", "odoo"]
-MAX_MANIFEST_SCAN_DEPTH = 2
 ODOO_TEST_BASE_CMD_ENV = "ODOO_TEST_BASE_CMD"
 
 
@@ -35,22 +35,6 @@ def parse_args() -> argparse.Namespace:
 def detect_prompt_match(raw: str) -> bool:
     text = raw.lower()
     return any(re.search(pattern, text) for pattern in PROMPT_PATTERNS)
-
-
-def repo_looks_odoo(repo_root: Path) -> bool:
-    for marker in ODOO_MARKERS:
-        if (repo_root / marker).exists():
-            return True
-
-    for manifest in repo_root.rglob("__manifest__.py"):
-        try:
-            depth = len(manifest.relative_to(repo_root).parts)
-        except ValueError:
-            continue
-        if depth <= MAX_MANIFEST_SCAN_DEPTH:
-            return True
-    return False
-
 
 def make_message(project_root: Path) -> str:
     return (
