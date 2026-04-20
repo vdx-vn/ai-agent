@@ -55,9 +55,10 @@ def repo_looks_odoo(repo_root: Path) -> bool:
 def make_message(project_root: Path) -> str:
     return (
         "Detected new Odoo project setup context. From project root, run:\n"
-        "`python3 tooling/materialization/materialize_odoo_skill_paths.py --docs-root /path/to/odoo/documentation --source-root /path/to/odoo/source`\n"
-        "The script auto-detects Odoo version from git branch or repo path when possible; otherwise add `--version 18.0` or similar.\n"
-        "This will write `.claude/odoo-skill-paths.json` and materialize the copied skill library.\n"
+        "`python3 tooling/setup_local.py`\n"
+        "That guided setup prompts for docs root, source root, version when auto-detection fails, `odoo-bin`, and Odoo config path, then writes `.claude/odoo-skill-paths.json` and local test harness settings.\n"
+        "For non-interactive setup, pass flags like `python3 tooling/setup_local.py --docs-root /path/to/odoo/documentation --source-root /path/to/odoo/source --odoo-bin /path/to/odoo-bin --config /path/to/odoo.conf --yes`.\n"
+        "Manual fallback: `python3 tooling/materialization/materialize_odoo_skill_paths.py --docs-root /path/to/odoo/documentation --source-root /path/to/odoo/source`\n"
         "Shared setup guide: `.claude/skills/odoo-paths.md`"
     )
 

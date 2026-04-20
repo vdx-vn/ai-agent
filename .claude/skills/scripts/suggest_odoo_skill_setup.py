@@ -56,8 +56,8 @@ def make_message(project_root: Path) -> str:
     return (
         "Detected new Odoo project setup context. From project root, run:\n"
         "`python3 .claude/skills/scripts/materialize_odoo_skill_paths.py --docs-root /path/to/odoo/documentation --source-root /path/to/odoo/source`\n"
-        "The script auto-detects Odoo version from git branch or repo path when possible; otherwise add `--version 18.0` or similar.\n"
-        "This will write `.claude/odoo-skill-paths.json` and materialize the copied skill library.\n"
+        "This writes `.claude/odoo-skill-paths.json` and materializes copied skill library for this project copy.\n"
+        "Keep local test harness base command in `.claude/settings.local.json` under `ODOO_TEST_BASE_CMD`.\n"
         "Shared setup guide: `.claude/skills/odoo-paths.md`"
     )
 
