@@ -6,6 +6,9 @@ import sys
 from pathlib import Path
 
 from tooling.build_plugin import build_marketplace
+from tooling.project_setup import add_parser as add_project_setup_parser
+from tooling.project_setup import run_project_setup
+from tooling.project_setup import validate_project_setup_args
 from tooling.smoke_install import smoke_install
 from tooling.validate_plugin import validate_plugin
 
@@ -50,6 +53,7 @@ def main(argv: list[str] | None = None) -> int:
     subparsers.add_parser("verify")
     subparsers.add_parser("build")
     subparsers.add_parser("smoke-install")
+    project_setup_parser = add_project_setup_parser(subparsers)
 
     args = parser.parse_args(argv)
     if args.command == "verify":
@@ -58,6 +62,9 @@ def main(argv: list[str] | None = None) -> int:
         return build_main()
     if args.command == "smoke-install":
         return smoke_install_main()
+    if args.command == "project-setup":
+        validate_project_setup_args(args, project_setup_parser)
+        return run_project_setup(args)
 
     parser.print_help()
     return 1

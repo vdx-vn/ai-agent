@@ -87,6 +87,12 @@ class BaseCommandTests(unittest.TestCase):
         self.assertIn("-c", str(ctx.exception))
         self.assertIn("--config", str(ctx.exception))
 
+    def test_validate_base_cmd_rejects_malformed_quoted_command(self) -> None:
+        with self.assertRaises(SystemExit) as ctx:
+            validate_base_cmd('python3 "/opt/odoo/odoo-bin -c /etc/odoo.conf')
+
+        self.assertIn("ODOO_TEST_BASE_CMD is not a valid shell command", str(ctx.exception))
+
     def test_validate_base_cmd_rejects_runtime_managed_short_flags(self) -> None:
         for forbidden in ["-d", "-i", "-u"]:
             with self.subTest(forbidden=forbidden):
@@ -205,7 +211,7 @@ class CollectSetupInputsTests(unittest.TestCase):
                 uninstall=False,
             )
 
-            with patch("tooling.setup_local.resolve_series", side_effect=SystemExit("no detection")):
+            with patch("tooling.local_setup_common.resolve_series", side_effect=SystemExit("no detection")):
                 with patch(
                     "builtins.input",
                     side_effect=[
@@ -272,7 +278,7 @@ class CollectSetupInputsTests(unittest.TestCase):
                 uninstall=False,
             )
 
-            with patch("tooling.setup_local.resolve_series", return_value=("18.0", "detected")):
+            with patch("tooling.setup_local._resolve_version_or_prompt", return_value=("18.0", "detected")):
                 result = collect_setup_inputs(repo_root, args)
 
         self.assertEqual(result.base_cmd, 'python3 "/opt/odoo/odoo-bin" -c "/etc/odoo.conf"')

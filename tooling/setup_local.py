@@ -2,18 +2,25 @@
 from __future__ import annotations
 
 import argparse
-import json
-import shlex
 import shutil
 import subprocess
-from copy import deepcopy
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 from tooling.build_plugin import build_marketplace
-from tooling.materialization.materialize_odoo_skill_paths import materialize_skills, normalize_series, resolve_series
+from tooling.local_setup_common import (
+    build_base_cmd,
+    load_json_file,
+    merge_settings_local,
+    remove_managed_settings,
+    require_existing_path as _require_existing_path,
+    resolve_version_or_prompt as _resolve_version_or_prompt,
+    validate_base_cmd,
+    write_json_file,
+)
+from tooling.materialization.materialize_odoo_skill_paths import materialize_skills
 
 
 @dataclass(frozen=True)
@@ -43,142 +50,14 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-def build_base_cmd(python_bin: str, odoo_bin: str | Path, config_path: str | Path) -> str:
-    return f'{shlex.quote(python_bin)} "{odoo_bin}" -c "{config_path}"'
-
-
-def validate_base_cmd(base_cmd: str) -> str:
-    argv = shlex.split(base_cmd)
-    if not argv:
-        raise SystemExit("ODOO_TEST_BASE_CMD must not be empty")
-
-    has_config = False
-    runtime_managed_exact = {
-        "-d",
-        "--database",
-        "--test-tags",
-        "-i",
-        "--init",
-        "-u",
-        "--update",
-        "--test-enable",
-        "--stop-after-init",
-    }
-    runtime_managed_prefixes = (
-        "--database=",
-        "--test-tags=",
-        "--init=",
-        "--update=",
-        "-d",
-        "-i",
-        "-u",
-    )
-
-    for index, token in enumerate(argv):
-        if token == "-c" and index + 1 < len(argv):
-            has_config = True
-            continue
-        if token == "--config" and index + 1 < len(argv):
-            has_config = True
-            continue
-        if token.startswith("--config="):
-            has_config = True
-            continue
-        if token in runtime_managed_exact:
-            raise SystemExit(f"ODOO_TEST_BASE_CMD must not include runtime-managed flag: {token}")
-        for prefix in runtime_managed_prefixes:
-            if token.startswith(prefix):
-                raise SystemExit(f"ODOO_TEST_BASE_CMD must not include runtime-managed flag: {prefix}")
-
-    if not has_config:
-        raise SystemExit("ODOO_TEST_BASE_CMD must include -c /path/to/odoo.conf or --config /path/to/odoo.conf")
-    return base_cmd
-
-
-def load_json_file(path: Path) -> dict[str, Any]:
-    if not path.exists():
-        return {}
-    try:
-        data = json.loads(path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError:
-        return {}
-    return data if isinstance(data, dict) else {}
-
-
-def write_json_file(path: Path, payload: dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
-
-
-def merge_settings_local(existing: dict[str, Any], base_cmd: str) -> dict[str, Any]:
-    merged = deepcopy(existing)
-    env = merged.get("env")
-    if not isinstance(env, dict):
-        env = {}
-    else:
-        env = dict(env)
-    env["ODOO_TEST_BASE_CMD"] = base_cmd
-    merged["env"] = env
-    return merged
-
-
-def remove_managed_settings(existing: dict[str, Any], managed_keys: dict[str, list[str]]) -> dict[str, Any]:
-    cleaned = deepcopy(existing)
-    for top_level_key, nested_keys in managed_keys.items():
-        current = cleaned.get(top_level_key)
-        if not isinstance(current, dict):
-            continue
-        updated = dict(current)
-        for nested_key in nested_keys:
-            updated.pop(nested_key, None)
-        if updated:
-            cleaned[top_level_key] = updated
-        else:
-            cleaned.pop(top_level_key, None)
-    return cleaned
-
-
-def _prompt_value(label: str) -> str:
-    return input(f"{label}: ").strip()
-
-
-def _require_existing_path(
-    raw_value: str | None,
-    option_name: str,
-    prompt_label: str,
-    interactive: bool,
-    *,
-    expected_kind: str | None = None,
-) -> Path:
-    value = (raw_value or "").strip()
-    if not value and interactive:
-        value = _prompt_value(prompt_label)
-    if not value:
-        raise SystemExit(f"Missing required value {option_name}")
-    raw_path = Path(value).expanduser()
-    if not raw_path.is_absolute():
-        raise SystemExit(f"Path for {option_name} must be absolute: {value}")
-    path = raw_path.resolve()
-    if not path.exists():
-        raise SystemExit(f"Path does not exist for {option_name}: {path}")
-    if expected_kind == "dir" and not path.is_dir():
-        raise SystemExit(f"Path for {option_name} must be an existing directory: {path}")
-    if expected_kind == "file" and not path.is_file():
-        raise SystemExit(f"Path for {option_name} must be an existing file: {path}")
-    return path
-
-
 def _resolve_version(args: argparse.Namespace, docs_root: Path, source_root: Path) -> str:
-    try:
-        version, _source = resolve_series(args.version, docs_root, source_root)
-        return version
-    except SystemExit:
-        if args.yes:
-            raise
-        version_input = _prompt_value("Odoo version")
-        if not version_input:
-            raise SystemExit("Missing required value --version")
-        return normalize_series(version_input)
+    version, _source = _resolve_version_or_prompt(
+        args.version,
+        docs_root,
+        source_root,
+        interactive=not args.yes,
+    )
+    return version
 
 
 def collect_setup_inputs(repo_root: Path, args: argparse.Namespace) -> SetupInputs:
