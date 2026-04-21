@@ -32,17 +32,21 @@ class PluginFoundationTests(unittest.TestCase):
         self.assertEqual(plugins[0].get("name"), "odoo-skills")
         self.assertEqual(plugins[0].get("source"), "./")
 
-    def test_readme_mentions_one_command_onboarding_and_manual_fallback(self) -> None:
+    def test_readme_mentions_full_installation_and_usage_flow(self) -> None:
         readme_text = (ROOT / "README.md").read_text(encoding="utf-8")
         self.assertIn("git clone git@github.com:vdx-vn/ai-agent", readme_text)
         self.assertIn("cd ai-agent", readme_text)
-        self.assertIn("python3 -m tooling.setup_local", readme_text)
+        self.assertIn("python3 -m pip install -e .", readme_text)
+        self.assertIn("python3 -m tooling.install_plugin", readme_text)
         self.assertIn("odoo-skills project-setup", readme_text)
-        self.assertIn("cd /path/to/odoo-project", readme_text)
-        self.assertIn("--docs-root /path/to/odoo/documentation", readme_text)
-        self.assertIn("python3 -m tooling.setup_local --uninstall", readme_text)
-        self.assertIn("python3 tooling/materialization/materialize_odoo_skill_paths.py", readme_text)
+        self.assertIn("python3 -m tooling.cli project-setup", readme_text)
+        self.assertIn("odoo-skills verify", readme_text)
+        self.assertIn("odoo-skills build", readme_text)
+        self.assertIn("odoo-skills smoke-install", readme_text)
+        self.assertIn("python3 -m tooling.setup_local", readme_text)
+        self.assertIn("deprecated", readme_text.lower())
         self.assertIn("claude --plugin-dir ~/.claude/plugins --plugin-dir .", readme_text)
+        self.assertLess(readme_text.index("python3 -m pip install -e ."), readme_text.index("odoo-skills project-setup"))
 
     def test_license_contains_apache_license(self) -> None:
         license_text = (ROOT / "LICENSE").read_text(encoding="utf-8")

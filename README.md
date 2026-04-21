@@ -4,87 +4,151 @@ Public Claude Code plugin for Odoo-focused skills.
 
 ## What this repository is
 
-This repository packages `odoo-skills`, a Claude Code plugin for Odoo workflows.
+This repository packages `odoo-skills`, Claude Code plugin for Odoo workflows.
 
-Runtime plugin payload is intentionally small:
+Runtime plugin payload stays small:
 - `.claude-plugin/` - plugin metadata
 - `skills/` - public shipped skill library
 - `LICENSE`
 
-Everything else in this repository supports authoring, validation, packaging, local setup, or development.
+Everything else supports authoring, validation, packaging, installation, project setup, or local development.
 
-## How Claude Code uses these skills
+## Install and use plugin
 
-Claude Code does not need these skills to live in your Odoo project or in `~/.claude/skills/`.
+Claude Code does not need these skills copied into your Odoo project or `~/.claude/skills/`.
 
-Recommended setup works like this:
-1. clone this repository anywhere convenient
-2. run `python3 -m tooling.setup_local` from repo root
-3. the script builds runtime bundle at `dist/marketplace/`
-4. the script registers that bundle as a local Claude marketplace
-5. the script installs `odoo-skills` into Claude Code from that marketplace
+Correct workflow has 3 phases:
+1. install repo entrypoints
+2. install plugin into Claude Code
+3. configure each Odoo project locally
 
-After install, Claude Code reads the public Odoo skills from installed plugin bundle built from `dist/marketplace/skills/`.
+## Phase 1: install repo entrypoints
 
-Important:
-- this repository is separate from your Odoo project
-- `setup_local.py` does not copy skill files into your custom addons repository
-- your Odoo project is referenced by paths and config, not by moving files into it
-
-## Recommended local setup
-
-Clone this repository anywhere convenient, then run the guided setup from repo root:
+Clone this repository anywhere convenient, then install editable package from repo root:
 
 ```bash
 git clone git@github.com:vdx-vn/ai-agent
 cd ai-agent
-python3 -m tooling.setup_local
+python3 -m pip install -e .
 ```
 
-You do not clone this repository into your Odoo project.
+This step creates command-line entrypoints from `pyproject.toml`, including:
+- `odoo-skills`
+- `odoo-skills-install`
+- `odoo-skills-verify`
+- `odoo-skills-build`
+- `odoo-skills-smoke-install`
 
-The setup prompts for:
-- your local Odoo documentation clone path
-- your local Odoo core source clone path
-- the Odoo version if auto-detection cannot infer it
-- the `odoo-bin` path from that Odoo core source tree
-- the Odoo config file path used by your project
+If system Python blocks editable install with `externally-managed-environment`, use a virtual environment:
 
-Use these values as follows:
-- `--docs-root`: local Odoo documentation clone
-- `--source-root`: local Odoo Community or Enterprise source clone where `odoo-bin` lives
-- `--odoo-bin`: path to `odoo-bin` inside that Odoo source tree
-- `--config`: your project config file, for example `/etc/odoo/odoo.conf`
+```bash
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install -e .
+```
 
-Your custom addons repository can live anywhere and is usually referenced through `addons_path` in `odoo.conf`. It is not the value for `--source-root` unless it is also your Odoo core source tree.
+If you skip install step, commands like `odoo-skills project-setup` will fail with `odoo-skills: command not found`.
 
-`setup_local.py` then:
-- materializes local `.claude/skills` authoring copy for your chosen Odoo docs and source paths
-- writes `.claude/odoo-skill-paths.json`
-- stores `ODOO_TEST_BASE_CMD` in `.claude/settings.local.json`
-- builds runtime plugin bundle at `dist/marketplace/`
+## Phase 2: install plugin into Claude Code
+
+From repo root, install local marketplace bundle into Claude Code:
+
+```bash
+python3 -m tooling.install_plugin
+```
+
+Equivalent command surfaces after editable install:
+
+```bash
+odoo-skills install-plugin
+odoo-skills-install
+```
+
+Install flow does only plugin bootstrap:
+- builds runtime bundle at `dist/marketplace/`
 - runs `claude plugin validate`
 - adds local marketplace `odoo-skills-dev`
 - installs `odoo-skills` into Claude Code with local scope
 
-### Non-interactive example
+Install flow does **not** ask for:
+- Odoo documentation path
+- Odoo source path
+- `odoo-bin`
+- `odoo.conf`
+
+Install flow does **not** write:
+- repo `.claude/settings.local.json`
+- repo `.claude/odoo-skill-paths.json`
+
+## Phase 3: configure each Odoo project once
+
+After plugin install, enter each Odoo project and save project-local Odoo paths and base test command with:
 
 ```bash
-python3 -m tooling.setup_local \
-  --docs-root /path/to/odoo/documentation \
-  --source-root /path/to/odoo/source \
+cd /path/to/odoo-project
+odoo-skills project-setup
+```
+
+If shell entrypoint is unavailable on your `PATH`, use fallback:
+
+```bash
+python3 -m tooling.cli project-setup
+```
+
+Project setup prompts for:
+- local Odoo documentation clone path
+- local Odoo core source clone path
+- Odoo version if auto-detection cannot infer it
+- `odoo-bin` path from that Odoo core source tree
+- Odoo config file path used by that project
+
+It writes only project-local files:
+- `.claude/settings.local.json`
+- `.claude/odoo-skill-paths.json`
+
+Run it again later with `--force` if project moves to different Odoo version or config path:
+
+```bash
+odoo-skills project-setup --force
+# fallback
+python3 -m tooling.cli project-setup --force
+```
+
+## What belongs to install step vs project step
+
+Install step (`tooling.install_plugin`):
+- plugin bundle build
+- Claude marketplace registration
+- Claude plugin install
+
+Project step (`odoo-skills project-setup`):
+- `docsRoot`
+- `sourceRoot`
+- version metadata
+- `ODOO_TEST_BASE_CMD`
+
+This repository is separate from your Odoo project.
+Your Odoo project paths belong to each Odoo project only.
+
+## Example with separate custom addons repository
+
+If project code lives outside Odoo core, still use Odoo core for `--source-root` and project config for `--config`:
+
+```bash
+cd /path/to/odoo-project
+odoo-skills project-setup \
+  --docs-root /home/xmars/src/odoo/documentation \
+  --source-root /home/xmars/src/odoo/odoo-community \
   --version 18.0 \
-  --odoo-bin /path/to/odoo/source/odoo-bin \
+  --odoo-bin /home/xmars/src/odoo/odoo-community/odoo-bin \
   --config /etc/odoo/odoo.conf \
   --yes
 ```
 
-### Example with separate custom addons repository
-
-If your project code lives outside Odoo core, keep using Odoo core for `--source-root` and your project config for `--config`:
+Fallback:
 
 ```bash
-python3 -m tooling.setup_local \
+python3 -m tooling.cli project-setup \
   --docs-root /home/xmars/src/odoo/documentation \
   --source-root /home/xmars/src/odoo/odoo-community \
   --version 18.0 \
@@ -96,61 +160,7 @@ python3 -m tooling.setup_local \
 In this shape:
 - Odoo core source might be `/home/xmars/src/odoo/odoo-community`
 - custom addons might be `/home/xmars/dev/vdx-vn/g10-qms/addons`
-- `addons_path` inside `/etc/odoo/odoo.conf` points at both Odoo core addons and your custom addons
-
-## Configure each Odoo project once
-
-After you install the tooling once, enter each Odoo project and save its local Odoo paths with:
-
-```bash
-cd /path/to/odoo-project
-odoo-skills project-setup
-```
-
-The command prompts for:
-- your local Odoo documentation clone path
-- your local Odoo core source clone path
-- the Odoo version if auto-detection cannot infer it
-- the `odoo-bin` path from that Odoo core source tree
-- the Odoo config file path used by that project
-
-It writes only project-local files:
-- `.claude/settings.local.json`
-- `.claude/odoo-skill-paths.json`
-
-Run it again later with `--force` if the project moves to a different Odoo version or config path:
-
-```bash
-odoo-skills project-setup --force
-```
-
-## What setup changes
-
-`tooling.setup_local` changes files in this repository and Claude plugin state.
-
-It writes or updates:
-- `.claude/settings.local.json`
-- `.claude/odoo-skill-paths.json`
-- materialized files under `.claude/skills/`
-- `dist/marketplace/`
-
-It also runs Claude plugin install commands for local plugin registration.
-
-It does not:
-- edit your custom addons repository
-- edit Odoo core source
-- edit `odoo.conf`
-- create folders inside your Odoo project
-- move skill files into your Odoo project
-
-## Where files live after setup
-
-Source and build locations in this repository:
-- `skills/` - canonical public skill source shipped in plugin
-- `.claude/skills/` - local materialized authoring copy for this repo
-- `dist/marketplace/skills/` - packaged runtime skill payload used for local install
-
-At runtime, Claude Code uses installed plugin payload from local marketplace install, not `.claude/skills/`.
+- `addons_path` inside `/etc/odoo/odoo.conf` points at both Odoo core addons and custom addons
 
 ## Installed public skills
 
@@ -186,33 +196,58 @@ Business reference skills:
 - `odoo-business-expenses`
 - `odoo-business-website-ecommerce`
 
-## Uninstall
+## Development commands
 
-Remove local setup and installed local plugin:
-
-```bash
-python3 -m tooling.setup_local --uninstall
-```
-
-This removes managed local setup state from this repository and attempts to uninstall local Claude plugin registration created by setup.
-
-## Advanced manual fallback
-
-If you only want skill-path materialization without guided local install flow, run:
+Install dev tooling:
 
 ```bash
-python3 tooling/materialization/materialize_odoo_skill_paths.py \
-  --docs-root /path/to/odoo/documentation \
-  --source-root /path/to/odoo/source
+python3 -m pip install -e .
 ```
 
-Add `--version 18.0` or similar if auto-detection cannot infer Odoo series.
+Run validator:
 
-This only rewrites placeholders in local `.claude/skills/` copy and writes `.claude/odoo-skill-paths.json`. It does not install plugin into Claude Code.
+```bash
+odoo-skills verify
+# fallback
+python3 -m tooling.cli verify
+# legacy script
+odoo-skills-verify
+```
 
-## Local development
+Build runtime marketplace bundle:
 
-### Run this repository directly as plugin source
+```bash
+odoo-skills build
+# fallback
+python3 -m tooling.cli build
+# legacy script
+odoo-skills-build
+```
+
+Smoke-test local install flow:
+
+```bash
+odoo-skills smoke-install
+# fallback
+python3 -m tooling.cli smoke-install
+# legacy script
+odoo-skills-smoke-install
+```
+
+Run full test suite:
+
+```bash
+python3 -m unittest discover -s tests -p 'test_*.py' -v
+```
+
+## Validate plugin metadata directly with Claude CLI
+
+```bash
+claude plugin validate .
+claude plugin validate dist/marketplace
+```
+
+## Run this repository directly as plugin source
 
 For local development, you can run Claude Code with this repository as plugin source:
 
@@ -224,15 +259,6 @@ If you also want default user plugins, add them too:
 
 ```bash
 claude --plugin-dir ~/.claude/plugins --plugin-dir .
-```
-
-This mode is useful while editing plugin source in this repository.
-
-### Validate plugin metadata
-
-```bash
-claude plugin validate .
-claude plugin validate dist/marketplace
 ```
 
 ## Local marketplace install test
@@ -250,45 +276,57 @@ Slash-command equivalents:
 - `/plugin marketplace add`
 - `/plugin install odoo-skills@odoo-skills-dev`
 
-## Development commands
+## Uninstall
 
-Install dev tooling:
-
-```bash
-python3 -m pip install -e .
-```
-
-Run full test suite:
+Remove installed local plugin and generated marketplace bundle:
 
 ```bash
-python3 -m unittest discover -s tests -p 'test_*.py' -v
+python3 -m tooling.install_plugin --uninstall
 ```
 
-Run validator:
+Equivalent command surfaces:
 
 ```bash
-odoo-skills-verify
+odoo-skills-install --uninstall
+odoo-skills install-plugin --uninstall
 ```
 
-Build runtime marketplace bundle:
+This removes plugin install artifacts only. It does not remove per-project `.claude/settings.local.json` or `.claude/odoo-skill-paths.json` from your Odoo projects.
+
+## Deprecated compatibility shim
+
+`python3 -m tooling.setup_local` still exists as deprecated compatibility shim for one release window.
+
+It now delegates to install-only flow and prints next-step guidance. It is no longer primary setup command.
+
+Deprecated commands:
 
 ```bash
-odoo-skills-build
+python3 -m tooling.setup_local
+python3 -m tooling.setup_local --uninstall
 ```
 
-Smoke-test local install flow:
+## Advanced manual fallback
+
+If you only want placeholder materialization in copied skill tree without project setup command, run:
 
 ```bash
-odoo-skills-smoke-install
+python3 tooling/materialization/materialize_odoo_skill_paths.py \
+  --docs-root /path/to/odoo/documentation \
+  --source-root /path/to/odoo/source
 ```
+
+Add `--version 18.0` or similar if auto-detection cannot infer Odoo series.
+
+This rewrites placeholders in local `.claude/skills/` copy and writes `.claude/odoo-skill-paths.json`. It does not install plugin into Claude Code.
 
 ## Requirements
 
-Recommended local setup expects:
+Recommended workflow expects:
 - Python 3
 - Claude Code CLI installed as `claude`
 - local Odoo documentation clone
 - local Odoo core source clone
-- Odoo config file for your project
+- Odoo config file for each project
 
-If `claude` is not installed, `tooling.setup_local` exits with error.
+If `claude` is not installed, `tooling.install_plugin` exits with error.

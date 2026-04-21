@@ -52,7 +52,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 
 def load_base_command(env: Mapping[str, str] | None = None) -> list[str]:
-    source = env or os.environ
+    source = os.environ if env is None else env
     raw = source.get("ODOO_TEST_BASE_CMD", "").strip()
     if not raw:
         raise SystemExit("ODOO_TEST_BASE_CMD is not set")

@@ -87,6 +87,47 @@ class ProjectSetupParseArgsTests(unittest.TestCase):
 
 
 class CliDispatchTests(unittest.TestCase):
+    def test_cli_main_dispatches_verify(self) -> None:
+        with patch("tooling.cli.verify_main", return_value=0) as verify_mock:
+            result = cli_main(["verify"])
+
+        self.assertEqual(result, 0)
+        verify_mock.assert_called_once_with()
+
+    def test_cli_main_dispatches_build(self) -> None:
+        with patch("tooling.cli.build_main", return_value=0) as build_mock:
+            result = cli_main(["build"])
+
+        self.assertEqual(result, 0)
+        build_mock.assert_called_once_with()
+
+    def test_cli_main_dispatches_smoke_install(self) -> None:
+        with patch("tooling.cli.smoke_install_main", return_value=0) as smoke_mock:
+            result = cli_main(["smoke-install"])
+
+        self.assertEqual(result, 0)
+        smoke_mock.assert_called_once_with()
+
+    def test_cli_main_dispatches_install_plugin(self) -> None:
+        with patch("tooling.cli.run_install_plugin", return_value=0, create=True) as run_install_plugin_mock:
+            try:
+                result = cli_main(["install-plugin"])
+            except SystemExit as exc:
+                self.fail(f"install-plugin subcommand should dispatch, got {exc}")
+
+        self.assertEqual(result, 0)
+        run_install_plugin_mock.assert_called_once_with([])
+
+    def test_cli_main_dispatches_install_plugin_uninstall_flag(self) -> None:
+        with patch("tooling.cli.run_install_plugin", return_value=0, create=True) as run_install_plugin_mock:
+            try:
+                result = cli_main(["install-plugin", "--uninstall"])
+            except SystemExit as exc:
+                self.fail(f"install-plugin --uninstall should dispatch, got {exc}")
+
+        self.assertEqual(result, 0)
+        run_install_plugin_mock.assert_called_once_with(["--uninstall"])
+
     def test_cli_main_dispatches_project_setup(self) -> None:
         argv = [
             "project-setup",
@@ -136,9 +177,13 @@ class CliDispatchTests(unittest.TestCase):
                 ]
             )
 
-    def test_pyproject_exposes_odoo_skills_console_script(self) -> None:
+    def test_pyproject_exposes_console_scripts(self) -> None:
         pyproject_text = (Path(__file__).resolve().parents[2] / "pyproject.toml").read_text(encoding="utf-8")
         self.assertIn('odoo-skills = "tooling.cli:main"', pyproject_text)
+        self.assertIn('odoo-skills-install = "tooling.install_plugin:main"', pyproject_text)
+        self.assertIn('odoo-skills-verify = "tooling.cli:verify_main"', pyproject_text)
+        self.assertIn('odoo-skills-build = "tooling.cli:build_main"', pyproject_text)
+        self.assertIn('odoo-skills-smoke-install = "tooling.cli:smoke_install_main"', pyproject_text)
 
 
 class RunProjectSetupTests(unittest.TestCase):

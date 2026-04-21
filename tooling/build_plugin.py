@@ -21,6 +21,16 @@ Slash-command equivalents:
 - /plugin marketplace add
 - /plugin install odoo-skills@odoo-skills-dev
 
+## After plugin install
+
+Configure each Odoo project separately:
+
+```bash
+odoo-skills project-setup
+# fallback
+python3 -m tooling.cli project-setup
+```
+
 ## Runtime contents
 
 This marketplace bundle ships plugin metadata, public `skills/`, and license files only.

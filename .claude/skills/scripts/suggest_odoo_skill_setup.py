@@ -53,11 +53,12 @@ def repo_looks_odoo(repo_root: Path) -> bool:
 
 
 def make_message(project_root: Path) -> str:
+    del project_root
     return (
-        "Detected new Odoo project setup context. From project root, run:\n"
-        "`python3 .claude/skills/scripts/materialize_odoo_skill_paths.py --docs-root /path/to/odoo/documentation --source-root /path/to/odoo/source`\n"
-        "This writes `.claude/odoo-skill-paths.json` and materializes copied skill library for this project copy.\n"
-        "Keep local test harness base command in `.claude/settings.local.json` under `ODOO_TEST_BASE_CMD`.\n"
+        "Detected new Odoo project setup context. Install repo entrypoints first with `python3 -m pip install -e .`.\n"
+        "From project root, run `odoo-skills project-setup`.\n"
+        "If `odoo-skills` is not on PATH, use `python3 -m tooling.cli project-setup`.\n"
+        "This writes `.claude/odoo-skill-paths.json` and `.claude/settings.local.json` for this project only, including `ODOO_TEST_BASE_CMD`.\n"
         "Shared setup guide: `.claude/skills/odoo-paths.md`"
     )
 

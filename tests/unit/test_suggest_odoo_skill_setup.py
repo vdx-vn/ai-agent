@@ -15,10 +15,8 @@ _copied_suggest = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_copied_suggest)
 build_system_message = _copied_suggest.build_system_message
 
-COPIED_PATH_COMMAND = (
-    "python3 .claude/skills/scripts/materialize_odoo_skill_paths.py "
-    "--docs-root /path/to/odoo/documentation --source-root /path/to/odoo/source"
-)
+PROJECT_SETUP_COMMAND = "odoo-skills project-setup"
+PROJECT_SETUP_FALLBACK = "python3 -m tooling.cli project-setup"
 
 
 class SuggestOdooSkillSetupTests(unittest.TestCase):
@@ -42,7 +40,7 @@ class SuggestOdooSkillSetupTests(unittest.TestCase):
             settings,
         )
 
-    def test_setup_guidance_points_to_copied_skill_materialization_command(self) -> None:
+    def test_setup_guidance_points_to_project_setup_commands(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             repo_root = Path(tmp)
 
@@ -52,7 +50,9 @@ class SuggestOdooSkillSetupTests(unittest.TestCase):
                 mode="prompt-submit",
             )
 
-            self.assertIn(COPIED_PATH_COMMAND, message)
+            self.assertIn("python3 -m pip install -e .", message)
+            self.assertIn(PROJECT_SETUP_COMMAND, message)
+            self.assertIn(PROJECT_SETUP_FALLBACK, message)
             self.assertNotIn("python3 tooling/setup_local.py", message)
             self.assertNotIn(
                 "python3 tooling/materialization/materialize_odoo_skill_paths.py",
@@ -69,12 +69,18 @@ class SuggestOdooSkillSetupTests(unittest.TestCase):
         ]:
             with self.subTest(doc=str(doc_path)):
                 content = doc_path.read_text(encoding="utf-8")
-                self.assertIn(COPIED_PATH_COMMAND, content)
+                self.assertIn("python3 -m pip install -e .", content)
+                self.assertIn(PROJECT_SETUP_COMMAND, content)
+                self.assertIn(PROJECT_SETUP_FALLBACK, content)
                 self.assertNotIn("python3 tooling/setup_local.py", content)
                 self.assertNotIn(
                     "python3 tooling/materialization/materialize_odoo_skill_paths.py",
                     content,
                 )
+                self.assertNotIn("/home/xmars/dev/odoo/doc-18", content)
+                self.assertNotIn("/home/xmars/dev/odoo/ce-18", content)
+                self.assertIn("<ODOO_DOCS_ROOT>", content)
+                self.assertIn("<ODOO_SOURCE_ROOT>", content)
                 self.assertIn(".claude/settings.local.json", content)
                 self.assertIn("ODOO_TEST_BASE_CMD", content)
 

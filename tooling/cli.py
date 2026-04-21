@@ -6,6 +6,7 @@ import sys
 from pathlib import Path
 
 from tooling.build_plugin import build_marketplace
+from tooling.install_plugin import main as run_install_plugin
 from tooling.project_setup import add_parser as add_project_setup_parser
 from tooling.project_setup import run_project_setup
 from tooling.project_setup import validate_project_setup_args
@@ -53,6 +54,8 @@ def main(argv: list[str] | None = None) -> int:
     subparsers.add_parser("verify")
     subparsers.add_parser("build")
     subparsers.add_parser("smoke-install")
+    install_plugin_parser = subparsers.add_parser("install-plugin")
+    install_plugin_parser.add_argument("--uninstall", action="store_true")
     project_setup_parser = add_project_setup_parser(subparsers)
 
     args = parser.parse_args(argv)
@@ -62,6 +65,11 @@ def main(argv: list[str] | None = None) -> int:
         return build_main()
     if args.command == "smoke-install":
         return smoke_install_main()
+    if args.command == "install-plugin":
+        install_args: list[str] = []
+        if args.uninstall:
+            install_args.append("--uninstall")
+        return run_install_plugin(install_args)
     if args.command == "project-setup":
         validate_project_setup_args(args, project_setup_parser)
         return run_project_setup(args)

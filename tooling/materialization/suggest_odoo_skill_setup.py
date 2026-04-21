@@ -37,12 +37,12 @@ def detect_prompt_match(raw: str) -> bool:
     return any(re.search(pattern, text) for pattern in PROMPT_PATTERNS)
 
 def make_message(project_root: Path) -> str:
+    del project_root
     return (
-        "Detected new Odoo project setup context. From project root, run:\n"
-        "`python3 tooling/setup_local.py`\n"
-        "That guided setup prompts for docs root, source root, version when auto-detection fails, `odoo-bin`, and Odoo config path, then writes `.claude/odoo-skill-paths.json` and local test harness settings.\n"
-        "For non-interactive setup, pass flags like `python3 tooling/setup_local.py --docs-root /path/to/odoo/documentation --source-root /path/to/odoo/source --odoo-bin /path/to/odoo-bin --config /path/to/odoo.conf --yes`.\n"
-        "Manual fallback: `python3 tooling/materialization/materialize_odoo_skill_paths.py --docs-root /path/to/odoo/documentation --source-root /path/to/odoo/source`\n"
+        "Detected new Odoo project setup context. Install repo entrypoints first with `python3 -m pip install -e .`.\n"
+        "From project root, run `odoo-skills project-setup`.\n"
+        "If `odoo-skills` is not on PATH, use `python3 -m tooling.cli project-setup`.\n"
+        "This writes `.claude/odoo-skill-paths.json` and `.claude/settings.local.json` for this project only, including `ODOO_TEST_BASE_CMD`.\n"
         "Shared setup guide: `.claude/skills/odoo-paths.md`"
     )
 
