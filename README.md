@@ -2,6 +2,19 @@
 
 Public Claude Code plugin for Odoo-focused skills.
 
+## Fastest local marketplace install
+
+From repo root, build the runtime bundle and install from the local marketplace:
+
+```bash
+odoo-skills-build
+claude plugin marketplace add ./dist/marketplace
+claude plugin install odoo-skills@odoo-skills-dev --scope local
+claude plugin list --json
+```
+
+Use this when you want the shortest local plugin install path. If the target repository is an Odoo project, run `odoo-skills project-setup` in that project after plugin install.
+
 ## What this repository is
 
 This repository packages `odoo-skills`, Claude Code plugin for Odoo workflows.
@@ -260,21 +273,6 @@ If you also want default user plugins, add them too:
 ```bash
 claude --plugin-dir ~/.claude/plugins --plugin-dir .
 ```
-
-## Local marketplace install test
-
-Build runtime bundle, add local marketplace, and install plugin from it:
-
-```bash
-odoo-skills-build
-claude plugin marketplace add ./dist/marketplace
-claude plugin install odoo-skills@odoo-skills-dev --scope local
-claude plugin list --json
-```
-
-Slash-command equivalents:
-- `/plugin marketplace add`
-- `/plugin install odoo-skills@odoo-skills-dev`
 
 ## Uninstall
 

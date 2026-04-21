@@ -46,7 +46,19 @@ class PluginFoundationTests(unittest.TestCase):
         self.assertIn("python3 -m tooling.setup_local", readme_text)
         self.assertIn("deprecated", readme_text.lower())
         self.assertIn("claude --plugin-dir ~/.claude/plugins --plugin-dir .", readme_text)
-        self.assertLess(readme_text.index("python3 -m pip install -e ."), readme_text.index("odoo-skills project-setup"))
+        self.assertIn("claude plugin marketplace add ./dist/marketplace", readme_text)
+        self.assertIn("claude plugin list --json", readme_text)
+        self.assertLess(
+            readme_text.index("claude plugin marketplace add ./dist/marketplace"),
+            readme_text.index("## Install and use plugin"),
+        )
+        self.assertLess(
+            readme_text.index("python3 -m pip install -e ."),
+            readme_text.index(
+                "odoo-skills project-setup",
+                readme_text.index("## Phase 3: configure each Odoo project once"),
+            ),
+        )
 
     def test_license_contains_apache_license(self) -> None:
         license_text = (ROOT / "LICENSE").read_text(encoding="utf-8")
