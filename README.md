@@ -9,7 +9,7 @@ From repo root, build the runtime bundle and install from the local marketplace:
 ```bash
 odoo-skills-build
 claude plugin marketplace add ./dist/marketplace
-claude plugin install odoo-skills@odoo-skills-dev --scope local
+claude plugin install odoo-skills@odoo-skills-dev
 claude plugin list --json
 ```
 
