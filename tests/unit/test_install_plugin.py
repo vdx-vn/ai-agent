@@ -4,7 +4,7 @@ from argparse import Namespace
 from pathlib import Path
 from unittest.mock import patch
 
-from tooling.install_plugin import main, parse_args
+from tooling.install_plugin import main, parse_args, run_install
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -54,6 +54,23 @@ class InstallPluginContractTests(unittest.TestCase):
 
         self.assertEqual(result, 0)
         run_uninstall_mock.assert_called_once_with(expected_repo_root, args)
+
+
+class RunInstallMessageTests(unittest.TestCase):
+    def test_run_install_prints_optional_project_setup_guidance(self) -> None:
+        with patch("tooling.install_plugin.ensure_claude_cli"):
+            with patch("tooling.install_plugin.build_marketplace", return_value=ROOT / "dist" / "marketplace"):
+                with patch("tooling.install_plugin.run_command"):
+                    with patch("builtins.print") as print_mock:
+                        result = run_install(ROOT, Namespace(uninstall=False))
+
+        self.assertEqual(result, 0)
+        printed = "\n".join(call.args[0] for call in print_mock.call_args_list)
+        self.assertIn("Plugin install complete", printed)
+        self.assertIn("python3 -m pip install -e .", printed)
+        self.assertIn("Optional for local Odoo repositories only", printed)
+        self.assertIn("odoo-skills project-setup", printed)
+        self.assertIn("python3 -m tooling.cli project-setup", printed)
 
 
 if __name__ == "__main__":

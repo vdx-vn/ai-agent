@@ -25,6 +25,22 @@ class ReferenceDocsTests(unittest.TestCase):
             "Missing required reference docs: " + ", ".join(missing),
         )
 
+    def test_odoo_path_docs_scope_project_setup_to_local_repositories(self) -> None:
+        expected_snippets = [
+            "Install repo entrypoints first with `python3 -m pip install -e .` from repo root.",
+            "Only do this for a local Odoo repository that needs local docs/source/test integration.",
+            "Run `odoo-skills project-setup` from the Odoo project root.",
+            "Keep local test harness base command",
+        ]
+
+        for path in (
+            ROOT / "docs" / "reference" / "odoo-paths.md",
+            ROOT / "docs" / "authoring" / "odoo-paths.md",
+        ):
+            content = path.read_text(encoding="utf-8")
+            for snippet in expected_snippets:
+                self.assertIn(snippet, content, f"Missing expected text in {path}: {snippet}")
+
     def test_skill_inventory_names_match_skills_directory_names(self) -> None:
         inventory_path = ROOT / "docs" / "reference" / "skill-inventory.json"
         inventory_data = json.loads(inventory_path.read_text(encoding="utf-8"))

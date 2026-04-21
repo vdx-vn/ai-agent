@@ -66,8 +66,12 @@ class SetupShimTests(unittest.TestCase):
         self.assertEqual(result, 0)
         run_install_mock.assert_called_once_with(repo_root, args)
         printed = "\n".join(call.args[0] for call in print_mock.call_args_list)
-        self.assertIn("deprecated", printed.lower())
-        self.assertIn("project-setup", printed)
+        printed_lower = printed.lower()
+        self.assertIn("deprecated", printed_lower)
+        self.assertIn("legacy compatibility command", printed_lower)
+        self.assertIn("odoo-skills install-plugin", printed)
+        self.assertIn("python3 -m tooling.install_plugin", printed)
+        self.assertIn("only when configuring a local odoo repository", printed_lower)
 
     def test_run_uninstall_prints_deprecation_and_delegates_to_install_plugin(self) -> None:
         repo_root = ROOT
@@ -80,7 +84,12 @@ class SetupShimTests(unittest.TestCase):
         self.assertEqual(result, 0)
         run_uninstall_mock.assert_called_once_with(repo_root, args)
         printed = "\n".join(call.args[0] for call in print_mock.call_args_list)
-        self.assertIn("deprecated", printed.lower())
+        printed_lower = printed.lower()
+        self.assertIn("deprecated", printed_lower)
+        self.assertIn("legacy compatibility command", printed_lower)
+        self.assertIn("odoo-skills install-plugin", printed)
+        self.assertIn("python3 -m tooling.install_plugin", printed)
+        self.assertIn("only when configuring a local odoo repository", printed_lower)
 
 
 class DirectExecutionTests(unittest.TestCase):

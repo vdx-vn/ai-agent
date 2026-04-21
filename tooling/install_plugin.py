@@ -84,9 +84,9 @@ def run_install(repo_root: Path, args: argparse.Namespace) -> int:
             shutil.rmtree(marketplace_path)
         raise
 
-    print(f"Installed {PLUGIN_NAME} from local marketplace bundle at {marketplace_path}")
-    print("Next: install CLI entrypoints with `python3 -m pip install -e .` if needed.")
-    print("Then run `odoo-skills project-setup` inside each Odoo project.")
+    print(f"Plugin install complete: {PLUGIN_NAME} from local marketplace bundle at {marketplace_path}")
+    print("If `odoo-skills` is not on PATH yet, install repo CLI entrypoints with `python3 -m pip install -e .`.")
+    print("Optional for local Odoo repositories only: run `odoo-skills project-setup` inside each Odoo project.")
     print("Fallback: `python3 -m tooling.cli project-setup`.")
     return 0
 

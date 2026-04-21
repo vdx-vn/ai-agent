@@ -12,16 +12,18 @@ from tooling.install_plugin import run_install as run_install_plugin
 from tooling.install_plugin import run_uninstall as run_uninstall_plugin
 
 DEPRECATION_MESSAGE = (
-    "Deprecated: `tooling.setup_local` now only installs or uninstalls plugin bundle. "
-    "Use `python3 -m tooling.install_plugin` for plugin install and `odoo-skills project-setup` inside each Odoo project."
+    "Deprecated legacy compatibility command: `tooling.setup_local` is kept only for backward compatibility. "
+    "Use `odoo-skills install-plugin` or `python3 -m tooling.install_plugin` to install or uninstall the plugin bundle, "
+    "and use `odoo-skills project-setup` only when configuring a local Odoo repository."
 )
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
-            "Deprecated local setup shim. Installs local odoo-skills plugin bundle; "
-            "Odoo project paths now belong in `odoo-skills project-setup`."
+            "Deprecated compatibility shim for legacy workflows. Installs or uninstalls the local "
+            "odoo-skills plugin bundle only; local Odoo repository configuration now lives in "
+            "`odoo-skills project-setup`."
         )
     )
     parser.add_argument("--docs-root", help="Deprecated compatibility option")
@@ -38,7 +40,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 def run_setup(repo_root: Path, args: argparse.Namespace) -> int:
     print(DEPRECATION_MESSAGE)
-    print("Next after install: run `odoo-skills project-setup` inside each Odoo project.")
+    print("After plugin install, run `odoo-skills project-setup` only when configuring a local Odoo repository.")
     print("Fallback: `python3 -m tooling.cli project-setup`.")
     return run_install_plugin(repo_root, args)
 

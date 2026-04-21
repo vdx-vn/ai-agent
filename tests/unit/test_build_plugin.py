@@ -29,15 +29,31 @@ class BuildPluginTests(unittest.TestCase):
 
             runtime_readme = (output_dir / "README.md").read_text(encoding="utf-8")
             self.assertIn("Runtime marketplace bundle", runtime_readme)
-            self.assertIn("claude plugin install odoo-skills@odoo-skills-dev --scope local", runtime_readme)
+            self.assertIn("## Install plugin from this bundle", runtime_readme)
             self.assertIn("claude plugin marketplace add ./dist/marketplace", runtime_readme)
+            self.assertIn("claude plugin install odoo-skills@odoo-skills-dev --scope local", runtime_readme)
             self.assertIn("claude plugin list --json", runtime_readme)
+            self.assertIn("## Optional: configure a local Odoo project", runtime_readme)
+            self.assertIn("python3 -m pip install -e .", runtime_readme)
+            self.assertIn("odoo-skills project-setup", runtime_readme)
+            self.assertIn("# fallback", runtime_readme)
+            self.assertIn("python3 -m tooling.cli project-setup", runtime_readme)
+            self.assertIn("Optional for local Odoo repositories only", runtime_readme)
+            self.assertIn(
+                "These follow-up commands must be run from a clone of the source repository, not from this runtime bundle.",
+                runtime_readme,
+            )
+            self.assertIn("Install the repository CLI entrypoints from that separate source-repo clone first", runtime_readme)
+            self.assertNotIn("odoo-skills-build", runtime_readme)
+            self.assertNotIn("## Fastest local marketplace install", runtime_readme)
             self.assertLess(
                 runtime_readme.index("claude plugin marketplace add ./dist/marketplace"),
-                runtime_readme.index("## Install and use plugin"),
+                runtime_readme.index("claude plugin install odoo-skills@odoo-skills-dev --scope local"),
             )
-            self.assertIn("odoo-skills project-setup", runtime_readme)
-            self.assertIn("python3 -m tooling.cli project-setup", runtime_readme)
+            self.assertLess(
+                runtime_readme.index("python3 -m pip install -e ."),
+                runtime_readme.index("odoo-skills project-setup"),
+            )
             self.assertNotIn("python3 tooling/setup_local.py", runtime_readme)
             self.assertNotIn("tooling/materialization/materialize_odoo_skill_paths.py", runtime_readme)
             self.assertNotIn(".claude/skills/odoo-paths.md", runtime_readme)
