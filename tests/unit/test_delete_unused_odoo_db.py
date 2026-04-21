@@ -55,6 +55,54 @@ class DeleteUnusedOdooDbTests(unittest.TestCase):
                 Path("/home/test/.local/share/Odoo/filestore/tmp_odoo_test"),
             )
 
+    def test_cleanup_database_uses_configured_db_connection_settings(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            conf = Path(tmp) / "odoo.conf"
+            data_dir = Path(tmp) / "data"
+            filestore = data_dir / "filestore" / "tmp_odoo_test"
+            filestore.mkdir(parents=True)
+            conf.write_text(
+                "[options]\n"
+                f"data_dir = {data_dir}\n"
+                "db_host = localhost\n"
+                "db_port = 5432\n"
+                "db_user = qms\n"
+                "db_password = qms\n"
+            )
+
+            run_calls = []
+
+            def fake_run(cmd, check, env=None):
+                run_calls.append((cmd, check, env))
+
+            cleanup.cleanup_database(
+                db_name="tmp_odoo_test",
+                config_path=conf,
+                dry_run=False,
+                run_command=fake_run,
+                remove_tree=lambda path: None,
+            )
+
+            self.assertEqual(len(run_calls), 1)
+            [(cmd, check, env)] = run_calls
+            self.assertEqual(
+                cmd,
+                [
+                    "dropdb",
+                    "--if-exists",
+                    "-h",
+                    "localhost",
+                    "-p",
+                    "5432",
+                    "-U",
+                    "qms",
+                    "tmp_odoo_test",
+                ],
+            )
+            self.assertTrue(check)
+            self.assertIsNotNone(env)
+            self.assertEqual(env["PGPASSWORD"], "qms")
+
     def test_validate_db_name_rejects_invalid_values(self) -> None:
         for db_name in ["", "   ", ".", "..", "foo/bar", "foo\\bar", "/tmp/evil"]:
             with self.subTest(db_name=db_name):
