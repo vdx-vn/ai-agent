@@ -19,10 +19,10 @@ Set these values for your environment before using the skill library:
 
 ## Recommended workflow
 1. Install repo entrypoints first with `python3 -m pip install -e .` from repo root.
-2. Decide which Odoo docs repo and source repo are authoritative for current project.
-3. From Odoo project root, run `odoo-skills project-setup`.
+2. Only do this for a local Odoo repository that needs local docs/source/test integration.
+3. Run `odoo-skills project-setup` from the Odoo project root.
 4. If `odoo-skills` is not on PATH, run `python3 -m tooling.cli project-setup`.
-5. Command will ask for docs root, source root, version if auto-detection fails, `odoo-bin`, and config path, then write `.claude/odoo-skill-paths.json` and `.claude/settings.local.json` for this project.
+5. Command will ask for docs root, source root, version if auto-detection fails, `odoo-bin`, and config path, then write `.claude/odoo-skill-paths.json` and `.claude/settings.local.json` for that project.
 6. Keep local test harness base command in `.claude/settings.local.json` under `ODOO_TEST_BASE_CMD` for `odoo-local-test-harness`.
 7. If you prefer to keep placeholders, mentally substitute `<ODOO_DOCS_ROOT>` and `<ODOO_SOURCE_ROOT>` when reading skill references.
 

@@ -2,24 +2,20 @@
 
 Public Claude Code plugin for Odoo-focused skills.
 
-## Fastest local marketplace install
-
-From the repository root that produced this bundle, build the runtime bundle and install from the local marketplace:
+## Install plugin from this bundle
 
 ```bash
-odoo-skills-build
 claude plugin marketplace add ./dist/marketplace
 claude plugin install odoo-skills@odoo-skills-dev --scope local
 claude plugin list --json
 ```
 
-Use this when you want the shortest local plugin install path. If the target repository is an Odoo project, run `odoo-skills project-setup` in that project after plugin install.
+## Optional: configure a local Odoo project
 
-## Install and use plugin
-
-After plugin install, configure each Odoo project separately:
+Optional for local Odoo repositories only. These follow-up commands must be run from a clone of the source repository, not from this runtime bundle. Install the repository CLI entrypoints from that separate source-repo clone first, then run project setup in the target Odoo repository:
 
 ```bash
+python3 -m pip install -e .
 odoo-skills project-setup
 # fallback
 python3 -m tooling.cli project-setup
@@ -27,5 +23,5 @@ python3 -m tooling.cli project-setup
 
 ## Runtime contents
 
-This marketplace bundle ships plugin metadata, public `skills/`, and license files only.
-Repo-only authoring tools such as `tooling/` and `.claude/skills/` are not included in runtime bundle.
+This bundle ships plugin metadata, public skills, and license files only.
+Repo-only authoring tools such as tooling/ and .claude/skills/ are not included.

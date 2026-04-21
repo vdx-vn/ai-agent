@@ -32,32 +32,68 @@ class PluginFoundationTests(unittest.TestCase):
         self.assertEqual(plugins[0].get("name"), "odoo-skills")
         self.assertEqual(plugins[0].get("source"), "./")
 
-    def test_readme_mentions_full_installation_and_usage_flow(self) -> None:
+    def test_readme_prioritizes_global_install_and_links_optional_project_setup_docs(self) -> None:
         readme_text = (ROOT / "README.md").read_text(encoding="utf-8")
+
+        self.assertTrue((ROOT / "docs" / "install.md").exists(), "docs/install.md should exist")
+        self.assertTrue((ROOT / "docs" / "project-setup.md").exists(), "docs/project-setup.md should exist")
+
         self.assertIn("git clone git@github.com:vdx-vn/ai-agent", readme_text)
-        self.assertIn("cd ai-agent", readme_text)
         self.assertIn("python3 -m pip install -e .", readme_text)
+        self.assertIn("odoo-skills install-plugin", readme_text)
         self.assertIn("python3 -m tooling.install_plugin", readme_text)
-        self.assertIn("odoo-skills project-setup", readme_text)
-        self.assertIn("python3 -m tooling.cli project-setup", readme_text)
+        self.assertIn("## Optional: configure a local Odoo project", readme_text)
+        self.assertIn(
+            "Only do this if you want local Odoo docs/source paths and local test harness setup inside a specific Odoo repository.",
+            readme_text,
+        )
+        self.assertIn("[docs/install.md](docs/install.md)", readme_text)
+        self.assertIn("[docs/project-setup.md](docs/project-setup.md)", readme_text)
         self.assertIn("odoo-skills verify", readme_text)
         self.assertIn("odoo-skills build", readme_text)
         self.assertIn("odoo-skills smoke-install", readme_text)
-        self.assertIn("python3 -m tooling.setup_local", readme_text)
-        self.assertIn("deprecated", readme_text.lower())
         self.assertIn("claude --plugin-dir ~/.claude/plugins --plugin-dir .", readme_text)
         self.assertIn("claude plugin marketplace add ./dist/marketplace", readme_text)
-        self.assertIn("claude plugin list --json", readme_text)
-        self.assertLess(
-            readme_text.index("claude plugin marketplace add ./dist/marketplace"),
-            readme_text.index("## Install and use plugin"),
-        )
+        self.assertIn("python3 -m tooling.setup_local", readme_text)
+        self.assertIn("deprecated", readme_text.lower())
+        self.assertNotIn("## Fastest local marketplace install", readme_text)
         self.assertLess(
             readme_text.index("python3 -m pip install -e ."),
-            readme_text.index(
-                "odoo-skills project-setup",
-                readme_text.index("## Phase 3: configure each Odoo project once"),
-            ),
+            readme_text.index("odoo-skills install-plugin"),
+        )
+        self.assertLess(
+            readme_text.index("odoo-skills install-plugin"),
+            readme_text.index("## Optional: configure a local Odoo project"),
+        )
+
+    def test_docs_install_locks_user_local_install_contract(self) -> None:
+        install_text = (ROOT / "docs" / "install.md").read_text(encoding="utf-8")
+
+        self.assertIn("for your Claude Code user", install_text)
+        self.assertIn("user-local", install_text)
+        self.assertIn("does not require an Odoo repository", install_text)
+        self.assertIn(
+            "does not ask for Odoo docs paths, Odoo source paths, `odoo-bin`, or project config values",
+            install_text,
+        )
+        self.assertIn("## Verify", install_text)
+        self.assertIn("claude plugin list --json", install_text)
+        self.assertIn("## Troubleshooting", install_text)
+        self.assertIn("## Uninstall", install_text)
+        self.assertIn("See [project-setup.md](project-setup.md).", install_text)
+
+    def test_docs_project_setup_locks_optional_project_local_setup_contract(self) -> None:
+        project_setup_text = (ROOT / "docs" / "project-setup.md").read_text(encoding="utf-8")
+
+        self.assertIn("Use this only after you have already installed `odoo-skills`", project_setup_text)
+        self.assertIn("optional and project-local", project_setup_text)
+        self.assertIn("From inside the target Odoo repository", project_setup_text)
+        self.assertIn("- `.claude/settings.local.json`", project_setup_text)
+        self.assertIn("- `.claude/odoo-skill-paths.json`", project_setup_text)
+        self.assertIn("`ODOO_TEST_BASE_CMD`", project_setup_text)
+        self.assertIn(
+            "These files are separate from the user-local Claude Code plugin installation.",
+            project_setup_text,
         )
 
     def test_license_contains_apache_license(self) -> None:
