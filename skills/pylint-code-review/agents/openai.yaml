@@ -1,0 +1,7 @@
+interface:
+  display_name: "Pylint Code Review"
+  short_description: "Review Python code with bundled pylint checks"
+  default_prompt: "Use $pylint-code-review to run the bundled pylint profile on Python code and return structured static-analysis findings with fix guidance."
+
+policy:
+  allow_implicit_invocation: true
