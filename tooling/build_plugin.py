@@ -9,21 +9,22 @@ RUNTIME_README = """# odoo-skills Runtime marketplace bundle
 
 Public Claude Code plugin for Odoo-focused skills.
 
-## Install from local marketplace
+## Fastest local marketplace install
+
+From the repository root that produced this bundle, build the runtime bundle and install from the local marketplace:
 
 ```bash
-claude plugin marketplace add ./
+odoo-skills-build
+claude plugin marketplace add ./dist/marketplace
 claude plugin install odoo-skills@odoo-skills-dev --scope local
+claude plugin list --json
 ```
 
-Slash-command equivalents:
+Use this when you want the shortest local plugin install path. If the target repository is an Odoo project, run `odoo-skills project-setup` in that project after plugin install.
 
-- /plugin marketplace add
-- /plugin install odoo-skills@odoo-skills-dev
+## Install and use plugin
 
-## After plugin install
-
-Configure each Odoo project separately:
+After plugin install, configure each Odoo project separately:
 
 ```bash
 odoo-skills project-setup
