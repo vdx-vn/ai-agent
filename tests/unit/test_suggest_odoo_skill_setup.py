@@ -9,11 +9,14 @@ from tooling.materialization.materialize_odoo_skill_paths import parse_args
 
 ROOT = Path(__file__).resolve().parents[2]
 COPIED_SUGGEST_PATH = ROOT / ".claude" / "skills" / "scripts" / "suggest_odoo_skill_setup.py"
-_spec = importlib.util.spec_from_file_location("copied_suggest_odoo_skill_setup", COPIED_SUGGEST_PATH)
+_spec = importlib.util.spec_from_file_location(
+    "tooling_materialization_suggest_odoo_skill_setup",
+    ROOT / "tooling" / "materialization" / "suggest_odoo_skill_setup.py",
+)
 assert _spec and _spec.loader
-_copied_suggest = importlib.util.module_from_spec(_spec)
-_spec.loader.exec_module(_copied_suggest)
-build_system_message = _copied_suggest.build_system_message
+_suggest = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_suggest)
+build_system_message = _suggest.build_system_message
 
 PROJECT_SETUP_COMMAND = "odoo-skills project-setup"
 PROJECT_SETUP_FALLBACK = "python3 -m tooling.cli project-setup"
@@ -40,9 +43,22 @@ class SuggestOdooSkillSetupTests(unittest.TestCase):
             settings,
         )
 
+    def test_non_odoo_prompt_submit_stays_silent_even_with_matching_prompt(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo_root = Path(tmp)
+
+            message = build_system_message(
+                raw="create new odoo module",
+                repo_root=repo_root,
+                mode="prompt-submit",
+            )
+
+            self.assertEqual(message, "")
+
     def test_setup_guidance_points_to_project_setup_commands(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             repo_root = Path(tmp)
+            (repo_root / "odoo-bin").write_text("", encoding="utf-8")
 
             message = build_system_message(
                 raw="create new odoo module",
@@ -60,6 +76,18 @@ class SuggestOdooSkillSetupTests(unittest.TestCase):
             )
             self.assertIn(".claude/settings.local.json", message)
             self.assertIn("ODOO_TEST_BASE_CMD", message)
+
+    def test_non_odoo_session_start_stays_silent(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo_root = Path(tmp)
+
+            message = build_system_message(
+                raw="",
+                repo_root=repo_root,
+                mode="session-start",
+            )
+
+            self.assertEqual(message, "")
 
     def test_copied_path_docs_match_expected_guidance(self) -> None:
         for doc_path in [

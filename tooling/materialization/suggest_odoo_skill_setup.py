@@ -93,6 +93,8 @@ def build_system_message(raw: str, repo_root: Path, mode: str) -> str:
     config_path = repo_root / ".claude" / "odoo-skill-paths.json"
     matched = detect_prompt_match(raw)
     odooish = repo_looks_odoo(repo_root)
+    if not odooish:
+        return ""
     should_suggest_path_setup = matched if mode == "prompt-submit" else (matched or odooish)
     should_suggest_harness = odooish and (matched if mode == "prompt-submit" else True)
 

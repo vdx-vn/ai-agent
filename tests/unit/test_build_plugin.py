@@ -30,6 +30,12 @@ class BuildPluginTests(unittest.TestCase):
             runtime_readme = (output_dir / "README.md").read_text(encoding="utf-8")
             self.assertIn("Runtime marketplace bundle", runtime_readme)
             self.assertIn("claude plugin install odoo-skills@odoo-skills-dev --scope local", runtime_readme)
+            self.assertIn("claude plugin marketplace add ./dist/marketplace", runtime_readme)
+            self.assertIn("claude plugin list --json", runtime_readme)
+            self.assertLess(
+                runtime_readme.index("claude plugin marketplace add ./dist/marketplace"),
+                runtime_readme.index("## Install and use plugin"),
+            )
             self.assertIn("odoo-skills project-setup", runtime_readme)
             self.assertIn("python3 -m tooling.cli project-setup", runtime_readme)
             self.assertNotIn("python3 tooling/setup_local.py", runtime_readme)
