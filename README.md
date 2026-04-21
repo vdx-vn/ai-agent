@@ -197,6 +197,7 @@ Technical reference skills:
 - `odoo-upgrade-migration`
 - `odoo-delivery-ops`
 - `odoo-local-test-harness`
+- `pylint-code-review`
 
 Business reference skills:
 - `odoo-business-sales`

@@ -32,6 +32,7 @@ REQUIRED_PUBLIC_SKILLS = {
     "odoo-business-timesheet-project-services",
     "odoo-business-expenses",
     "odoo-business-website-ecommerce",
+    "pylint-code-review",
 }
 
 
