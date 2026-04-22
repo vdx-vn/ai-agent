@@ -12,7 +12,7 @@
 - [ ] Preserve the configured `-c` or `--config` value from the base command.
 - [ ] Confirm `ODOO_TEST_BASE_CMD` does not already include runtime-managed flags: `-d`, `--test-tags`, `--test-enable`, `-i`, `-u`, or `--stop-after-init`.
 - [ ] Use `--cleanup-before` only when a disposable database must be reset before execution.
-- [ ] Keep automatic post-run cleanup for disposable databases and matching filestore state.
+- [ ] Keep automatic post-run cleanup for disposable databases and matching filestore state, including terminating leftover sessions before `dropdb` when needed.
 - [ ] Keep local config immutable unless the user asks to change it.
 
 ## Output

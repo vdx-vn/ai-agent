@@ -16,11 +16,13 @@ class OdooLocalTestHarnessDocsTests(unittest.TestCase):
         self.assertIn("odoo-delivery-ops", harness_text)
         self.assertIn("## Output contract", harness_text)
         self.assertIn("references/overview.md", harness_text)
+        self.assertIn("automatic disposable database and filestore cleanup", harness_text)
 
         overview_text = overview.read_text()
         self.assertIn("## Primary routing rule", overview_text)
         self.assertIn("ODOO_TEST_BASE_CMD", overview_text)
         self.assertIn("dry-run", overview_text)
+        self.assertIn("terminate leftover sessions", overview_text)
 
     def test_sibling_skills_reference_harness(self) -> None:
         odoo_test = (ROOT / "odoo-test" / "SKILL.md").read_text()

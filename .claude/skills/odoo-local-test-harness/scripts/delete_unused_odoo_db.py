@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import configparser
 import re
+import os
 import shutil
 import subprocess
 from pathlib import Path
@@ -37,14 +38,22 @@ def validate_db_name(db_name: str) -> str:
 
 
 
-def resolve_data_dir(config_path: Path, home_path: Path | None = None) -> Path:
+def load_config_options(config_path: Path) -> configparser.SectionProxy:
     parser = configparser.ConfigParser()
     if not config_path.exists():
         raise FileNotFoundError(f"Config file does not exist: {config_path}")
     read_files = parser.read(config_path)
     if not read_files:
         raise OSError(f"Could not read config file: {config_path}")
-    configured = parser.get("options", "data_dir", fallback="").strip()
+    if not parser.has_section("options"):
+        parser.add_section("options")
+    return parser["options"]
+
+
+
+def resolve_data_dir(config_path: Path, home_path: Path | None = None) -> Path:
+    options = load_config_options(config_path)
+    configured = options.get("data_dir", fallback="").strip()
     if configured:
         return Path(configured).expanduser()
     base = home_path if home_path is not None else Path.home()
@@ -72,15 +81,41 @@ def cleanup_database(
     remove_tree: Callable[[Path], None] = shutil.rmtree,
 ) -> None:
     db_name = validate_db_name(db_name)
+    options = load_config_options(config_path)
     filestore = filestore_path(config_path, db_name)
-    dropdb_cmd = ["dropdb", "--if-exists", db_name]
+    dropdb_cmd = ["dropdb", "--if-exists"]
+    terminate_cmd = [
+        "psql",
+        "-d",
+        "postgres",
+        "-Atqc",
+        "SELECT pg_terminate_backend(pid) FROM pg_stat_activity "
+        f"WHERE datname = '{db_name}' AND pid <> pg_backend_pid();",
+    ]
+    for flag, key in (("-h", "db_host"), ("-p", "db_port"), ("-U", "db_user")):
+        value = options.get(key, fallback="").strip()
+        if value:
+            dropdb_cmd.extend([flag, value])
+            terminate_cmd[1:1] = [flag, value]
+    dropdb_cmd.append(db_name)
+    dropdb_env = None
+    db_password = options.get("db_password", fallback="").strip()
+    if db_password:
+        dropdb_env = os.environ.copy()
+        dropdb_env["PGPASSWORD"] = db_password
+    print("Terminate database sessions:", " ".join(terminate_cmd))
     print("Cleanup database:", " ".join(dropdb_cmd))
     print("Cleanup filestore:", filestore)
 
     if dry_run:
         return
 
-    run_command(dropdb_cmd, check=True)
+    if dropdb_env is None:
+        run_command(terminate_cmd, check=True)
+        run_command(dropdb_cmd, check=True)
+    else:
+        run_command(terminate_cmd, check=True, env=dropdb_env)
+        run_command(dropdb_cmd, check=True, env=dropdb_env)
     if filestore.exists():
         remove_tree(filestore)
 

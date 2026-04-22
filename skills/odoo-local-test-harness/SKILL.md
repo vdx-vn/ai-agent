@@ -1,6 +1,6 @@
 ---
 name: odoo-local-test-harness
-description: "Use when working across multiple local Odoo projects with different versions, where each project has its own base `odoo-bin` command but test execution should follow one shared harness for appending db, test tags, install or update flags, stop-after-init, and shared database or filestore cleanup."
+description: "Use when working across multiple local Odoo projects with different versions, where each project has its own base `odoo-bin` command but test execution should follow one shared harness for appending db, test tags, install or update flags, stop-after-init, and automatic disposable database and filestore cleanup."
 ---
 
 # Odoo Local Test Harness
@@ -18,7 +18,7 @@ If the primary output is only CLI semantics, compose with `odoo-delivery-ops`.
 - a local Odoo project has its own base command and config path
 - the user provides or updates a project-local `ODOO_TEST_BASE_CMD`
 - tests need database names, test tags, install or update flags, or `--stop-after-init` appended safely
-- local test setup must clean disposable databases or matching filestore state automatically after runs, with optional pre-run cleanup
+- local test setup must clean disposable databases or matching filestore state automatically after runs, with optional pre-run cleanup that can terminate leftover sessions first
 
 # Do not use this skill when
 - the task is only about Odoo testing primitives or framework selection
@@ -51,7 +51,7 @@ Do not pre-configure runtime-managed flags in `ODOO_TEST_BASE_CMD`; the harness 
 2. Read `references/overview.md` for routing, boundaries, and local execution anchors.
 3. Parse it into argv through `scripts/run_odoo_test.py`, not shell concatenation.
 4. Normalize `-d`, `--test-tags`, `--test-enable`, `-i`, `-u`, and `--stop-after-init`.
-5. Run optional pre-run cleanup plus automatic post-run cleanup through `scripts/delete_unused_odoo_db.py` when the flow uses a disposable local database.
+5. Run optional pre-run cleanup plus automatic post-run cleanup through `scripts/delete_unused_odoo_db.py` when the flow uses a disposable local database, terminating leftover sessions on that database before `dropdb` when needed.
 6. Return the resolved base command source, appended arguments, cleanup action, and boundary decision.
 
 # Output contract

@@ -6,6 +6,7 @@ import importlib.util
 import os
 import shlex
 import subprocess
+import sys
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
 
@@ -39,7 +40,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--install", help="Comma-separated modules to install with -i")
     parser.add_argument("--update", help="Comma-separated modules to update with -u")
     parser.add_argument("--cleanup-before", action="store_true")
-    parser.add_argument("--cleanup-after", action="store_true")
+    parser.add_argument(
+        "--cleanup-after",
+        action="store_true",
+        help="Deprecated no-op; cleanup after the run is automatic",
+    )
     parser.add_argument("--no-stop-after-init", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     return parser.parse_args(argv)
@@ -126,24 +131,33 @@ def main(argv: list[str] | None = None, env: Mapping[str, str] | None = None) ->
     )
 
     if not args.dry_run:
-        maybe_cleanup(enabled=args.cleanup_before, db_name=args.db, config_path=config_path, dry_run=args.dry_run)
+        maybe_cleanup(enabled=args.cleanup_before, db_name=args.db, config_path=config_path, dry_run=False)
     print("Resolved base command:", " ".join(shlex.quote(part) for part in base_argv))
     print("Final command:", " ".join(shlex.quote(part) for part in command))
 
+    primary_error: BaseException | None = None
     try:
         if args.dry_run:
             return 0
 
         subprocess.run(command, check=True)
         return 0
+    except BaseException as exc:
+        primary_error = exc
+        raise
     finally:
         if not args.dry_run:
-            maybe_cleanup(
-                enabled=args.cleanup_after,
-                db_name=args.db,
-                config_path=config_path,
-                dry_run=args.dry_run,
-            )
+            try:
+                cleanup_database(
+                    db_name=args.db,
+                    config_path=config_path,
+                    dry_run=False,
+                )
+            except Exception as cleanup_exc:
+                if primary_error is None:
+                    raise
+                if isinstance(primary_error, Exception):
+                    print(f"Cleanup failed after primary error: {cleanup_exc}", file=sys.stderr)
 
 
 if __name__ == "__main__":
