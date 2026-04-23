@@ -5,7 +5,7 @@
    - Expected: use `odoo-local-test-harness` as primary skill.
 2. "This repo is on Odoo 17.0, but the local command differs from my 18.0 project."
    - Expected: use `odoo-local-test-harness` as primary skill.
-3. "Clean the temporary Odoo test database before the run, then clean it automatically when the run ends."
+3. "Clean the temporary Odoo test database before the run, then clean it automatically when the run ends even if Odoo leaves an idle connection behind."
    - Expected: use `odoo-local-test-harness` as primary skill.
 
 ## Negative triggers

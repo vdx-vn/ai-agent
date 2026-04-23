@@ -84,16 +84,26 @@ def cleanup_database(
     options = load_config_options(config_path)
     filestore = filestore_path(config_path, db_name)
     dropdb_cmd = ["dropdb", "--if-exists"]
+    terminate_cmd = [
+        "psql",
+        "-d",
+        "postgres",
+        "-Atqc",
+        "SELECT pg_terminate_backend(pid) FROM pg_stat_activity "
+        f"WHERE datname = '{db_name}' AND pid <> pg_backend_pid();",
+    ]
     for flag, key in (("-h", "db_host"), ("-p", "db_port"), ("-U", "db_user")):
         value = options.get(key, fallback="").strip()
         if value:
             dropdb_cmd.extend([flag, value])
+            terminate_cmd[1:1] = [flag, value]
     dropdb_cmd.append(db_name)
     dropdb_env = None
     db_password = options.get("db_password", fallback="").strip()
     if db_password:
         dropdb_env = os.environ.copy()
         dropdb_env["PGPASSWORD"] = db_password
+    print("Terminate database sessions:", " ".join(terminate_cmd))
     print("Cleanup database:", " ".join(dropdb_cmd))
     print("Cleanup filestore:", filestore)
 
@@ -101,8 +111,10 @@ def cleanup_database(
         return
 
     if dropdb_env is None:
+        run_command(terminate_cmd, check=True)
         run_command(dropdb_cmd, check=True)
     else:
+        run_command(terminate_cmd, check=True, env=dropdb_env)
         run_command(dropdb_cmd, check=True, env=dropdb_env)
     if filestore.exists():
         remove_tree(filestore)

@@ -22,6 +22,7 @@ A local execution-oriented answer that identifies the configured base command so
 - Preserve the configured config path from the base command.
 - Use `--cleanup-before` only when a disposable local database must be cleared before the run.
 - Use shared automatic post-run cleanup only for disposable local database flows.
+- Expect shared cleanup to terminate leftover sessions on the target disposable database before `dropdb`, so filestore removal is not blocked by idle connections.
 - In dry-run mode, print resolved and final commands but skip cleanup execution and subprocess execution.
 
 ## Key docs anchors
