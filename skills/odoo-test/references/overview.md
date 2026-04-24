@@ -16,6 +16,8 @@ Define and run validation for a current Odoo change, including install, update, 
 Current-change validation evidence or validation plan tied to a specific diff, addon, bug, or runtime scenario.
 
 ## Key checks
+- Route current-project-state validation to existing db by default.
+- Route install and update validation to disposable db by default.
 - Choose test type by change surface: unit, transaction, HTTP, JS, tour, performance.
 - Cover install and update paths when relevant.
 - Include security and multi-company checks when behavior changes.

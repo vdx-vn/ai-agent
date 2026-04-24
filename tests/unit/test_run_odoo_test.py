@@ -22,6 +22,157 @@ import run_odoo_test  # type: ignore
 
 
 class RunOdooTestTests(unittest.TestCase):
+    def test_choose_db_mode_auto_uses_existing_when_no_install_or_update(self) -> None:
+        self.assertEqual(
+            run_odoo_test.choose_db_mode(
+                requested_mode="auto",
+                install_modules=None,
+                update_modules=None,
+            ),
+            "existing",
+        )
+
+    def test_choose_db_mode_auto_uses_disposable_when_install_present(self) -> None:
+        self.assertEqual(
+            run_odoo_test.choose_db_mode(
+                requested_mode="auto",
+                install_modules="sale",
+                update_modules=None,
+            ),
+            "disposable",
+        )
+
+    def test_choose_db_mode_auto_uses_disposable_when_update_present(self) -> None:
+        self.assertEqual(
+            run_odoo_test.choose_db_mode(
+                requested_mode="auto",
+                install_modules=None,
+                update_modules="stock",
+            ),
+            "disposable",
+        )
+
+    def test_resolve_existing_db_uses_config_db_name_when_present(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            config_path = Path(temp_dir) / "odoo.conf"
+            config_path.write_text("[options]\ndb_name = existing_db\n")
+
+            self.assertEqual(
+                run_odoo_test.resolve_existing_db(
+                    config_path,
+                    list_databases=lambda _path: ["fallback_db"],
+                ),
+                "existing_db",
+            )
+
+    def test_resolve_existing_db_falls_back_to_accessible_db_list_when_db_name_missing(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            config_path = Path(temp_dir) / "odoo.conf"
+            config_path.write_text("[options]\ndb_host = localhost\n")
+
+            self.assertEqual(
+                run_odoo_test.resolve_existing_db(
+                    config_path,
+                    list_databases=lambda _path: ["accessible_db"],
+                ),
+                "accessible_db",
+            )
+
+    def test_resolve_existing_db_raises_with_candidates_when_multiple_databases_match(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            config_path = Path(temp_dir) / "odoo.conf"
+            config_path.write_text("[options]\ndb_host = localhost\n")
+
+            with self.assertRaises(run_odoo_test.MultipleExistingDatabasesError) as exc:
+                run_odoo_test.resolve_existing_db(
+                    config_path,
+                    list_databases=lambda _path: ["db_one", "db_two"],
+                )
+
+        self.assertEqual(exc.exception.candidates, ["db_one", "db_two"])
+        self.assertIn("db_one", str(exc.exception))
+        self.assertIn("db_two", str(exc.exception))
+
+    def test_resolve_existing_db_raises_when_config_lists_multiple_db_names(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            config_path = Path(temp_dir) / "odoo.conf"
+            config_path.write_text("[options]\ndb_name = db_one, db_two\n")
+
+            with self.assertRaises(run_odoo_test.MultipleExistingDatabasesError) as exc:
+                run_odoo_test.resolve_existing_db(
+                    config_path,
+                    list_databases=lambda _path: ["fallback_db"],
+                )
+
+        self.assertEqual(exc.exception.candidates, ["db_one", "db_two"])
+
+    @patch("run_odoo_test.cleanup_database")
+    @patch("run_odoo_test.subprocess.run")
+    def test_main_existing_mode_skips_cleanup_before_and_after(self, run_mock, cleanup_mock) -> None:
+        exit_code = run_odoo_test.main(
+            [
+                "--db-mode",
+                "existing",
+                "--cleanup-before",
+            ],
+            env={
+                "ODOO_TEST_BASE_CMD": "python3 /opt/odoo/odoo-bin -c /tmp/odoo.conf"
+            },
+            resolve_existing_db_name=lambda _config_path: "existing_db",
+        )
+
+        self.assertEqual(exit_code, 0)
+        cleanup_mock.assert_not_called()
+        run_mock.assert_called_once_with(
+            [
+                "python3",
+                "/opt/odoo/odoo-bin",
+                "-c",
+                "/tmp/odoo.conf",
+                "-d",
+                "existing_db",
+                "--stop-after-init",
+            ],
+            check=True,
+        )
+
+    @patch("run_odoo_test.cleanup_database")
+    @patch("run_odoo_test.subprocess.run")
+    def test_main_disposable_mode_keeps_cleanup_before_and_after(self, run_mock, cleanup_mock) -> None:
+        exit_code = run_odoo_test.main(
+            [
+                "--db-mode",
+                "disposable",
+                "--db",
+                "tmp_odoo_test",
+                "--cleanup-before",
+            ],
+            env={
+                "ODOO_TEST_BASE_CMD": "python3 /opt/odoo/odoo-bin -c /tmp/odoo.conf"
+            },
+        )
+
+        self.assertEqual(exit_code, 0)
+        cleanup_mock.assert_has_calls(
+            [
+                call(db_name="tmp_odoo_test", config_path=Path("/tmp/odoo.conf"), dry_run=False),
+                call(db_name="tmp_odoo_test", config_path=Path("/tmp/odoo.conf"), dry_run=False),
+            ]
+        )
+        self.assertEqual(cleanup_mock.call_count, 2)
+        run_mock.assert_called_once_with(
+            [
+                "python3",
+                "/opt/odoo/odoo-bin",
+                "-c",
+                "/tmp/odoo.conf",
+                "-d",
+                "tmp_odoo_test",
+                "--stop-after-init",
+            ],
+            check=True,
+        )
+
     def test_build_command_appends_local_runtime_flags(self) -> None:
         command = run_odoo_test.build_command(
             ["python3", "/opt/odoo/odoo-bin", "-c", "/tmp/odoo.conf"],
@@ -49,6 +200,48 @@ class RunOdooTestTests(unittest.TestCase):
                 "stock",
                 "--stop-after-init",
             ],
+        )
+
+    def test_extract_config_path_supports_long_form_space_separated_flag(self) -> None:
+        self.assertEqual(
+            run_odoo_test.extract_config_path(
+                [
+                    "python3",
+                    "/opt/odoo/odoo-bin",
+                    "--config",
+                    "/tmp/odoo.conf",
+                ]
+            ),
+            Path("/tmp/odoo.conf"),
+        )
+
+    @patch("run_odoo_test.cleanup_database")
+    @patch("run_odoo_test.subprocess.run")
+    def test_main_accepts_long_form_space_separated_config_flag(self, run_mock, cleanup_mock) -> None:
+        exit_code = run_odoo_test.main(
+            [
+                "--db-mode",
+                "existing",
+            ],
+            env={
+                "ODOO_TEST_BASE_CMD": "python3 /opt/odoo/odoo-bin --config /tmp/odoo.conf"
+            },
+            resolve_existing_db_name=lambda _config_path: "existing_db",
+        )
+
+        self.assertEqual(exit_code, 0)
+        cleanup_mock.assert_not_called()
+        run_mock.assert_called_once_with(
+            [
+                "python3",
+                "/opt/odoo/odoo-bin",
+                "--config",
+                "/tmp/odoo.conf",
+                "-d",
+                "existing_db",
+                "--stop-after-init",
+            ],
+            check=True,
         )
 
     def test_validate_base_command_rejects_managed_flags(self) -> None:
@@ -129,6 +322,8 @@ class RunOdooTestTests(unittest.TestCase):
     def test_main_runs_automatic_cleanup_after_success(self, run_mock, cleanup_mock) -> None:
         exit_code = run_odoo_test.main(
             [
+                "--db-mode",
+                "disposable",
                 "--db",
                 "tmp_odoo_test",
                 "--test-tags",
@@ -166,6 +361,8 @@ class RunOdooTestTests(unittest.TestCase):
     def test_main_runs_cleanup_before_and_automatic_after(self, run_mock, cleanup_mock) -> None:
         exit_code = run_odoo_test.main(
             [
+                "--db-mode",
+                "disposable",
                 "--db",
                 "tmp_odoo_test",
                 "--cleanup-before",
@@ -202,6 +399,8 @@ class RunOdooTestTests(unittest.TestCase):
         with self.assertRaises(subprocess.CalledProcessError):
             run_odoo_test.main(
                 [
+                    "--db-mode",
+                    "disposable",
                     "--db",
                     "tmp_odoo_test",
                 ],
@@ -226,6 +425,8 @@ class RunOdooTestTests(unittest.TestCase):
             with self.assertRaises(subprocess.CalledProcessError):
                 run_odoo_test.main(
                     [
+                        "--db-mode",
+                        "disposable",
                         "--db",
                         "tmp_odoo_test",
                     ],
@@ -248,6 +449,8 @@ class RunOdooTestTests(unittest.TestCase):
         with self.assertRaises(KeyboardInterrupt):
             run_odoo_test.main(
                 [
+                    "--db-mode",
+                    "disposable",
                     "--db",
                     "tmp_odoo_test",
                 ],
@@ -269,6 +472,8 @@ class RunOdooTestTests(unittest.TestCase):
         with self.assertRaises(RuntimeError) as exc:
             run_odoo_test.main(
                 [
+                    "--db-mode",
+                    "disposable",
                     "--db",
                     "tmp_odoo_test",
                 ],
@@ -301,6 +506,8 @@ class RunOdooTestTests(unittest.TestCase):
     def test_main_dry_run_skips_cleanup_and_subprocess(self, run_mock, cleanup_mock) -> None:
         exit_code = run_odoo_test.main(
             [
+                "--db-mode",
+                "disposable",
                 "--db",
                 "tmp_odoo_test",
                 "--test-tags",
@@ -311,6 +518,24 @@ class RunOdooTestTests(unittest.TestCase):
             ],
             env={
                 "ODOO_TEST_BASE_CMD": "python3 /opt/odoo/odoo-bin -c /tmp/odoo.conf"
+            },
+        )
+
+        self.assertEqual(exit_code, 0)
+        cleanup_mock.assert_not_called()
+        run_mock.assert_not_called()
+
+    @patch("run_odoo_test.cleanup_database")
+    @patch("run_odoo_test.subprocess.run")
+    def test_main_existing_mode_dry_run_does_not_require_config_file(self, run_mock, cleanup_mock) -> None:
+        exit_code = run_odoo_test.main(
+            [
+                "--db-mode",
+                "existing",
+                "--dry-run",
+            ],
+            env={
+                "ODOO_TEST_BASE_CMD": "python3 /opt/odoo/odoo-bin -c /tmp/does-not-exist.conf"
             },
         )
 
