@@ -17,13 +17,19 @@ A local execution-oriented answer that identifies the configured base command so
 
 ## Key checks
 - Read `ODOO_TEST_BASE_CMD` from `.claude/settings.local.json` before planning execution.
-- Confirm the base command already includes `-c` or `--config`.
+- Confirm the base command already includes `-c` or `--config`, then preserve and report the resolved config path.
 - Confirm `ODOO_TEST_BASE_CMD` does not already include runtime-managed flags such as `-d`, `--test-tags`, `--test-enable`, `-i`, `-u`, or `--stop-after-init`.
-- Preserve the configured config path from the base command.
+- Select `--db-mode auto|existing|disposable`.
+- In auto mode, use existing for current-project-state validation and disposable for install or update validation.
+- In existing mode, prefer config `db_name`; otherwise list accessible non-system databases with the config connection settings.
+- If multiple candidates exist, stop and return the candidate list so the user can choose which DB to use.
+- Do not use `dbfilter` to narrow candidates.
 - Use `--cleanup-before` only when a disposable local database must be cleared before the run.
-- Use shared automatic post-run cleanup only for disposable local database flows.
+- Disposable mode requires an explicit DB name.
+- Use shared automatic post-run cleanup only for disposable local database flows, and skip DB/filestore cleanup in existing mode.
 - Expect shared cleanup to terminate leftover sessions on the target disposable database before `dropdb`, so filestore removal is not blocked by idle connections.
 - In dry-run mode, print resolved and final commands but skip cleanup execution and subprocess execution.
+- Output should report selected DB mode, selected DB or candidate list, and cleanup action.
 
 ## Key docs anchors
 - `content/developer/reference/backend/testing.rst`
