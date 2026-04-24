@@ -1,12 +1,12 @@
 # Examples
 
 ## Positive triggers
-1. "Use this project’s local Odoo command and run sale tests on db tmp_sale_18."
-   - Expected: use `odoo-local-test-harness` as primary skill.
+1. "Use this project’s local Odoo command and run sale tests against the current project state."
+   - Expected: use `odoo-local-test-harness` as primary skill and route to existing db by default.
 2. "This repo is on Odoo 17.0, but the local command differs from my 18.0 project."
    - Expected: use `odoo-local-test-harness` as primary skill.
 3. "Clean the temporary Odoo test database before the run, then clean it automatically when the run ends even if Odoo leaves an idle connection behind."
-   - Expected: use `odoo-local-test-harness` as primary skill.
+   - Expected: use `odoo-local-test-harness` as primary skill and route install or update validation to disposable db by default.
 
 ## Negative triggers
 1. "Explain TransactionCase vs HttpCase."

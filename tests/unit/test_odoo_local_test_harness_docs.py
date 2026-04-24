@@ -47,6 +47,58 @@ class OdooLocalTestHarnessDocsTests(unittest.TestCase):
             with self.subTest(path=path):
                 self.assertIn(expected, path.read_text())
 
+    def test_docs_describe_existing_and_disposable_db_modes(self) -> None:
+        expected_snippets = {
+            ROOT / "odoo-test" / "SKILL.md": [
+                "existing db by default",
+                "disposable db by default for install or update validation",
+            ],
+            ROOT / "odoo-test" / "references" / "overview.md": [
+                "current-project-state validation to existing db by default",
+                "install and update validation to disposable db by default",
+            ],
+            ROOT / "odoo-test" / "references" / "checklist.md": [
+                "Choose validation DB mode by change surface",
+                "Use existing DB mode for unit-style validation on current project state",
+                "Use disposable DB mode for install or update validation",
+                "Name cleanup expectations explicitly for the chosen DB mode",
+            ],
+            ROOT / "odoo-test" / "references" / "examples.md": [
+                "current project database",
+                "disposable database",
+            ],
+            ROOT / "odoo-local-test-harness" / "SKILL.md": [
+                "--db-mode auto|existing|disposable",
+                "prefer config `db_name`",
+                "multiple candidates",
+                "skip DB/filestore cleanup",
+                "require explicit DB name",
+                "automatic post-run cleanup of DB + filestore",
+                "resolved config path",
+                "selected DB mode",
+            ],
+            ROOT / "odoo-local-test-harness" / "references" / "overview.md": [
+                "Do not use `dbfilter` to narrow candidates",
+                "selected DB or candidate list",
+                "cleanup action",
+            ],
+            ROOT / "odoo-local-test-harness" / "references" / "checklist.md": [
+                "prefer config `db_name`",
+                "If multiple candidates exist, stop and ask the user which DB to use",
+                "Disposable mode requires an explicit DB name",
+            ],
+            ROOT / "odoo-local-test-harness" / "references" / "examples.md": [
+                "existing db by default",
+                "disposable db by default",
+            ],
+        }
+
+        for path, snippets in expected_snippets.items():
+            text = path.read_text(encoding="utf-8")
+            for snippet in snippets:
+                with self.subTest(path=path, snippet=snippet):
+                    self.assertIn(snippet, text)
+
 
 if __name__ == "__main__":
     unittest.main()

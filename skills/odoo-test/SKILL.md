@@ -11,7 +11,8 @@ Use this skill only when the primary requested output is validation for a concre
 
 # Use this skill when
 - run or choose validation for current Odoo work
-- validate install, update, or regression behavior for a concrete change
+- route current-project-state validation to an existing db by default
+- route install or update validation to a disposable db by default for install or update validation
 - prepare confidence signal before merge or release
 - triage failing validation for current work
 
