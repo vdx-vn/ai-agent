@@ -47,16 +47,20 @@ The configured base command must already include `-c` or `--config`.
 Do not pre-configure runtime-managed flags in `ODOO_TEST_BASE_CMD`; the harness owns `-d`, `--test-tags`, `--test-enable`, `-i`, `-u`, and `--stop-after-init`.
 
 # Workflow
-1. Read `ODOO_TEST_BASE_CMD` from local settings.
+1. Read `ODOO_TEST_BASE_CMD` from local settings and resolve the config path from that base command.
 2. Read `references/overview.md` for routing, boundaries, and local execution anchors.
-3. Parse it into argv through `scripts/run_odoo_test.py`, not shell concatenation.
-4. Normalize `-d`, `--test-tags`, `--test-enable`, `-i`, `-u`, and `--stop-after-init`.
-5. Run optional pre-run cleanup plus automatic post-run cleanup through `scripts/delete_unused_odoo_db.py` when the flow uses a disposable local database, terminating leftover sessions on that database before `dropdb` when needed.
-6. Return the resolved base command source, appended arguments, cleanup action, and boundary decision.
+3. Parse it into argv through `scripts/run_odoo_test.py`, not shell concatenation, and select `--db-mode auto|existing|disposable`.
+4. In auto mode, default to existing for current-project-state validation and to disposable for install or update validation.
+5. In existing mode, prefer config `db_name`; otherwise list accessible non-system databases from the config connection settings, stop on multiple candidates, do not use `dbfilter` to narrow candidates, and skip DB/filestore cleanup.
+6. In disposable mode, require explicit DB name, allow cleanup-before, and keep automatic post-run cleanup of DB + filestore through `scripts/delete_unused_odoo_db.py`, including terminating leftover sessions before `dropdb` when needed.
+7. Return the resolved config path, selected DB mode, selected DB or candidate list, cleanup action, and boundary decision.
 
 # Output contract
 Return a concise result that includes:
+- resolved config path
 - resolved base command source
+- selected DB mode
+- selected DB or candidate list
 - appended runtime arguments
 - cleanup action performed or skipped
 - boundary decision with primary and sibling skills
