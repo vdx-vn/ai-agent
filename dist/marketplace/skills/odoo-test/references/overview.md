@@ -17,12 +17,14 @@ Current-change validation evidence or validation plan tied to a specific diff, a
 
 ## Key checks
 - Route current-project-state validation to existing db by default.
-- Route install and update validation to disposable db by default.
+- Route install, update, or explicit disposable validation to disposable db by default.
+- Existing-db validation must not clean DB or filestore.
+- Disposable-db validation must clean DB and filestore after execution.
 - Choose test type by change surface: unit, transaction, HTTP, JS, tour, performance.
 - Cover install and update paths when relevant.
 - Include security and multi-company checks when behavior changes.
 - Report gaps, not only pass/fail.
-- Compose with `odoo-local-test-harness` when current-change validation depends on `ODOO_TEST_BASE_CMD` or shared disposable-db cleanup.
+- Compose with `odoo-local-test-harness` when local execution depends on `ODOO_TEST_BASE_CMD`, config inspection, existing-db resolution, or disposable DB/filestore cleanup.
 
 ## Key docs anchors
 - `content/developer/reference/backend/testing.rst`

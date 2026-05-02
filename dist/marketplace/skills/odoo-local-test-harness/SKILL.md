@@ -10,7 +10,7 @@ Run local Odoo tests across different projects and Odoo versions using one share
 Project-specific setup lives in `.claude/settings.local.json` as `ODOO_TEST_BASE_CMD`.
 
 # Primary routing rule
-Use this skill when the task depends on a project-local Odoo test command or shared local cleanup behavior.
+Use this skill when the task depends on a project-local Odoo test command or disposable DB/filestore cleanup behavior.
 If the primary output is current-change validation evidence, compose with `odoo-test`.
 If the primary output is only CLI semantics, compose with `odoo-delivery-ops`.
 
@@ -51,8 +51,8 @@ Do not pre-configure runtime-managed flags in `ODOO_TEST_BASE_CMD`; the harness 
 2. Read `references/overview.md` for routing, boundaries, and local execution anchors.
 3. Parse it into argv through `scripts/run_odoo_test.py`, not shell concatenation, and select `--db-mode auto|existing|disposable`.
 4. In auto mode, default to existing for current-project-state validation and to disposable for install or update validation.
-5. In existing mode, prefer config `db_name`; otherwise list accessible non-system databases from the config connection settings, stop on multiple candidates, do not use `dbfilter` to narrow candidates, and skip DB/filestore cleanup.
-6. In disposable mode, require explicit DB name, allow cleanup-before, and keep automatic post-run cleanup of DB + filestore through `scripts/delete_unused_odoo_db.py`, including terminating leftover sessions before `dropdb` when needed.
+5. In existing mode, prefer config `db_name`; otherwise list accessible non-system databases from the config connection settings, stop on multiple candidates, do not use `dbfilter` to narrow candidates, and existing mode must never clean DB/filestore.
+6. In disposable mode, install, update, or explicit disposable mode requires explicit `--db`; allow cleanup-before, and keep automatic post-run cleanup of DB + filestore through `scripts/delete_unused_odoo_db.py`, including terminating leftover sessions before `dropdb` when needed.
 7. Return the resolved config path, selected DB mode, selected DB or candidate list, cleanup action, and boundary decision.
 
 # Output contract
@@ -62,7 +62,7 @@ Return a concise result that includes:
 - selected DB mode
 - selected DB or candidate list
 - appended runtime arguments
-- cleanup action performed or skipped
+- cleanup action: skipped for existing mode, skipped for dry-run, automatic DB + filestore cleanup after disposable runs
 - boundary decision with primary and sibling skills
 
 Dry-run semantics:

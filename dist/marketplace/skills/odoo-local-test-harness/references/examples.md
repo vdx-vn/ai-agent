@@ -5,7 +5,7 @@
    - Expected: use `odoo-local-test-harness` as primary skill and route to existing db by default.
 2. "This repo is on Odoo 17.0, but the local command differs from my 18.0 project."
    - Expected: use `odoo-local-test-harness` as primary skill.
-3. "Clean the temporary Odoo test database before the run, then clean it automatically when the run ends even if Odoo leaves an idle connection behind."
+3. "Run install validation on a named disposable Odoo test database, clean it before the run, and clean its DB plus filestore after the run even if Odoo leaves an idle connection behind."
    - Expected: use `odoo-local-test-harness` as primary skill and route install or update validation to disposable db by default.
 
 ## Negative triggers
@@ -18,4 +18,5 @@
 
 ## Tie-breaker
 - Prompt: "Run the local Odoo command for this project with `--test-tags /sale` on a disposable db and clean it automatically afterward."
-- Why this skill wins: the task depends on a project-local base command and shared cleanup, so `odoo-local-test-harness` should win over `odoo-delivery-ops`.
+- Why this skill wins: the task depends on a project-local base command and disposable DB/filestore cleanup, so `odoo-local-test-harness` should win over `odoo-delivery-ops`.
+- Cleanup boundary: existing db mode skips cleanup; disposable db mode cleans DB plus filestore after execution.

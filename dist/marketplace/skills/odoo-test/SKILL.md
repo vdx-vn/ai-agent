@@ -1,6 +1,6 @@
 ---
 name: odoo-test
-description: "Validate a concrete Odoo change with install, update, workflow, security, and performance checks. Compose with `odoo-local-test-harness` when local execution depends on a project-specific base Odoo test command or shared DB and filestore cleanup."
+description: "Validate a concrete Odoo change with install, update, workflow, security, and performance checks. Compose with `odoo-local-test-harness` when local execution depends on `ODOO_TEST_BASE_CMD`, config inspection, existing-db resolution, or disposable DB/filestore cleanup."
 ---
 
 # Purpose
@@ -11,8 +11,10 @@ Use this skill only when the primary requested output is validation for a concre
 
 # Use this skill when
 - run or choose validation for current Odoo work
-- route current-project-state validation to an existing db by default
-- route install or update validation to a disposable db by default for install or update validation
+- route current-state validation uses an existing db by default
+- route install, update, or explicit disposable validation uses a disposable db
+- enforce that existing mode must never clean DB/filestore
+- enforce that disposable mode must always clean DB + filestore after disposable runs
 - prepare confidence signal before merge or release
 - triage failing validation for current work
 
@@ -29,7 +31,7 @@ Use this skill only when the primary requested output is validation for a concre
 # Workflow
 1. Confirm the requested output artifact belongs in this skill; redirect if it does not.
 2. Map the request to the smallest relevant Odoo modules, docs, and source anchors.
-3. Apply the deterministic checks in `references/checklist.md`.
+3. Apply the deterministic checks in `references/checklist.md`, including DB mode and cleanup expectations.
 4. Produce the artifact described below, naming assumptions, blockers, and cross-app effects.
 5. State a boundary decision with primary skill, composed siblings, and deferred scope.
 
@@ -37,6 +39,7 @@ Use this skill only when the primary requested output is validation for a concre
 - evidence status: executed, planned, or blocked
 - test matrix
 - commands or suites run
+- selected DB mode and cleanup action
 - observed failures or outcomes
 - remaining validation gaps
 - boundary decision with primary skill, composed siblings, and deferred scope
@@ -48,12 +51,13 @@ Use this skill only when the primary requested output is validation for a concre
 - Name permissions impact, migration impact, and cross-app modules whenever relevant.
 - Name rollback or staging risk whenever release or data impact exists.
 - Separate executed evidence from planned validation. If nothing ran, say so plainly.
+- For DB cleanup, never clean DB/filestore in existing mode; always clean DB + filestore after disposable runs.
 
 # Must hand off when
 - If the user asks how Odoo testing primitives work in general, hand off to `odoo-testing-reference`.
 - If the ask is a pre-merge reasoning review rather than validation evidence, hand off to `odoo-review`.
 - Compose with business skills when workflow validation depends on domain process.
-- If local execution depends on a project-specific base command or shared cleanup harness, compose with `odoo-local-test-harness`.
+- Compose with `odoo-local-test-harness` when local execution depends on `ODOO_TEST_BASE_CMD`, config inspection, existing-db resolution, or disposable DB/filestore cleanup.
 
 # Compose with sibling skills
 - `odoo-review`

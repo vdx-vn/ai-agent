@@ -4,6 +4,7 @@ import sys
 import tempfile
 import textwrap
 import unittest
+from contextlib import redirect_stdout
 from pathlib import Path
 from unittest.mock import call, patch
 
@@ -135,6 +136,148 @@ class RunOdooTestTests(unittest.TestCase):
             ],
             check=True,
         )
+
+    @patch("run_odoo_test.cleanup_database")
+    @patch("run_odoo_test.subprocess.run")
+    def test_main_auto_current_state_uses_existing_db_and_reports_cleanup_skipped(self, run_mock, cleanup_mock) -> None:
+        stdout = io.StringIO()
+
+        with redirect_stdout(stdout):
+            exit_code = run_odoo_test.main(
+                [
+                    "--test-tags",
+                    "/sale",
+                ],
+                env={
+                    "ODOO_TEST_BASE_CMD": "python3 /opt/odoo/odoo-bin -c /tmp/odoo.conf"
+                },
+                resolve_existing_db_name=lambda _config_path: "existing_db",
+            )
+
+        self.assertEqual(exit_code, 0)
+        cleanup_mock.assert_not_called()
+        run_mock.assert_called_once_with(
+            [
+                "python3",
+                "/opt/odoo/odoo-bin",
+                "-c",
+                "/tmp/odoo.conf",
+                "-d",
+                "existing_db",
+                "--test-tags",
+                "/sale",
+                "--test-enable",
+                "--stop-after-init",
+            ],
+            check=True,
+        )
+        output = stdout.getvalue()
+        self.assertIn("Selected mode: existing", output)
+        self.assertIn("Selected DB: existing_db", output)
+        self.assertIn("Cleanup action: skipped (existing mode)", output)
+
+    @patch("run_odoo_test.cleanup_database")
+    @patch("run_odoo_test.subprocess.run")
+    def test_main_auto_install_requires_explicit_disposable_db(self, run_mock, cleanup_mock) -> None:
+        with self.assertRaises(SystemExit) as exc:
+            run_odoo_test.main(
+                [
+                    "--install",
+                    "sale",
+                ],
+                env={
+                    "ODOO_TEST_BASE_CMD": "python3 /opt/odoo/odoo-bin -c /tmp/odoo.conf"
+                },
+            )
+
+        self.assertIn("--db is required when --db-mode is disposable", str(exc.exception))
+        run_mock.assert_not_called()
+        cleanup_mock.assert_not_called()
+
+    @patch("run_odoo_test.cleanup_database")
+    @patch("run_odoo_test.subprocess.run")
+    def test_main_rejects_install_with_existing_db_mode(self, run_mock, cleanup_mock) -> None:
+        with self.assertRaises(SystemExit) as exc:
+            run_odoo_test.main(
+                [
+                    "--db-mode",
+                    "existing",
+                    "--install",
+                    "sale",
+                ],
+                env={
+                    "ODOO_TEST_BASE_CMD": "python3 /opt/odoo/odoo-bin -c /tmp/odoo.conf"
+                },
+                resolve_existing_db_name=lambda _config_path: "existing_db",
+            )
+
+        self.assertIn("--install and --update require --db-mode disposable", str(exc.exception))
+        run_mock.assert_not_called()
+        cleanup_mock.assert_not_called()
+
+    @patch("run_odoo_test.cleanup_database")
+    @patch("run_odoo_test.subprocess.run")
+    def test_main_rejects_update_with_existing_db_mode(self, run_mock, cleanup_mock) -> None:
+        with self.assertRaises(SystemExit) as exc:
+            run_odoo_test.main(
+                [
+                    "--db-mode",
+                    "existing",
+                    "--update",
+                    "stock",
+                ],
+                env={
+                    "ODOO_TEST_BASE_CMD": "python3 /opt/odoo/odoo-bin -c /tmp/odoo.conf"
+                },
+                resolve_existing_db_name=lambda _config_path: "existing_db",
+            )
+
+        self.assertIn("--install and --update require --db-mode disposable", str(exc.exception))
+        run_mock.assert_not_called()
+        cleanup_mock.assert_not_called()
+
+    @patch("run_odoo_test.cleanup_database")
+    @patch("run_odoo_test.subprocess.run")
+    def test_main_auto_update_uses_disposable_db_and_reports_cleanup_after(self, run_mock, cleanup_mock) -> None:
+        stdout = io.StringIO()
+
+        with redirect_stdout(stdout):
+            exit_code = run_odoo_test.main(
+                [
+                    "--update",
+                    "stock",
+                    "--db",
+                    "tmp_odoo_test",
+                ],
+                env={
+                    "ODOO_TEST_BASE_CMD": "python3 /opt/odoo/odoo-bin -c /tmp/odoo.conf"
+                },
+            )
+
+        self.assertEqual(exit_code, 0)
+        cleanup_mock.assert_called_once_with(
+            db_name="tmp_odoo_test",
+            config_path=Path("/tmp/odoo.conf"),
+            dry_run=False,
+        )
+        run_mock.assert_called_once_with(
+            [
+                "python3",
+                "/opt/odoo/odoo-bin",
+                "-c",
+                "/tmp/odoo.conf",
+                "-d",
+                "tmp_odoo_test",
+                "-u",
+                "stock",
+                "--stop-after-init",
+            ],
+            check=True,
+        )
+        output = stdout.getvalue()
+        self.assertIn("Selected mode: disposable", output)
+        self.assertIn("Selected DB: tmp_odoo_test", output)
+        self.assertIn("Cleanup action: automatic cleanup after run", output)
 
     @patch("run_odoo_test.cleanup_database")
     @patch("run_odoo_test.subprocess.run")

@@ -6,12 +6,14 @@
 - [ ] Identify adjacent skills needed for composition.
 - [ ] Identify nearest-neighbor skill and why it does not own the request.
 - [ ] Choose validation DB mode by change surface.
-- [ ] Compose with `odoo-local-test-harness` when local execution depends on `ODOO_TEST_BASE_CMD`, config inspection, existing-db resolution, or disposable cleanup.
+- [ ] Compose with `odoo-local-test-harness` when local execution depends on `ODOO_TEST_BASE_CMD`, config inspection, existing-db resolution, or disposable DB/filestore cleanup.
 
 ## Analysis
 - [ ] Choose test type by change surface: unit, transaction, HTTP, JS, tour, performance.
-- [ ] Use existing DB mode for unit-style validation on current project state unless the user explicitly wants disposable setup.
-- [ ] Use disposable DB mode for install or update validation unless the user explicitly overrides.
+- [ ] Use existing DB mode for current-project-state validation unless the user explicitly wants disposable setup.
+- [ ] Use disposable DB mode for install, update, or explicit disposable validation.
+- [ ] Confirm existing mode skips DB/filestore cleanup.
+- [ ] Confirm disposable mode cleans DB + filestore after execution.
 - [ ] Cover install and update paths when relevant.
 - [ ] Include security and multi-company checks when behavior changes.
 - [ ] Report gaps, not only pass or fail.
@@ -27,6 +29,7 @@
 - [ ] Return evidence status: executed, planned, or blocked
 - [ ] Return test matrix
 - [ ] Return commands or suites run
+- [ ] Return selected DB mode and cleanup action
 - [ ] Return observed failures or outcomes
 - [ ] Return remaining validation gaps
 - [ ] Return boundary decision

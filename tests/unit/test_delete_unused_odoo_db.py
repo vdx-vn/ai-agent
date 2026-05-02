@@ -203,6 +203,27 @@ class DeleteUnusedOdooDbTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     cleanup.validate_db_name(db_name)
 
+    def test_filestore_path_rejects_unsafe_db_names(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            conf = Path(tmp) / "odoo.conf"
+            conf.write_text(f"[options]\ndata_dir = {Path(tmp) / 'data'}\n")
+
+            for db_name in ["../evil", "nested/db", "nested\\db", "/absolute", ".", ".."]:
+                with self.subTest(db_name=db_name):
+                    with self.assertRaises(ValueError):
+                        cleanup.filestore_path(conf, db_name)
+
+    def test_filestore_path_uses_config_data_dir_and_db_name(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            conf = Path(tmp) / "odoo.conf"
+            data_dir = Path(tmp) / "odoo-data"
+            conf.write_text(f"[options]\ndata_dir = {data_dir}\n")
+
+            self.assertEqual(
+                cleanup.filestore_path(conf, "tmp_odoo_test"),
+                (data_dir / "filestore" / "tmp_odoo_test").resolve(strict=False),
+            )
+
     def test_cleanup_database_dry_run_skips_dropdb_and_remove_tree(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             conf = Path(tmp) / "odoo.conf"

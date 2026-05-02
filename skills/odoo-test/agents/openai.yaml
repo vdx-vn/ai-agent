@@ -1,7 +1,7 @@
 interface:
   display_name: "Odoo Test"
   short_description: "Validate Odoo changes"
-  default_prompt: "Use $odoo-test to current-change validation evidence or validation plan tied to a specific diff, addon, bug, or runtime scenario. Compose with $odoo-local-test-harness when local execution depends on a project-specific base command or shared cleanup."
+  default_prompt: "Use $odoo-test to current-change validation evidence or validation plan tied to a specific diff, addon, bug, or runtime scenario. Compose with $odoo-local-test-harness when local execution depends on ODOO_TEST_BASE_CMD, config inspection, existing-db resolution, or disposable DB/filestore cleanup."
 
 policy:
   allow_implicit_invocation: true

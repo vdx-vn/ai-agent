@@ -47,21 +47,50 @@ class OdooLocalTestHarnessDocsTests(unittest.TestCase):
             with self.subTest(path=path):
                 self.assertIn(expected, path.read_text())
 
+    def test_odoo_test_agent_prompt_uses_precise_harness_boundary(self) -> None:
+        prompt = (ROOT / "odoo-test" / "agents" / "openai.yaml").read_text()
+        self.assertIn(
+            "Compose with $odoo-local-test-harness when local execution depends on ODOO_TEST_BASE_CMD, config inspection, existing-db resolution, or disposable DB/filestore cleanup.",
+            prompt,
+        )
+        self.assertNotIn("shared cleanup", prompt)
+
+    def test_docs_do_not_allow_existing_mode_override_for_install_or_update(self) -> None:
+        paths = [
+            ROOT / "odoo-test" / "references" / "checklist.md",
+            ROOT / "odoo-local-test-harness" / "SKILL.md",
+            ROOT / "odoo-local-test-harness" / "references" / "overview.md",
+            ROOT / "odoo-local-test-harness" / "references" / "checklist.md",
+        ]
+
+        for path in paths:
+            with self.subTest(path=path):
+                self.assertNotIn(
+                    "unless the user explicitly overrides",
+                    path.read_text(encoding="utf-8"),
+                )
+
     def test_docs_describe_existing_and_disposable_db_modes(self) -> None:
         expected_snippets = {
             ROOT / "odoo-test" / "SKILL.md": [
-                "existing db by default",
-                "disposable db by default for install or update validation",
+                "current-state validation uses an existing db by default",
+                "install, update, or explicit disposable validation uses a disposable db",
+                "never clean DB/filestore in existing mode",
+                "always clean DB + filestore after disposable runs",
             ],
             ROOT / "odoo-test" / "references" / "overview.md": [
                 "current-project-state validation to existing db by default",
-                "install and update validation to disposable db by default",
+                "install, update, or explicit disposable validation to disposable db by default",
+                "Existing-db validation must not clean DB or filestore",
+                "Disposable-db validation must clean DB and filestore after execution",
             ],
             ROOT / "odoo-test" / "references" / "checklist.md": [
                 "Choose validation DB mode by change surface",
-                "Use existing DB mode for unit-style validation on current project state",
-                "Use disposable DB mode for install or update validation",
+                "Use existing DB mode for current-project-state validation",
+                "Use disposable DB mode for install, update, or explicit disposable validation",
                 "Name cleanup expectations explicitly for the chosen DB mode",
+                "Confirm existing mode skips DB/filestore cleanup",
+                "Confirm disposable mode cleans DB + filestore after execution",
             ],
             ROOT / "odoo-test" / "references" / "examples.md": [
                 "current project database",
@@ -71,8 +100,8 @@ class OdooLocalTestHarnessDocsTests(unittest.TestCase):
                 "--db-mode auto|existing|disposable",
                 "prefer config `db_name`",
                 "multiple candidates",
-                "skip DB/filestore cleanup",
-                "require explicit DB name",
+                "existing mode must never clean DB/filestore",
+                "install, update, or explicit disposable mode requires explicit `--db`",
                 "automatic post-run cleanup of DB + filestore",
                 "resolved config path",
                 "selected DB mode",
@@ -81,11 +110,15 @@ class OdooLocalTestHarnessDocsTests(unittest.TestCase):
                 "Do not use `dbfilter` to narrow candidates",
                 "selected DB or candidate list",
                 "cleanup action",
+                "Existing mode must not clean DB or filestore",
+                "Disposable mode must clean DB and filestore after execution",
             ],
             ROOT / "odoo-local-test-harness" / "references" / "checklist.md": [
                 "prefer config `db_name`",
                 "If multiple candidates exist, stop and ask the user which DB to use",
                 "Disposable mode requires an explicit DB name",
+                "Existing mode must not clean DB/filestore",
+                "Disposable mode must clean DB + filestore after execution",
             ],
             ROOT / "odoo-local-test-harness" / "references" / "examples.md": [
                 "existing db by default",

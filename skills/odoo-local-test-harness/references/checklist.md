@@ -18,8 +18,9 @@
 - [ ] If multiple candidates exist, stop and ask the user which DB to use.
 - [ ] Do not use `dbfilter` to narrow candidates.
 - [ ] Disposable mode requires an explicit DB name.
+- [ ] Existing mode must not clean DB/filestore.
 - [ ] Use `--cleanup-before` only when a disposable database must be reset before execution.
-- [ ] Keep automatic post-run cleanup for disposable databases and matching filestore state, including terminating leftover sessions before `dropdb` when needed.
+- [ ] Disposable mode must clean DB + filestore after execution, including terminating leftover sessions before `dropdb` when needed.
 - [ ] Skip DB/filestore cleanup in existing mode.
 - [ ] Keep local config immutable unless the user asks to change it.
 

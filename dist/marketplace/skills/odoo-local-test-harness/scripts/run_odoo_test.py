@@ -177,6 +177,8 @@ def resolve_existing_db(
 
 
 def choose_db_mode(*, requested_mode: str, install_modules: str | None, update_modules: str | None) -> str:
+    if (install_modules or update_modules) and requested_mode == "existing":
+        raise SystemExit("--install and --update require --db-mode disposable")
     if requested_mode != "auto":
         return requested_mode
     if install_modules or update_modules:
@@ -211,6 +213,17 @@ def build_command(
 def maybe_cleanup(*, enabled: bool, db_name: str, config_path: Path, dry_run: bool) -> None:
     if enabled:
         cleanup_database(db_name=db_name, config_path=config_path, dry_run=dry_run)
+
+
+
+def cleanup_action_description(*, db_mode: str, cleanup_before: bool, dry_run: bool) -> str:
+    if dry_run:
+        return "skipped (dry-run)"
+    if db_mode == "existing":
+        return "skipped (existing mode)"
+    if cleanup_before:
+        return "cleanup before run and automatic cleanup after run"
+    return "automatic cleanup after run"
 
 
 
@@ -253,6 +266,14 @@ def main(
     print("Resolved config path:", config_path)
     print("Selected mode:", db_mode)
     print("Selected DB:", selected_db)
+    print(
+        "Cleanup action:",
+        cleanup_action_description(
+            db_mode=db_mode,
+            cleanup_before=args.cleanup_before,
+            dry_run=args.dry_run,
+        ),
+    )
     print("Resolved base command:", " ".join(shlex.quote(part) for part in base_argv))
     print("Final command:", " ".join(shlex.quote(part) for part in command))
 
