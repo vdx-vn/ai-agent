@@ -33,6 +33,9 @@ class ExistingProjectSetup:
 
 
 MANAGED_STATE_KEYS = ("docsRoot", "sourceRoot", "version", "majorVersion")
+SHARED_CONFIG_RELATIVE_PATH = Path(".odoo-skills") / "project.json"
+CLAUDE_SETTINGS_RELATIVE_PATH = Path(".claude") / "settings.local.json"
+CLAUDE_STATE_RELATIVE_PATH = Path(".claude") / "odoo-skill-paths.json"
 
 
 def _register_parser_arguments(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
@@ -52,7 +55,7 @@ def _register_parser_arguments(parser: argparse.ArgumentParser) -> argparse.Argu
 def _build_parser(*, prog: str | None = None) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog=prog,
-        description="Configure project-local Odoo Claude settings",
+        description="Configure project-local Odoo settings for Codex CLI and Claude Code",
     )
     return _register_parser_arguments(parser)
 
@@ -73,7 +76,7 @@ def add_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]) 
     parser = subparsers.add_parser(
         "project-setup",
         help="Configure project-local Odoo settings",
-        description="Configure project-local Odoo Claude settings",
+        description="Configure project-local Odoo settings for Codex CLI and Claude Code",
     )
     return _register_parser_arguments(parser)
 
@@ -107,13 +110,18 @@ def _saved_base_cmd_paths_are_usable(base_cmd: str | None) -> bool:
 
 
 def load_existing_project_setup(project_root: Path) -> ExistingProjectSetup:
-    settings_path = project_root / ".claude" / "settings.local.json"
-    state_path = project_root / ".claude" / "odoo-skill-paths.json"
+    settings_path = project_root / CLAUDE_SETTINGS_RELATIVE_PATH
+    state_path = project_root / CLAUDE_STATE_RELATIVE_PATH
+    shared_path = project_root / SHARED_CONFIG_RELATIVE_PATH
     settings_data = load_json_file(settings_path)
-    state_data = load_json_file(state_path)
+    legacy_state_data = load_json_file(state_path)
+    shared_data = load_json_file(shared_path)
+    state_data = shared_data or legacy_state_data
 
     env = settings_data.get("env")
-    raw_base_cmd = str(env.get("ODOO_TEST_BASE_CMD", "")).strip() if isinstance(env, dict) else ""
+    raw_base_cmd = str(state_data.get("odooTestBaseCmd", "")).strip()
+    if not raw_base_cmd and isinstance(env, dict):
+        raw_base_cmd = str(env.get("ODOO_TEST_BASE_CMD", "")).strip()
 
     try:
         base_cmd = validate_base_cmd(raw_base_cmd) if raw_base_cmd else None
@@ -158,6 +166,17 @@ def build_state_payload(
     }
 
 
+def build_shared_project_payload(
+    *,
+    state_payload: dict[str, str],
+    base_cmd: str,
+) -> dict[str, str]:
+    payload = dict(state_payload)
+    payload["odooTestBaseCmd"] = base_cmd
+    payload["schemaVersion"] = "1"
+    return payload
+
+
 def _merge_state(existing_state: dict[str, Any], managed_payload: dict[str, str]) -> dict[str, Any]:
     merged = dict(existing_state)
     merged.update(managed_payload)
@@ -177,10 +196,18 @@ def run_project_setup(args: argparse.Namespace, *, cwd: Path | None = None) -> i
         raise SystemExit(f"Current directory does not look like an Odoo project: {project_root}")
 
     existing = load_existing_project_setup(project_root)
-    if existing.base_cmd_valid and existing.state_valid and not args.force:
+    shared_path = project_root / SHARED_CONFIG_RELATIVE_PATH
+    if (
+        existing.base_cmd_valid
+        and existing.state_valid
+        and shared_path.exists()
+        and existing.settings_path.exists()
+        and existing.state_path.exists()
+        and not args.force
+    ):
         print(f"Project setup already exists for {project_root}")
         print(f"Odoo version: {existing.state_data['version']}")
-        print("Base command source: .claude/settings.local.json")
+        print("Base command source: project setup config")
         return 0
 
     interactive = not args.yes
@@ -251,18 +278,25 @@ def run_project_setup(args: argparse.Namespace, *, cwd: Path | None = None) -> i
         version_source=version_source,
     )
     merged_state = _merge_state(existing.state_data, state_payload)
+    shared_project = build_shared_project_payload(state_payload=merged_state, base_cmd=base_cmd)
     merged_settings = merge_settings_local(existing.settings_data, base_cmd)
+    legacy_state = dict(merged_state)
+    legacy_state.pop("odooTestBaseCmd", None)
+    legacy_state.pop("schemaVersion", None)
 
     if args.dry_run:
         _print_summary(project_root, version, base_cmd_source, dry_run=True)
         print(f"Final ODOO_TEST_BASE_CMD: {base_cmd}")
+        print(f"Would write: {shared_path}")
         print(f"Would write: {existing.settings_path}")
         print(f"Would write: {existing.state_path}")
         return 0
 
+    write_json_file(shared_path, shared_project)
     write_json_file(existing.settings_path, merged_settings)
-    write_json_file(existing.state_path, merged_state)
+    write_json_file(existing.state_path, legacy_state)
     _print_summary(project_root, version, base_cmd_source, dry_run=False)
+    print(f"Wrote: {shared_path}")
     print(f"Wrote: {existing.settings_path}")
     print(f"Wrote: {existing.state_path}")
     return 0

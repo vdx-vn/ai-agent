@@ -1,0 +1,39 @@
+{
+  "name": "odoo-skills",
+  "version": "1.0.0",
+  "description": "Codex plugin that packages Odoo-focused skills for development and delivery workflows.",
+  "author": {
+    "name": "TruongPX"
+  },
+  "homepage": "https://github.com/vdx-vn/ai-agent",
+  "repository": "https://github.com/vdx-vn/ai-agent",
+  "license": "Apache-2.0",
+  "keywords": [
+    "odoo",
+    "codex",
+    "skills"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Odoo Skills",
+    "shortDescription": "Odoo development, testing, review, and delivery workflows for coding agents",
+    "longDescription": "Use Odoo Skills to guide Odoo architecture, ORM modeling, views, security, performance, integrations, migrations, tests, reviews, and delivery workflows.",
+    "developerName": "TruongPX",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Help me plan an Odoo feature.",
+      "Review this Odoo change.",
+      "Run or design Odoo tests for this module."
+    ],
+    "websiteURL": "https://github.com/vdx-vn/ai-agent",
+    "privacyPolicyURL": "https://github.com/vdx-vn/ai-agent",
+    "termsOfServiceURL": "https://github.com/vdx-vn/ai-agent",
+    "brandColor": "#2563EB",
+    "screenshots": []
+  }
+}

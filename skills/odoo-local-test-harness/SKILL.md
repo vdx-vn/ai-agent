@@ -7,16 +7,16 @@ description: "Use when working across multiple local Odoo projects with differen
 
 # Purpose
 Run local Odoo tests across different projects and Odoo versions using one shared harness.
-Project-specific setup lives in `.claude/settings.local.json` as `ODOO_TEST_BASE_CMD`.
+Project-specific setup lives in `.odoo-skills/project.json` as `odooTestBaseCmd`; Claude Code also receives the same command from `.claude/settings.local.json` as `ODOO_TEST_BASE_CMD`.
 
 # Primary routing rule
-Use this skill when the task depends on a project-local Odoo test command or disposable DB/filestore cleanup behavior.
+Use this skill when the task depends on a project-local Odoo test command or shared local cleanup behavior.
 If the primary output is current-change validation evidence, compose with `odoo-test`.
 If the primary output is only CLI semantics, compose with `odoo-delivery-ops`.
 
 # Use this skill when
 - a local Odoo project has its own base command and config path
-- the user provides or updates a project-local `ODOO_TEST_BASE_CMD`
+- the user provides or updates a project-local `odooTestBaseCmd` or `ODOO_TEST_BASE_CMD`
 - tests need database names, test tags, install or update flags, or `--stop-after-init` appended safely
 - local test setup must clean disposable databases or matching filestore state automatically after runs, with optional pre-run cleanup that can terminate leftover sessions first
 
@@ -27,42 +27,36 @@ If the primary output is only CLI semantics, compose with `odoo-delivery-ops`.
 
 # Required inputs
 - current repository root and local Odoo project context
-- `.claude/settings.local.json` or the resolved `ODOO_TEST_BASE_CMD` value
-- requested database name, test tags, install or update targets, and whether pre-run cleanup or dry-run is needed
+- `.odoo-skills/project.json`, `.claude/settings.local.json`, or the resolved base command value
+- requested disposable database name, test tags, install or update targets, and whether pre-run cleanup or dry-run is needed
 
 ## Config contract
-Store per-project base command in `.claude/settings.local.json`:
+Store per-project base command in `.odoo-skills/project.json`:
 
 ```json
 {
-  "env": {
-    "ODOO_TEST_BASE_CMD": "/path/to/python /path/to/odoo-bin -c /path/to/odoo.conf"
-  }
+  "odooTestBaseCmd": "/path/to/python /path/to/odoo-bin -c /path/to/odoo.conf"
 }
 ```
 
-Treat `ODOO_TEST_BASE_CMD` as immutable base command.
+Treat `odooTestBaseCmd` / `ODOO_TEST_BASE_CMD` as immutable base command.
 Parse it safely, then append normalized arguments. If it is missing, stop and ask the user to provide it.
 The configured base command must already include `-c` or `--config`.
-Do not pre-configure runtime-managed flags in `ODOO_TEST_BASE_CMD`; the harness owns `-d`, `--test-tags`, `--test-enable`, `-i`, `-u`, and `--stop-after-init`.
+Do not pre-configure runtime-managed flags in the base command; the harness owns `-d`, `--test-tags`, `--test-enable`, `-i`, `-u`, and `--stop-after-init`.
 
 # Workflow
-1. Read `ODOO_TEST_BASE_CMD` from local settings and resolve the config path from that base command.
+1. Read the base command from `ODOO_TEST_BASE_CMD` when present, otherwise from `.odoo-skills/project.json`.
 2. Read `references/overview.md` for routing, boundaries, and local execution anchors.
-3. Parse it into argv through `scripts/run_odoo_test.py`, not shell concatenation, and select `--db-mode auto|existing|disposable`.
-4. In auto mode, default to existing for current-project-state validation and to disposable for install or update validation.
-5. In existing mode, prefer config `db_name`; otherwise list accessible non-system databases from the config connection settings, stop on multiple candidates, do not use `dbfilter` to narrow candidates, and existing mode must never clean DB/filestore.
-6. In disposable mode, install, update, or explicit disposable mode requires explicit `--db`; allow cleanup-before, and keep automatic post-run cleanup of DB + filestore through `scripts/delete_unused_odoo_db.py`, including terminating leftover sessions before `dropdb` when needed.
-7. Return the resolved config path, selected DB mode, selected DB or candidate list, cleanup action, and boundary decision.
+3. Parse it into argv through `scripts/run_odoo_test.py`, not shell concatenation.
+4. Normalize `-d`, `--test-tags`, `--test-enable`, `-i`, `-u`, and `--stop-after-init`.
+5. Run optional pre-run cleanup plus automatic post-run cleanup through `scripts/delete_unused_odoo_db.py` when the flow uses a disposable local database, terminating leftover sessions on that database before `dropdb` when needed.
+6. Return the resolved base command source, appended arguments, cleanup action, and boundary decision.
 
 # Output contract
 Return a concise result that includes:
-- resolved config path
 - resolved base command source
-- selected DB mode
-- selected DB or candidate list
 - appended runtime arguments
-- cleanup action: skipped for existing mode, skipped for dry-run, automatic DB + filestore cleanup after disposable runs
+- cleanup action performed or skipped
 - boundary decision with primary and sibling skills
 
 Dry-run semantics:

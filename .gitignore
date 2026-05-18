@@ -1,13 +1,14 @@
-*.pyc
-*.zip
+# Local agent/project files
 AGENTS.md
-.idea
 .claude/settings.local.json
 .claude/odoo-skill-paths.json
 .worktrees/
+.obsidian/
+.idea/
+.codex/
 
-.obsidian
-<<<<<<< Updated upstream
+# Archives
+*.zip
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -227,6 +228,3 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
-=======
-.codex
->>>>>>> Stashed changes

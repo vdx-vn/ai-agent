@@ -2,8 +2,8 @@
 from __future__ import annotations
 
 import argparse
-import configparser
 import importlib.util
+import json
 import os
 import shlex
 import subprocess
@@ -11,17 +11,8 @@ import sys
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
 
-
-class MultipleExistingDatabasesError(RuntimeError):
-    def __init__(self, candidates: list[str]) -> None:
-        self.candidates = candidates
-        super().__init__(
-            "Multiple existing databases matched the current config: "
-            + ", ".join(candidates)
-        )
-
-
-SYSTEM_DATABASES = {"postgres"}
+SHARED_CONFIG_RELATIVE_PATH = Path(".odoo-skills") / "project.json"
+BASE_CMD_ENV = "ODOO_TEST_BASE_CMD"
 
 
 def _load_cleanup_database(module_path: Path | None = None) -> Callable[..., None]:
@@ -48,13 +39,7 @@ def cleanup_database(*, db_name: str, config_path: Path, dry_run: bool) -> None:
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run local Odoo tests from ODOO_TEST_BASE_CMD")
-    parser.add_argument("--db", help="Disposable local database name")
-    parser.add_argument(
-        "--db-mode",
-        choices=("auto", "existing", "disposable"),
-        default="auto",
-        help="Choose whether to use an existing configured DB or a disposable DB",
-    )
+    parser.add_argument("--db", required=True, help="Disposable local database name")
     parser.add_argument("--test-tags", help="Odoo test tags like /sale or module_name")
     parser.add_argument("--install", help="Comma-separated modules to install with -i")
     parser.add_argument("--update", help="Comma-separated modules to update with -u")
@@ -62,7 +47,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--cleanup-after",
         action="store_true",
-        help="Deprecated no-op; cleanup after the run is automatic for disposable DBs",
+        help="Deprecated no-op; cleanup after the run is automatic",
     )
     parser.add_argument("--no-stop-after-init", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
@@ -70,25 +55,52 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 
 
-def load_base_command(env: Mapping[str, str] | None = None) -> list[str]:
+def find_project_config(start_dir: Path | None = None) -> Path | None:
+    current = (start_dir or Path.cwd()).resolve()
+    for candidate_root in (current, *current.parents):
+        candidate = candidate_root / SHARED_CONFIG_RELATIVE_PATH
+        if candidate.exists():
+            return candidate
+    return None
+
+
+
+def load_base_command_from_project_config(start_dir: Path | None = None) -> str | None:
+    config_path = find_project_config(start_dir)
+    if config_path is None:
+        return None
+    try:
+        data = json.loads(config_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise SystemExit(f"Malformed project config: {config_path}: {exc}") from exc
+    if not isinstance(data, dict):
+        raise SystemExit(f"Project config must be a JSON object: {config_path}")
+    raw = str(data.get("odooTestBaseCmd", "")).strip()
+    return raw or None
+
+
+
+def load_base_command(env: Mapping[str, str] | None = None, *, cwd: Path | None = None) -> list[str]:
     source = os.environ if env is None else env
-    raw = source.get("ODOO_TEST_BASE_CMD", "").strip()
+    raw = source.get(BASE_CMD_ENV, "").strip()
     if not raw:
-        raise SystemExit("ODOO_TEST_BASE_CMD is not set")
+        raw = load_base_command_from_project_config(cwd) or ""
+    if not raw:
+        raise SystemExit(
+            "ODOO_TEST_BASE_CMD is not set and .odoo-skills/project.json was not found. "
+            "Run `odoo-skills project-setup` from the Odoo project root."
+        )
     return shlex.split(raw)
 
 
 
 def extract_config_path(base_argv: Sequence[str]) -> Path:
     for index, token in enumerate(base_argv):
-        if token in {"-c", "--config"} and index + 1 < len(base_argv):
+        if token == "-c" and index + 1 < len(base_argv):
             return Path(base_argv[index + 1]).expanduser()
         if token.startswith("--config="):
             return Path(token.split("=", 1)[1]).expanduser()
-    raise SystemExit(
-        "ODOO_TEST_BASE_CMD must include -c /path/to/odoo.conf, "
-        "--config /path/to/odoo.conf, or --config=/path/to/odoo.conf"
-    )
+    raise SystemExit("ODOO_TEST_BASE_CMD must include -c /path/to/odoo.conf or --config=/path/to/odoo.conf")
 
 
 
@@ -106,84 +118,6 @@ def validate_base_command(base_argv: Sequence[str]) -> None:
                 raise SystemExit(
                     f"ODOO_TEST_BASE_CMD must not include runtime-managed flag: {prefix}"
                 )
-
-
-
-def load_config_options(config_path: Path) -> configparser.SectionProxy:
-    parser = configparser.ConfigParser()
-    if not config_path.exists():
-        raise FileNotFoundError(f"Config file does not exist: {config_path}")
-    read_files = parser.read(config_path)
-    if not read_files:
-        raise OSError(f"Could not read config file: {config_path}")
-    if not parser.has_section("options"):
-        parser.add_section("options")
-    return parser["options"]
-
-
-
-def _parse_db_name_candidates(raw_db_name: str) -> list[str]:
-    normalized = raw_db_name.replace(",", " ")
-    return [item.strip() for item in normalized.split() if item.strip()]
-
-
-
-def list_accessible_databases(config_path: Path) -> list[str]:
-    options = load_config_options(config_path)
-    command = [
-        "psql",
-        "-d",
-        "postgres",
-        "-Atqc",
-        "SELECT datname FROM pg_database WHERE datistemplate = false ORDER BY datname;",
-    ]
-    for flag, key in (("-h", "db_host"), ("-p", "db_port"), ("-U", "db_user")):
-        value = options.get(key, fallback="").strip()
-        if value:
-            command[1:1] = [flag, value]
-    env = None
-    db_password = options.get("db_password", fallback="").strip()
-    if db_password:
-        env = os.environ.copy()
-        env["PGPASSWORD"] = db_password
-    completed = subprocess.run(command, check=True, capture_output=True, text=True, env=env)
-    return [
-        line.strip()
-        for line in completed.stdout.splitlines()
-        if line.strip() and line.strip() not in SYSTEM_DATABASES
-    ]
-
-
-
-def resolve_existing_db(
-    config_path: Path,
-    *,
-    list_databases: Callable[[Path], list[str]] = list_accessible_databases,
-) -> str:
-    options = load_config_options(config_path)
-    db_name_candidates = _parse_db_name_candidates(options.get("db_name", fallback="").strip())
-    if len(db_name_candidates) == 1:
-        return db_name_candidates[0]
-    if len(db_name_candidates) > 1:
-        raise MultipleExistingDatabasesError(db_name_candidates)
-
-    candidates = list_databases(config_path)
-    if not candidates:
-        raise SystemExit(f"No accessible existing databases found for config: {config_path}")
-    if len(candidates) > 1:
-        raise MultipleExistingDatabasesError(candidates)
-    return candidates[0]
-
-
-
-def choose_db_mode(*, requested_mode: str, install_modules: str | None, update_modules: str | None) -> str:
-    if (install_modules or update_modules) and requested_mode == "existing":
-        raise SystemExit("--install and --update require --db-mode disposable")
-    if requested_mode != "auto":
-        return requested_mode
-    if install_modules or update_modules:
-        return "disposable"
-    return "existing"
 
 
 
@@ -216,64 +150,22 @@ def maybe_cleanup(*, enabled: bool, db_name: str, config_path: Path, dry_run: bo
 
 
 
-def cleanup_action_description(*, db_mode: str, cleanup_before: bool, dry_run: bool) -> str:
-    if dry_run:
-        return "skipped (dry-run)"
-    if db_mode == "existing":
-        return "skipped (existing mode)"
-    if cleanup_before:
-        return "cleanup before run and automatic cleanup after run"
-    return "automatic cleanup after run"
-
-
-
-def main(
-    argv: list[str] | None = None,
-    env: Mapping[str, str] | None = None,
-    resolve_existing_db_name: Callable[[Path], str] = resolve_existing_db,
-) -> int:
+def main(argv: list[str] | None = None, env: Mapping[str, str] | None = None, *, cwd: Path | None = None) -> int:
     args = parse_args(argv)
-    base_argv = load_base_command(env)
+    base_argv = load_base_command(env, cwd=cwd)
     validate_base_command(base_argv)
     config_path = extract_config_path(base_argv)
-    db_mode = choose_db_mode(
-        requested_mode=args.db_mode,
-        install_modules=args.install,
-        update_modules=args.update,
-    )
-
-    if db_mode == "disposable":
-        if not args.db:
-            raise SystemExit("--db is required when --db-mode is disposable")
-        selected_db = args.db
-    elif args.dry_run:
-        selected_db = "existing_db"
-    else:
-        selected_db = resolve_existing_db_name(config_path)
-
     command = build_command(
         base_argv,
-        db_name=selected_db,
+        db_name=args.db,
         test_tags=args.test_tags,
         install_modules=args.install,
         update_modules=args.update,
         stop_after_init=not args.no_stop_after_init,
     )
 
-    cleanup_enabled = db_mode == "disposable"
-    if cleanup_enabled and not args.dry_run:
-        maybe_cleanup(enabled=args.cleanup_before, db_name=selected_db, config_path=config_path, dry_run=False)
-    print("Resolved config path:", config_path)
-    print("Selected mode:", db_mode)
-    print("Selected DB:", selected_db)
-    print(
-        "Cleanup action:",
-        cleanup_action_description(
-            db_mode=db_mode,
-            cleanup_before=args.cleanup_before,
-            dry_run=args.dry_run,
-        ),
-    )
+    if not args.dry_run:
+        maybe_cleanup(enabled=args.cleanup_before, db_name=args.db, config_path=config_path, dry_run=False)
     print("Resolved base command:", " ".join(shlex.quote(part) for part in base_argv))
     print("Final command:", " ".join(shlex.quote(part) for part in command))
 
@@ -288,10 +180,10 @@ def main(
         primary_error = exc
         raise
     finally:
-        if cleanup_enabled and not args.dry_run:
+        if not args.dry_run:
             try:
                 cleanup_database(
-                    db_name=selected_db,
+                    db_name=args.db,
                     config_path=config_path,
                     dry_run=False,
                 )

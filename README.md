@@ -1,12 +1,12 @@
 # odoo-skills
 
-Public Claude Code plugin for Odoo-focused skills.
+Odoo-focused skills for coding agents, packaged with provider metadata for Codex CLI and Claude Code.
 
-Install this once for your Claude Code user from this repository. Only set up a project separately if you want local Odoo repository integration such as docs/source paths and local test harness settings.
+This repository follows the top-level skill-library layout used by `obra/superpowers`: plugin metadata lives in provider-specific directories, while the shipped skills live in `skills/`.
 
-## Quickstart
+## Installation
 
-Clone the repository somewhere convenient and install the editable package:
+Clone the repository and install the local development commands:
 
 ```bash
 git clone git@github.com:vdx-vn/ai-agent
@@ -14,7 +14,31 @@ cd ai-agent
 python3 -m pip install -e .
 ```
 
-Then install the plugin for your Claude Code user and verify it is present:
+### Codex CLI
+
+Install Codex CLI if it is not already available:
+
+```bash
+npm install -g @openai/codex
+# or, on macOS:
+brew install --cask codex
+```
+
+Authenticate and add this repository as a local plugin marketplace:
+
+```bash
+codex login
+codex plugin marketplace add .
+codex
+```
+
+Inside Codex, open `/plugins`, search for `odoo-skills`, and install the local plugin.
+
+Codex CLI installation reference: [OpenAI Codex CLI getting started](https://help.openai.com/en/articles/11096431-openai-codex-ligetting-started) and [openai/codex](https://github.com/openai/codex).
+
+### Claude Code
+
+Install the plugin for your Claude Code user:
 
 ```bash
 odoo-skills install-plugin
@@ -28,9 +52,9 @@ python3 -m tooling.install_plugin
 claude plugin list --json
 ```
 
-For detailed install, verification, troubleshooting, and uninstall guidance, see [docs/install.md](docs/install.md).
+For detailed Claude Code install, verification, troubleshooting, and uninstall guidance, see [docs/install.md](docs/install.md).
 
-## Optional: configure a local Odoo project
+## Optional Project Setup
 
 Only do this if you want local Odoo docs/source paths and local test harness setup inside a specific Odoo repository.
 
@@ -44,103 +68,48 @@ python3 -m tooling.cli project-setup
 
 For prerequisites, prompts, written files, reruns, and examples, see [docs/project-setup.md](docs/project-setup.md).
 
-## What this repository contains
+## Repository Contents
 
-This repository packages `odoo-skills`, a Claude Code plugin for Odoo workflows.
+Runtime plugin payload:
 
-Runtime plugin payload stays small:
-- `.claude-plugin/` - plugin metadata
+- `.codex-plugin/` - Codex plugin metadata
+- `.claude-plugin/` - Claude Code plugin metadata and local marketplace metadata
 - `skills/` - public shipped skill library
 - `README.md`, `LICENSE`
 
-Everything else supports authoring, validation, packaging, installation, optional project setup, or local development.
+Development-only support:
 
-## Common workflows
+- `tooling/` - build, install, validation, and project setup commands
+- `tests/` - unittest coverage for plugin structure, skills, and scripts
+- `docs/` - install, project setup, authoring, and reference docs
+- `skill-creator/` - local authoring helper skill
 
-Verify plugin metadata and docs contracts:
+## Development
+
+Run validation and tests:
 
 ```bash
 odoo-skills verify
-# fallback
-python3 -m tooling.cli verify
-# legacy script
-odoo-skills-verify
+python3 -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
 Build the runtime marketplace bundle:
 
 ```bash
 odoo-skills build
-# fallback
-python3 -m tooling.cli build
-# legacy script
-odoo-skills-build
 ```
 
 Smoke-test the local install flow:
 
 ```bash
 odoo-skills smoke-install
-# fallback
-python3 -m tooling.cli smoke-install
-# legacy script
-odoo-skills-smoke-install
 ```
 
-Run Claude Code directly with this repository as plugin source:
-
-```bash
-claude --plugin-dir .
-claude --plugin-dir ~/.claude/plugins --plugin-dir .
-```
-
-Manual local marketplace flow:
-
-```bash
-odoo-skills build
-claude plugin marketplace add ./dist/marketplace
-claude plugin install odoo-skills@odoo-skills-dev --scope local
-claude plugin list --json
-```
-
-Uninstall the plugin from Claude Code:
-
-```bash
-odoo-skills install-plugin --uninstall
-# fallback
-python3 -m tooling.install_plugin --uninstall
-```
-
-## Development commands
-
-Install dev tooling entrypoints:
-
-```bash
-python3 -m pip install -e .
-```
-
-Run the full unittest suite:
-
-```bash
-python3 -m unittest discover -s tests -p 'test_*.py' -v
-```
-
-Validate plugin metadata directly with Claude CLI:
-
-```bash
-claude plugin validate .
-claude plugin validate dist/marketplace
-```
-
-## Deprecated compatibility shim
-
-`python3 -m tooling.setup_local` is deprecated compatibility behavior kept for one release window.
-
-Use `odoo-skills install-plugin` to install for your Claude Code user, then use `odoo-skills project-setup` only inside Odoo repositories that need local integration.
-
-Deprecated commands:
+Deprecated compatibility shim:
 
 ```bash
 python3 -m tooling.setup_local
 python3 -m tooling.setup_local --uninstall
 ```
+
+Use `odoo-skills install-plugin` for Claude Code user-local installation. For Codex CLI, add this repository as a local plugin marketplace and install `odoo-skills` from `/plugins`. Then use `odoo-skills project-setup` only inside Odoo repositories that need local integration.

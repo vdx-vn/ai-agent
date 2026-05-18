@@ -1,13 +1,13 @@
 # Overview
 
 Paths below are relative to:
-- Docs tree: `current Odoo docs tree`
-- Source tree: `current Odoo CE source tree`
+- Docs repo: `<ODOO_DOCS_ROOT>`
+- Source repo: `<ODOO_SOURCE_ROOT>`
 
 ## Primary routing rule
 Use this skill only when the primary requested output is an external integration design or RPC/API decision.
 
-Treat docs anchors as relative to the current Odoo docs tree and source anchors as relative to the current Odoo CE source tree. See `../../odoo-paths.md` for shared setup.
+Replace the placeholders above with your local repo paths. All anchors below are relative to those roots. See `../../odoo-paths.md` for shared setup.
 
 ## Scope
 Guide Odoo external integration patterns, auth choices, RPC or HTTP approaches, and transaction boundaries for business operations.

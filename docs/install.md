@@ -61,7 +61,7 @@ odoo-skills smoke-install
 
 `install-plugin` only installs the Claude Code plugin for your user environment. It does not set up local Odoo repository integration.
 
-If you also want local Odoo docs/source paths or local test harness configuration inside a specific Odoo repository, run `odoo-skills project-setup` in that repository afterward. That project-local step is separate from the user-local plugin install. See [project-setup.md](project-setup.md).
+If you also want local Odoo docs/source paths or local test harness configuration inside a specific Odoo repository, run `odoo-skills project-setup` in that repository afterward. That project-local step writes shared `.odoo-skills/project.json` configuration for Codex CLI and Claude compatibility files under `.claude/`. See [project-setup.md](project-setup.md).
 
 ## Troubleshooting
 
@@ -111,4 +111,4 @@ Fallback:
 python3 -m tooling.install_plugin --uninstall
 ```
 
-This uninstall flow removes plugin install artifacts only. It does not remove `.claude/settings.local.json` or `.claude/odoo-skill-paths.json` from any Odoo repositories you may have configured separately.
+This uninstall flow removes plugin install artifacts only. It does not remove `.odoo-skills/project.json`, `.claude/settings.local.json`, or `.claude/odoo-skill-paths.json` from any Odoo repositories you may have configured separately.

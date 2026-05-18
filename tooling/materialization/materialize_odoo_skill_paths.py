@@ -35,7 +35,7 @@ class MaterializationResult:
 def parse_args() -> argparse.Namespace:
     script_path = Path(__file__).resolve()
     default_project_root = script_path.parents[2]
-    default_skills_root = default_project_root / ".claude" / "skills"
+    default_skills_root = default_project_root / "skills"
 
     parser = argparse.ArgumentParser(
         description="Materialize Odoo skill placeholders into real paths and a concrete Odoo version for one project copy."
@@ -49,11 +49,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--skills-root",
         default=str(default_skills_root),
-        help="Path to the copied .claude/skills directory to materialize",
+        help="Path to the skills directory to materialize",
     )
     parser.add_argument(
         "--config-path",
-        default=str(default_project_root / ".claude" / "odoo-skill-paths.json"),
+        default=str(default_project_root / ".odoo-skills" / "project.json"),
         help="Where to write resolved path and version metadata",
     )
     parser.add_argument("--dry-run", action="store_true", help="Print files that would change without writing")

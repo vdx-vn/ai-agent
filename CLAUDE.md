@@ -107,11 +107,11 @@ claude plugin validate dist/marketplace
 
 ## Architecture
 
-### Canonical plugin source vs authoring source
+### Canonical plugin source
 
 `skills/` is canonical shipped skill source. Tests enforce exact directory membership and require `SKILL.md` for each public skill.
 
-`.claude/skills/` is not packaged into the runtime build. Treat it as authoring and local Claude workspace material, not as the plugin payload. Build tests explicitly assert that `.claude/skills/`, `skill-creator/`, and `odoo-test/` are excluded from `dist/marketplace`.
+`.claude/` contains local Claude workspace settings and hooks only. Do not add a second tracked skills tree under `.claude/skills`; the root `skills/` directory is the only skill library source.
 
 When changing public plugin behavior, update `skills/` first and verify matching docs and inventory.
 
@@ -159,7 +159,7 @@ When editing skill behavior, preserve narrow routing boundaries. Neighbor collis
 
 This repo contains authoring support for Odoo-specific path placeholders.
 
-- `tooling/materialization/materialize_odoo_skill_paths.py` replaces `<ODOO_DOCS_ROOT>`, `<ODOO_SOURCE_ROOT>`, `<ODOO_SERIES>`, and `<ODOO_MAJOR_VERSION>` inside a copied `.claude/skills` tree and writes `.claude/odoo-skill-paths.json`.
+- `tooling/materialization/materialize_odoo_skill_paths.py` replaces `<ODOO_DOCS_ROOT>`, `<ODOO_SOURCE_ROOT>`, `<ODOO_SERIES>`, and `<ODOO_MAJOR_VERSION>` inside a skills tree and writes `.claude/odoo-skill-paths.json`.
 - `tooling/materialization/suggest_odoo_skill_setup.py` detects new Odoo-project context and suggests materialization or local test harness setup.
 - `.claude/settings.json` wires that suggestion script into `SessionStart` and `UserPromptSubmit` hooks.
 
@@ -196,7 +196,7 @@ Coverage is layered:
 
 ## Repo-specific cautions
 
-- Do not assume `.claude/skills/` changes affect shipped plugin behavior; packaged runtime comes from root `skills/`.
+- Do not add or edit duplicated skill content under `.claude/skills/`; packaged runtime comes from root `skills/`.
 - Do not add unresolved `<ODOO_*>`, `TODO`, or `TBD` markers to public shipped skills.
 - If you add a new public skill, also update `docs/reference/skill-inventory.json` and tests that enforce exact inventory.
 - If you change release behavior, re-run `odoo-skills-build`, `odoo-skills-smoke-install`, and `claude plugin validate dist/marketplace`.
