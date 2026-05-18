@@ -16,15 +16,14 @@ Define and run validation for a current Odoo change, including install, update, 
 Current-change validation evidence or validation plan tied to a specific diff, addon, bug, or runtime scenario.
 
 ## Key checks
-- Route current-project-state validation to existing db by default.
-- Route install, update, or explicit disposable validation to disposable db by default.
-- Existing-db validation must not clean DB or filestore.
-- Disposable-db validation must clean DB and filestore after execution.
+- Choose the smallest validation surface that can prove the current change.
+- Use a named disposable database when local harness execution is requested.
+- Compose with shared DB and filestore cleanup when local execution uses `odoo-local-test-harness`.
 - Choose test type by change surface: unit, transaction, HTTP, JS, tour, performance.
 - Cover install and update paths when relevant.
 - Include security and multi-company checks when behavior changes.
 - Report gaps, not only pass/fail.
-- Compose with `odoo-local-test-harness` when local execution depends on `ODOO_TEST_BASE_CMD`, config inspection, existing-db resolution, or disposable DB/filestore cleanup.
+- Compose with `odoo-local-test-harness` when local execution depends on `ODOO_TEST_BASE_CMD` or shared DB and filestore cleanup.
 
 ## Key docs anchors
 - `content/developer/reference/backend/testing.rst`

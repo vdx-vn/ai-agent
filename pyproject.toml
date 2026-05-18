@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "odoo-skills-dev-tools"
 version = "1.0.0"
-description = "Development tooling for the odoo-skills Claude Code plugin"
+description = "Development tooling for the odoo-skills agent plugin"
 requires-python = ">=3.12"
 dependencies = [
   "PyYAML>=6.0",

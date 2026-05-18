@@ -21,6 +21,7 @@ class BuildPluginTests(unittest.TestCase):
             self.assertEqual(built_path, output_dir)
             self.assertFalse((output_dir / "stale.txt").exists())
 
+            self.assertTrue((output_dir / ".codex-plugin" / "plugin.json").exists())
             self.assertTrue((output_dir / ".claude-plugin" / "plugin.json").exists())
             self.assertTrue((output_dir / ".claude-plugin" / "marketplace.json").exists())
             self.assertTrue((output_dir / "skills" / "odoo-build" / "SKILL.md").exists())
@@ -29,10 +30,11 @@ class BuildPluginTests(unittest.TestCase):
 
             runtime_readme = (output_dir / "README.md").read_text(encoding="utf-8")
             self.assertIn("Runtime marketplace bundle", runtime_readme)
-            self.assertIn("## Install plugin from this bundle", runtime_readme)
+            self.assertIn("## Codex CLI", runtime_readme)
+            self.assertIn("codex plugin marketplace add ./dist/marketplace", runtime_readme)
+            self.assertIn("## Claude Code", runtime_readme)
             self.assertIn("claude plugin marketplace add ./dist/marketplace", runtime_readme)
             self.assertIn("claude plugin install odoo-skills@odoo-skills-dev --scope local", runtime_readme)
-            self.assertIn("claude plugin list --json", runtime_readme)
             self.assertIn("## Optional: configure a local Odoo project", runtime_readme)
             self.assertIn("python3 -m pip install -e .", runtime_readme)
             self.assertIn("odoo-skills project-setup", runtime_readme)
@@ -63,7 +65,7 @@ class BuildPluginTests(unittest.TestCase):
             self.assertFalse((output_dir / "odoo-test").exists())
 
             top_level_entries = {path.name for path in output_dir.iterdir()}
-            self.assertEqual(top_level_entries, {".claude-plugin", "skills", "README.md", "LICENSE"})
+            self.assertEqual(top_level_entries, {".codex-plugin", ".claude-plugin", "skills", "README.md", "LICENSE"})
 
 
 if __name__ == "__main__":

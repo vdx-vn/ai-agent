@@ -8,7 +8,6 @@ from tooling.materialization.materialize_odoo_skill_paths import parse_args
 
 
 ROOT = Path(__file__).resolve().parents[2]
-COPIED_SUGGEST_PATH = ROOT / ".claude" / "skills" / "scripts" / "suggest_odoo_skill_setup.py"
 _spec = importlib.util.spec_from_file_location(
     "tooling_materialization_suggest_odoo_skill_setup",
     ROOT / "tooling" / "materialization" / "suggest_odoo_skill_setup.py",
@@ -34,7 +33,7 @@ class SuggestOdooSkillSetupTests(unittest.TestCase):
                 mode="session-start",
             )
 
-            self.assertIn("ODOO_TEST_BASE_CMD", message)
+            self.assertIn("odooTestBaseCmd", message)
 
     def test_dev_settings_use_tooling_materialization_script_path(self) -> None:
         settings = (ROOT / ".claude" / "settings.json").read_text(encoding="utf-8")
@@ -74,8 +73,9 @@ class SuggestOdooSkillSetupTests(unittest.TestCase):
                 "python3 tooling/materialization/materialize_odoo_skill_paths.py",
                 message,
             )
+            self.assertIn(".odoo-skills/project.json", message)
             self.assertIn(".claude/settings.local.json", message)
-            self.assertIn("ODOO_TEST_BASE_CMD", message)
+            self.assertIn("local Odoo test base command", message)
 
     def test_non_odoo_session_start_stays_silent(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -91,7 +91,7 @@ class SuggestOdooSkillSetupTests(unittest.TestCase):
 
     def test_copied_path_docs_match_expected_guidance(self) -> None:
         for doc_path in [
-            ROOT / ".claude" / "skills" / "odoo-paths.md",
+            ROOT / "skills" / "odoo-paths.md",
             ROOT / "docs" / "reference" / "odoo-paths.md",
             ROOT / "docs" / "authoring" / "odoo-paths.md",
         ]:
@@ -109,10 +109,11 @@ class SuggestOdooSkillSetupTests(unittest.TestCase):
                 self.assertNotIn("/home/xmars/dev/odoo/ce-18", content)
                 self.assertIn("<ODOO_DOCS_ROOT>", content)
                 self.assertIn("<ODOO_SOURCE_ROOT>", content)
+                self.assertIn(".odoo-skills/project.json", content)
+                self.assertIn("odooTestBaseCmd", content)
                 self.assertIn(".claude/settings.local.json", content)
-                self.assertIn("ODOO_TEST_BASE_CMD", content)
 
-    def test_materialize_parse_args_defaults_use_repo_claude_paths(self) -> None:
+    def test_materialize_parse_args_defaults_use_root_skills_path(self) -> None:
         with patch(
             "sys.argv",
             [
@@ -126,8 +127,8 @@ class SuggestOdooSkillSetupTests(unittest.TestCase):
             args = parse_args()
 
         expected_project_root = ROOT
-        self.assertEqual(args.skills_root, str(expected_project_root / ".claude" / "skills"))
-        self.assertEqual(args.config_path, str(expected_project_root / ".claude" / "odoo-skill-paths.json"))
+        self.assertEqual(args.skills_root, str(expected_project_root / "skills"))
+        self.assertEqual(args.config_path, str(expected_project_root / ".odoo-skills" / "project.json"))
 
 
 if __name__ == "__main__":

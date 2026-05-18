@@ -239,6 +239,7 @@ class RunProjectSetupTests(unittest.TestCase):
 
             settings = json.loads((project_root / ".claude" / "settings.local.json").read_text(encoding="utf-8"))
             state = json.loads((project_root / ".claude" / "odoo-skill-paths.json").read_text(encoding="utf-8"))
+            shared = json.loads((project_root / ".odoo-skills" / "project.json").read_text(encoding="utf-8"))
 
         self.assertEqual(result, 0)
         self.assertEqual(
@@ -256,7 +257,16 @@ class RunProjectSetupTests(unittest.TestCase):
         self.assertEqual(state["versionSource"], "--version")
         self.assertEqual(state["projectRoot"], str(project_root.resolve()))
         self.assertEqual(state["mode"], "project-setup")
+        self.assertEqual(shared["docsRoot"], str(docs_root))
+        self.assertEqual(shared["sourceRoot"], str(source_root))
+        self.assertEqual(shared["version"], "18.0")
+        self.assertEqual(shared["majorVersion"], "18")
+        self.assertEqual(shared["projectRoot"], str(project_root.resolve()))
+        self.assertEqual(shared["mode"], "project-setup")
+        self.assertEqual(shared["schemaVersion"], "1")
+        self.assertEqual(shared["odooTestBaseCmd"], f'python3 "{odoo_bin}" -c "{config_path}"')
         self.assertIn("configuredAt", state)
+        self.assertIn("configuredAt", shared)
 
     def test_run_project_setup_is_noop_when_existing_state_is_valid(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -274,6 +284,7 @@ class RunProjectSetupTests(unittest.TestCase):
             claude_dir.mkdir()
             settings_path = claude_dir / "settings.local.json"
             state_path = claude_dir / "odoo-skill-paths.json"
+            shared_path = project_root / ".odoo-skills" / "project.json"
             original_settings = {
                 "env": {
                     "KEEP": "value",
@@ -286,10 +297,13 @@ class RunProjectSetupTests(unittest.TestCase):
                 "sourceRoot": str(source_root),
                 "version": "18.0",
                 "majorVersion": "18",
+                "odooTestBaseCmd": f'python3 "{odoo_bin}" -c "{config_path}"',
                 "extra": "keep-me",
             }
             settings_path.write_text(json.dumps(original_settings, indent=2) + "\n", encoding="utf-8")
             state_path.write_text(json.dumps(original_state, indent=2) + "\n", encoding="utf-8")
+            shared_path.parent.mkdir()
+            shared_path.write_text(json.dumps(original_state, indent=2) + "\n", encoding="utf-8")
             args = Namespace(
                 docs_root=None,
                 source_root=None,
@@ -313,6 +327,10 @@ class RunProjectSetupTests(unittest.TestCase):
             )
             self.assertEqual(
                 json.loads(state_path.read_text(encoding="utf-8")),
+                original_state,
+            )
+            self.assertEqual(
+                json.loads(shared_path.read_text(encoding="utf-8")),
                 original_state,
             )
 
@@ -389,6 +407,7 @@ class RunProjectSetupTests(unittest.TestCase):
             result = run_project_setup(args, cwd=project_root)
             settings = json.loads(settings_path.read_text(encoding="utf-8"))
             state = json.loads(state_path.read_text(encoding="utf-8"))
+            shared = json.loads((project_root / ".odoo-skills" / "project.json").read_text(encoding="utf-8"))
 
         self.assertEqual(result, 0)
         self.assertEqual(settings["env"]["KEEP"], "value")
@@ -403,6 +422,8 @@ class RunProjectSetupTests(unittest.TestCase):
         self.assertEqual(state["sourceRoot"], str(source_root))
         self.assertEqual(state["custom"], {"keep": True})
         self.assertEqual(state["mode"], "project-setup")
+        self.assertEqual(shared["custom"], {"keep": True})
+        self.assertEqual(shared["odooTestBaseCmd"], f'python3.12 "{odoo_bin}" -c "{config_path}"')
 
     def test_run_project_setup_stale_existing_state_does_not_noop(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -475,6 +496,62 @@ class RunProjectSetupTests(unittest.TestCase):
         self.assertEqual(state["sourceRoot"], str(source_root))
         self.assertEqual(state["version"], "18.0")
         self.assertFalse(any("Project setup already exists" in line for line in printed))
+
+    def test_run_project_setup_legacy_only_writes_shared_config(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            project_root = Path(tmp)
+            (project_root / "addons").mkdir()
+            docs_root = project_root / "docs"
+            source_root = project_root / "src"
+            odoo_bin = source_root / "odoo-bin"
+            config_path = project_root / "odoo.conf"
+            docs_root.mkdir()
+            source_root.mkdir()
+            odoo_bin.write_text("", encoding="utf-8")
+            config_path.write_text("", encoding="utf-8")
+            claude_dir = project_root / ".claude"
+            claude_dir.mkdir()
+            (claude_dir / "settings.local.json").write_text(
+                json.dumps(
+                    {"env": {"ODOO_TEST_BASE_CMD": f'python3 "{odoo_bin}" -c "{config_path}"'}},
+                    indent=2,
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            (claude_dir / "odoo-skill-paths.json").write_text(
+                json.dumps(
+                    {
+                        "docsRoot": str(docs_root),
+                        "sourceRoot": str(source_root),
+                        "version": "18.0",
+                        "majorVersion": "18",
+                    },
+                    indent=2,
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            args = Namespace(
+                docs_root=None,
+                source_root=None,
+                version=None,
+                python_bin=None,
+                odoo_bin=None,
+                config=None,
+                base_cmd=None,
+                yes=True,
+                force=False,
+                dry_run=False,
+                command="project-setup",
+            )
+
+            result = run_project_setup(args, cwd=project_root)
+            shared = json.loads((project_root / ".odoo-skills" / "project.json").read_text(encoding="utf-8"))
+
+        self.assertEqual(result, 0)
+        self.assertEqual(shared["odooTestBaseCmd"], f'python3 "{odoo_bin}" -c "{config_path}"')
+        self.assertEqual(shared["version"], "18.0")
 
     def test_run_project_setup_force_without_python_bin_preserves_saved_interpreter(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -583,6 +660,7 @@ class RunProjectSetupTests(unittest.TestCase):
         self.assertTrue(any("Dry run" in line for line in printed))
         self.assertFalse((project_root / ".claude" / "settings.local.json").exists())
         self.assertFalse((project_root / ".claude" / "odoo-skill-paths.json").exists())
+        self.assertFalse((project_root / ".odoo-skills" / "project.json").exists())
 
 
 if __name__ == "__main__":

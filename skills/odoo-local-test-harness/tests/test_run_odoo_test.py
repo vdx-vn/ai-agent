@@ -79,6 +79,29 @@ class RunOdooTestTests(unittest.TestCase):
         with self.assertRaises(SystemExit) as exc:
             run_odoo_test.load_base_command({})
         self.assertIn("ODOO_TEST_BASE_CMD is not set", str(exc.exception))
+        self.assertIn(".odoo-skills/project.json", str(exc.exception))
+
+    def test_load_base_command_falls_back_to_shared_project_config(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            project_root = Path(temp_dir)
+            nested_dir = project_root / "addons" / "custom_module"
+            nested_dir.mkdir(parents=True)
+            config_dir = project_root / ".odoo-skills"
+            config_dir.mkdir()
+            (config_dir / "project.json").write_text(
+                textwrap.dedent(
+                    """
+                    {
+                      "odooTestBaseCmd": "python3 /opt/odoo/odoo-bin -c /tmp/odoo.conf"
+                    }
+                    """
+                ),
+                encoding="utf-8",
+            )
+
+            command = run_odoo_test.load_base_command({}, cwd=nested_dir)
+
+        self.assertEqual(command, ["python3", "/opt/odoo/odoo-bin", "-c", "/tmp/odoo.conf"])
 
     def test_load_cleanup_database_from_explicit_module_path(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

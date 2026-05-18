@@ -41,8 +41,8 @@ Use this skill only when the primary requested output is a trust-boundary or exp
 
 # Guardrails
 - Answer only the domain or technical question this skill owns.
-- Use current Odoo docs as guidance and current Odoo CE source as runtime truth.
-- Do not answer from generic ERP intuition; anchor to current Odoo terms, addons, and bridge modules.
+- Use Odoo current docs as guidance and Odoo CE current source as runtime truth.
+- Do not answer from generic ERP intuition; anchor to Odoo current terms, addons, and bridge modules.
 - Highlight cross-app, accounting, or security effects when they materially change the answer.
 - Redirect to task skills when the user needs planning, building, testing, or shipping.
 

@@ -4,17 +4,23 @@ import shutil
 from pathlib import Path
 
 
-RUNTIME_PATHS = (".claude-plugin", "skills", "LICENSE")
+RUNTIME_PATHS = (".codex-plugin", ".claude-plugin", "skills", "LICENSE")
 RUNTIME_README = """# odoo-skills Runtime marketplace bundle
 
-Public Claude Code plugin for Odoo-focused skills.
+Public plugin bundle for Odoo-focused skills.
 
-## Install plugin from this bundle
+## Codex CLI
+
+```bash
+codex plugin marketplace add ./dist/marketplace
+codex
+```
+
+## Claude Code
 
 ```bash
 claude plugin marketplace add ./dist/marketplace
 claude plugin install odoo-skills@odoo-skills-dev --scope local
-claude plugin list --json
 ```
 
 ## Optional: configure a local Odoo project
@@ -30,8 +36,8 @@ python3 -m tooling.cli project-setup
 
 ## Runtime contents
 
-This bundle ships plugin metadata, public skills, and license files only.
-Repo-only authoring tools such as tooling/ and .claude/skills/ are not included.
+This bundle ships Codex and Claude plugin metadata, public skills, and license files only.
+Repo-only authoring tools such as tooling/ are not included.
 """
 
 

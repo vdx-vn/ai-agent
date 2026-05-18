@@ -1,6 +1,6 @@
 # Optional local Odoo project setup
 
-Use this only after you have already installed `odoo-skills` for your Claude Code user.
+Use this after you have installed `odoo-skills` for Codex CLI or Claude Code.
 
 This step is optional and project-local. It is for Odoo repositories where you want local docs/source path materialization and local test harness configuration.
 
@@ -8,7 +8,7 @@ This step is optional and project-local. It is for Odoo repositories where you w
 
 Before running project setup:
 
-- Install the plugin for your Claude Code user with `odoo-skills install-plugin` or `python3 -m tooling.install_plugin`
+- Install the plugin for Codex CLI or Claude Code
 - Be inside the Odoo repository you want to configure
 - Have access to your local Odoo documentation clone and Odoo core source clone
 - Know which config file the repository should use for local test commands
@@ -41,10 +41,13 @@ Project setup can prompt for:
 
 Project setup writes project-local configuration files inside the current Odoo repository:
 
+- `.odoo-skills/project.json`
 - `.claude/settings.local.json`
 - `.claude/odoo-skill-paths.json`
 
-These files are separate from the user-local Claude Code plugin installation.
+`.odoo-skills/project.json` is the shared project setup used by Codex CLI and repo-local scripts. The `.claude/*` files are also written for Claude Code compatibility.
+
+These files are separate from the user-local agent plugin installation.
 
 ## Re-run with `--force`
 
@@ -74,8 +77,8 @@ In that arrangement, custom addons may live in another repository, while the con
 
 ## `ODOO_TEST_BASE_CMD` note
 
-The local test harness expects `.claude/settings.local.json` to define `ODOO_TEST_BASE_CMD` under `env`.
+The local test harness reads `ODOO_TEST_BASE_CMD` from the environment when Claude Code injects it from `.claude/settings.local.json`. If that environment variable is not present, it searches upward from the current directory for `.odoo-skills/project.json` and reads `odooTestBaseCmd`.
 
 That base command must already include `-c` or `--config`, and it must not include runtime-managed flags such as `-d`, `--test-tags`, `-i`, `-u`, `--test-enable`, or `--stop-after-init`.
 
-Project setup is the supported path for capturing the config inputs needed for this local harness behavior.
+Project setup is the supported path for capturing the config inputs needed for this local harness behavior in both Codex CLI and Claude Code.
