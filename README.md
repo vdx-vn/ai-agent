@@ -12,6 +12,7 @@ Clone the repository and install the local development commands:
 git clone git@github.com:vdx-vn/ai-agent
 cd ai-agent
 python3 -m pip install -e .
+export ODOO_SKILLS_REPO="$PWD"
 ```
 
 ### Codex CLI
@@ -28,8 +29,22 @@ Authenticate and add this repository as a local plugin marketplace:
 
 ```bash
 codex login
-codex plugin marketplace add .
+odoo-skills build
+codex plugin marketplace add "$ODOO_SKILLS_REPO/dist/marketplace"
 codex
+```
+
+`codex plugin marketplace add` needs the path to this built skills marketplace, not the Odoo/project repository where you want to use the skills. If you are already inside a separate project repository, pass the absolute path instead:
+
+```bash
+codex plugin marketplace add /absolute/path/to/ai-agent/dist/marketplace
+```
+
+If you previously added the source repository root, replace it after building:
+
+```bash
+codex plugin marketplace remove odoo-skills-dev
+codex plugin marketplace add "$ODOO_SKILLS_REPO/dist/marketplace"
 ```
 
 Inside Codex, open `/plugins`, search for `odoo-skills`, and install the local plugin.
@@ -112,4 +127,4 @@ python3 -m tooling.setup_local
 python3 -m tooling.setup_local --uninstall
 ```
 
-Use `odoo-skills install-plugin` for Claude Code user-local installation. For Codex CLI, add this repository as a local plugin marketplace and install `odoo-skills` from `/plugins`. Then use `odoo-skills project-setup` only inside Odoo repositories that need local integration.
+Use `odoo-skills install-plugin` for Claude Code user-local installation. For Codex CLI, build the runtime marketplace, add its path as a local plugin marketplace, and install `odoo-skills` from `/plugins`. Then use `odoo-skills project-setup` only inside Odoo repositories that need local integration.

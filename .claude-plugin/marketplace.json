@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "odoo-skills",
-      "source": "./",
+      "source": "./dist/marketplace/plugins/odoo-skills",
       "description": "Odoo-focused skill library",
       "version": "1.0.0"
     }

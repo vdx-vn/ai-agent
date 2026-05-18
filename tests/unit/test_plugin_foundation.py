@@ -42,7 +42,23 @@ class PluginFoundationTests(unittest.TestCase):
         plugins = marketplace_data.get("plugins", [])
         self.assertTrue(plugins, "plugins should be non-empty")
         self.assertEqual(plugins[0].get("name"), "odoo-skills")
-        self.assertEqual(plugins[0].get("source"), "./")
+        self.assertEqual(plugins[0].get("source"), "./dist/marketplace/plugins/odoo-skills")
+
+    def test_codex_marketplace_json_foundation(self) -> None:
+        marketplace_path = ROOT / ".agents" / "plugins" / "marketplace.json"
+        self.assertTrue(marketplace_path.exists(), "Codex marketplace.json should exist")
+
+        marketplace_data = json.loads(marketplace_path.read_text(encoding="utf-8"))
+        self.assertEqual(marketplace_data.get("name"), "odoo-skills-dev")
+        self.assertEqual(marketplace_data.get("interface", {}).get("displayName"), "Odoo Skills Dev")
+
+        plugins = marketplace_data.get("plugins", [])
+        self.assertTrue(plugins, "plugins should be non-empty")
+        self.assertEqual(plugins[0].get("name"), "odoo-skills")
+        self.assertEqual(plugins[0].get("source", {}).get("path"), "./dist/marketplace/plugins/odoo-skills")
+        self.assertEqual(plugins[0].get("policy", {}).get("installation"), "AVAILABLE")
+        self.assertEqual(plugins[0].get("policy", {}).get("authentication"), "ON_INSTALL")
+        self.assertEqual(plugins[0].get("category"), "Coding")
 
     def test_readme_has_one_installation_section_with_codex_and_claude_parts(self) -> None:
         readme_text = (ROOT / "README.md").read_text(encoding="utf-8")
@@ -56,8 +72,13 @@ class PluginFoundationTests(unittest.TestCase):
         self.assertIn("### Codex CLI", readme_text)
         self.assertIn("npm install -g @openai/codex", readme_text)
         self.assertIn("brew install --cask codex", readme_text)
+        self.assertIn('export ODOO_SKILLS_REPO="$PWD"', readme_text)
         self.assertIn("codex login", readme_text)
-        self.assertIn("codex plugin marketplace add .", readme_text)
+        self.assertIn("odoo-skills build", readme_text)
+        self.assertIn('codex plugin marketplace add "$ODOO_SKILLS_REPO/dist/marketplace"', readme_text)
+        self.assertIn("codex plugin marketplace add /absolute/path/to/ai-agent/dist/marketplace", readme_text)
+        self.assertIn("not the Odoo/project repository where you want to use the skills", readme_text)
+        self.assertIn("codex plugin marketplace remove odoo-skills-dev", readme_text)
         self.assertIn("Inside Codex, open `/plugins`, search for `odoo-skills`, and install the local plugin.", readme_text)
         self.assertIn("OpenAI Codex CLI getting started", readme_text)
         self.assertIn("### Claude Code", readme_text)

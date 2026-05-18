@@ -21,12 +21,18 @@ class BuildPluginTests(unittest.TestCase):
             self.assertEqual(built_path, output_dir)
             self.assertFalse((output_dir / "stale.txt").exists())
 
-            self.assertTrue((output_dir / ".codex-plugin" / "plugin.json").exists())
-            self.assertTrue((output_dir / ".claude-plugin" / "plugin.json").exists())
+            plugin_root = output_dir / "plugins" / "odoo-skills"
+            self.assertTrue((output_dir / ".agents" / "plugins" / "marketplace.json").exists())
             self.assertTrue((output_dir / ".claude-plugin" / "marketplace.json").exists())
-            self.assertTrue((output_dir / "skills" / "odoo-build" / "SKILL.md").exists())
+            self.assertTrue((plugin_root / ".codex-plugin" / "plugin.json").exists())
+            self.assertTrue((plugin_root / ".claude-plugin" / "plugin.json").exists())
+            self.assertTrue((output_dir / ".claude-plugin" / "marketplace.json").exists())
+            self.assertTrue((plugin_root / "skills" / "odoo-build" / "SKILL.md").exists())
             self.assertTrue((output_dir / "README.md").exists())
             self.assertTrue((output_dir / "LICENSE").exists())
+
+            codex_marketplace = (output_dir / ".agents" / "plugins" / "marketplace.json").read_text(encoding="utf-8")
+            self.assertIn('"path": "./plugins/odoo-skills"', codex_marketplace)
 
             runtime_readme = (output_dir / "README.md").read_text(encoding="utf-8")
             self.assertIn("Runtime marketplace bundle", runtime_readme)
@@ -65,7 +71,7 @@ class BuildPluginTests(unittest.TestCase):
             self.assertFalse((output_dir / "odoo-test").exists())
 
             top_level_entries = {path.name for path in output_dir.iterdir()}
-            self.assertEqual(top_level_entries, {".codex-plugin", ".claude-plugin", "skills", "README.md", "LICENSE"})
+            self.assertEqual(top_level_entries, {".agents", ".claude-plugin", "plugins", "README.md", "LICENSE"})
 
 
 if __name__ == "__main__":
