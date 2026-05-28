@@ -29,7 +29,7 @@ Structured findings on an existing diff or artifact, separated into required fix
 - `content/developer/reference/backend/testing.rst`
 
 ## Key source anchors
-- `odoo/models.py`
+- `odoo/orm/models.py` (v19; `odoo/models.py` removed)
 - `odoo/http.py`
 - `odoo/tests/common.py`
 - `odoo/addons/base/models/ir_rule.py`

@@ -30,7 +30,7 @@ Ordered execution plan with file map, acceptance criteria, test matrix, rollout 
 
 ## Key source anchors
 - `odoo/modules/module.py`
-- `odoo/models.py`
+- `odoo/orm/models.py` (v19; `odoo/models.py` removed)
 - `odoo/http.py`
 - `odoo/tests/common.py`
 

@@ -28,7 +28,7 @@ Expense process map from an expense-claim entrypoint, with states, roles, accoun
 
 ## Key source anchors
 - `addons/hr_expense`
-- `addons/hr_expense/models/hr_expense_sheet.py`
+- `addons/hr_expense/models/hr_expense.py` (v19: `hr.expense.sheet` model removed; expenses are flat on `hr.expense`, see `former_sheet_id`)
 - `addons/account`
 
 ## Frequent sibling skills

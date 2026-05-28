@@ -28,9 +28,9 @@ Concrete in-scope code or configuration changes plus noted assumptions and follo
 - `content/contributing/development/coding_guidelines.rst`
 
 ## Key source anchors
-- `odoo/models.py`
-- `odoo/api.py`
-- `odoo/fields.py`
+- `odoo/orm/models.py` (v19 ORM package; `odoo/models.py` removed)
+- `odoo/api/__init__.py` (shim; decorators in `odoo/orm/decorators.py`)
+- `odoo/orm/fields.py`
 - `odoo/http.py`
 - `odoo/modules/module.py`
 

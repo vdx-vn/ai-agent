@@ -31,7 +31,7 @@ Accounting process map with finance documents, posting impacts, and cross-app im
 - `addons/account`
 - `addons/account/models`
 - `addons/stock_account/models/stock_move.py`
-- `addons/hr_expense/models/hr_expense_sheet.py`
+- `addons/hr_expense/models/hr_expense.py` (v19: `hr.expense.sheet` removed)
 
 ## Frequent sibling skills
 - `odoo-business-sales`

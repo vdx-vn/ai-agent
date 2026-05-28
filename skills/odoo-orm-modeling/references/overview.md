@@ -27,9 +27,9 @@ ORM modeling guidance with field or method recommendations and anti-pattern chec
 - `content/contributing/development/coding_guidelines.rst`
 
 ## Key source anchors
-- `odoo/models.py`
-- `odoo/api.py`
-- `odoo/fields.py`
+- `odoo/orm/models.py` (v19 ORM package; `odoo/models.py` removed)
+- `odoo/api/__init__.py` (re-export shim; decorators in `odoo/orm/decorators.py`)
+- `odoo/orm/fields.py` (plus split files: `fields_relational.py`, `fields_numeric.py`, `fields_temporal.py`, `fields_selection.py`)
 
 ## Frequent sibling skills
 - `odoo-build`

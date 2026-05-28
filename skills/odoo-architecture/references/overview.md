@@ -29,7 +29,7 @@ Architecture recommendation with target addon, dependency rationale, and bridge-
 ## Key source anchors
 - `odoo/modules/module.py`
 - `odoo/modules/loading.py`
-- `odoo/modules/registry.py`
+- `odoo/orm/registry.py` (v19; `odoo/modules/registry.py` removed)
 - `addons/sale_stock/__manifest__.py`
 - `addons/purchase_stock/__manifest__.py`
 - `addons/stock_account/__manifest__.py`
