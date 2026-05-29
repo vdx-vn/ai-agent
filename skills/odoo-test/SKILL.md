@@ -23,16 +23,10 @@ Use this skill only when the primary requested output is validation for a concre
 - the task is deployment orchestration only
 
 # Required inputs
-- user request and desired output artifact
-- target module(s), files, or flow if known
-- current diff, traceback, failing scenario, or release context when available
+Artifact + target module/files if known + diff/traceback/context when available.
 
 # Workflow
-1. Confirm the requested output artifact belongs in this skill; redirect if it does not.
-2. Map the request to the smallest relevant Odoo modules, docs, and source anchors.
-3. Apply the deterministic checks in `references/checklist.md`, including local harness and cleanup expectations.
-4. Produce the artifact described below, naming assumptions, blockers, and cross-app effects.
-5. State a boundary decision with primary skill, composed siblings, and deferred scope.
+Confirm → Map to Odoo modules/anchors → Apply checklist (incl. local harness) → Produce artifact → State boundary decision.
 
 # Output contract
 - evidence status: executed, planned, or blocked
@@ -44,11 +38,9 @@ Use this skill only when the primary requested output is validation for a concre
 - boundary decision with primary skill, composed siblings, and deferred scope
 
 # Guardrails
-- Stay inside this sprint-phase responsibility; do not absorb neighboring tasks.
-- Prefer current Odoo docs for functional rules and current Odoo CE source for implementation truth.
-- Call out docs or source mismatches instead of hiding them.
-- Name permissions impact, migration impact, and cross-app modules whenever relevant.
-- Name rollback or staging risk whenever release or data impact exists.
+- Stay in sprint-phase scope; do not absorb neighbors.
+- Anchor to Odoo docs (functional rules) and CE source (implementation truth); call out mismatches.
+- Name permissions, migration, cross-app, and rollback risks when relevant.
 - Separate executed evidence from planned validation. If nothing ran, say so plainly.
 - For shared DB cleanup, compose with `odoo-local-test-harness` and use its disposable database cleanup behavior.
 
@@ -65,6 +57,4 @@ Use this skill only when the primary requested output is validation for a concre
 - `odoo-local-test-harness`
 
 # References
-- Read `references/overview.md` first for scope, anchors, and pairings.
-- Use `references/checklist.md` for deterministic checks.
-- Use `references/examples.md` to compare trigger, boundary, and tie-breaker prompts.
+`references/overview.md` (scope + anchors) · `references/checklist.md` · `references/examples.md`

@@ -21,16 +21,10 @@ Use this skill only when the primary requested output is a view, action, menu, t
 - the task is a business-process map
 
 # Required inputs
-- user question or design decision
-- current module, entrypoint, or artifact under discussion if known
-- surrounding business or technical context when available
+Question or artifact, module/entrypoint if known, surrounding context when available.
 
 # Workflow
-1. Confirm the requested decision or process belongs in this skill; redirect if it does not.
-2. Read only the smallest relevant anchors from `references/overview.md`.
-3. Apply the rule or process checklist in `references/checklist.md`.
-4. Answer with Odoo-specific guidance, tradeoffs, downstream effects, and boundary notes.
-5. State a boundary decision with primary skill, composed siblings, and deferred scope.
+Confirm → Read anchors → Apply checklist → Answer with guidance → State boundary decision.
 
 # Output contract
 - view strategy
@@ -40,12 +34,9 @@ Use this skill only when the primary requested output is a view, action, menu, t
 - boundary decision with primary skill, composed siblings, and deferred scope
 
 # Guardrails
-- Answer only the domain or technical question this skill owns.
-- Use Odoo current docs as guidance and Odoo CE current source as runtime truth.
-- Do not answer from generic ERP intuition; anchor to Odoo current terms, addons, and bridge modules.
-- Highlight cross-app, accounting, or security effects when they materially change the answer.
+- Answer only this skill's domain. Anchor to Odoo docs + CE source, not generic ERP intuition.
+- Highlight cross-app, accounting, or security effects. Redirect to task skills for planning/building/testing/shipping.
 - Keep customer journey or checkout process meaning with `odoo-business-website-ecommerce`; keep template, xpath, and action mechanics here.
-- Redirect to task skills when the user needs planning, building, testing, or shipping.
 
 # Must hand off when
 - If the UI question starts from website cart, checkout, portal, or public form entrypoints but the user mainly wants process meaning, compose with `odoo-business-website-ecommerce`.
@@ -59,6 +50,4 @@ Use this skill only when the primary requested output is a view, action, menu, t
 - `odoo-orm-modeling`
 
 # References
-- Read `references/overview.md` first for scope, anchors, and pairings.
-- Use `references/checklist.md` for deterministic checks.
-- Use `references/examples.md` to compare trigger, boundary, and tie-breaker prompts.
+`references/overview.md` (scope + anchors) · `references/checklist.md` · `references/examples.md`

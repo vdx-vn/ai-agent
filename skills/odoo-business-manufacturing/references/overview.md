@@ -23,7 +23,7 @@ Manufacturing process map from a BoM or MO entrypoint, with operations, stock ef
 
 ## Key docs anchors
 - `content/applications/inventory_and_mrp.rst`
-- `content/applications/inventory_and_mrp/manufacturing.rst`
+- `content/applications/inventory_and_mrp/manufacturing/` (subdirectory; manufacturing.rst is a thin toctree stub in v19)
 - `content/applications/inventory_and_mrp/manufacturing/advanced_configuration/sub_assemblies.rst`
 
 ## Key source anchors

@@ -52,7 +52,4 @@ Use this skill only when the primary requested output is Python static-analysis 
 - If the review target is not Python, hand off to the more appropriate language or review workflow.
 
 # References
-- Read `references/overview.md` first for routing and boundaries.
-- Use `references/checklist.md` for deterministic review steps.
-- Use `references/examples.md` for trigger and non-trigger patterns.
-- Use `references/pylint_checks.md` for rule explanations and fix suggestions.
+`references/overview.md` (routing + boundaries) · `references/checklist.md` · `references/examples.md` · `references/pylint_checks.md` (rule explanations)

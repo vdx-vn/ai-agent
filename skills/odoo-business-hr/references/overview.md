@@ -22,7 +22,7 @@ HR process map from a workforce entrypoint, with employee lifecycle touchpoints 
 - Call out role and compliance sensitivities.
 
 ## Key docs anchors
-- `content/applications/hr.rst`
+- `content/applications/hr/` (subdirectory; hr.rst is a thin toctree stub in v19)
 - `content/applications/hr/payroll.rst`
 - `content/applications/services/timesheets.rst`
 

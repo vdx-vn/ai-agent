@@ -23,7 +23,7 @@ Inventory process map from a warehouse or stock-document entrypoint, with route 
 
 ## Key docs anchors
 - `content/applications/inventory_and_mrp.rst`
-- `content/applications/inventory_and_mrp/inventory.rst`
+- `content/applications/inventory_and_mrp/inventory/` (subdirectory; inventory.rst is a thin toctree stub in v19)
 - `content/applications/finance/accounting.rst`
 
 ## Key source anchors

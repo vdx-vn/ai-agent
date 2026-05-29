@@ -22,7 +22,7 @@ UI guidance with view strategy, inheritance notes, and action or menu recommenda
 - Separate backend UI concerns from website or ecommerce entrypoints when needed.
 
 ## Key docs anchors
-- `content/developer/reference/frontend.rst`
+- `content/developer/reference/frontend/` (subdirectory; frontend.rst is a thin toctree stub in v19)
 - `content/developer/reference/backend/http.rst`
 - `content/contributing/development/coding_guidelines.rst`
 

@@ -22,7 +22,7 @@ Service-delivery process map with task, time, billing, and cross-app impacts.
 - Call out approval and billable/non-billable effects.
 
 ## Key docs anchors
-- `content/applications/services.rst`
+- `content/applications/services/` (subdirectory; services.rst is a thin toctree stub in v19)
 - `content/applications/services/timesheets.rst`
 - `content/applications/sales/sales.rst`
 
