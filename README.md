@@ -9,7 +9,7 @@ This repository follows the top-level skill-library layout used by `obra/superpo
 Clone the repository and install the local development commands:
 
 ```bash
-git clone git@github.com:vdx-vn/ai-agent
+git clone git@github.com:vdx-vn/ai-agent -b odoo-19
 cd ai-agent
 python3 -m pip install -e .
 export ODOO_SKILLS_REPO="$PWD"
