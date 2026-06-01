@@ -12,7 +12,7 @@ if __package__ in {None, ""}:
 
 from tooling.build_plugin import build_marketplace
 
-PLUGIN_NAME = "odoo-skills"
+PLUGIN_NAME = "odoo-skills-v19"
 MARKETPLACE_NAME = "odoo-skills-dev"
 INSTALL_SCOPE = "local"
 

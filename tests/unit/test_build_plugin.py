@@ -21,7 +21,7 @@ class BuildPluginTests(unittest.TestCase):
             self.assertEqual(built_path, output_dir)
             self.assertFalse((output_dir / "stale.txt").exists())
 
-            plugin_root = output_dir / "plugins" / "odoo-skills"
+            plugin_root = output_dir / "plugins" / "odoo-skills-v19"
             self.assertTrue((output_dir / ".agents" / "plugins" / "marketplace.json").exists())
             self.assertTrue((output_dir / ".claude-plugin" / "marketplace.json").exists())
             self.assertTrue((plugin_root / ".codex-plugin" / "plugin.json").exists())
@@ -32,7 +32,7 @@ class BuildPluginTests(unittest.TestCase):
             self.assertTrue((output_dir / "LICENSE").exists())
 
             codex_marketplace = (output_dir / ".agents" / "plugins" / "marketplace.json").read_text(encoding="utf-8")
-            self.assertIn('"path": "./plugins/odoo-skills"', codex_marketplace)
+            self.assertIn('"path": "./plugins/odoo-skills-v19"', codex_marketplace)
 
             runtime_readme = (output_dir / "README.md").read_text(encoding="utf-8")
             self.assertIn("Runtime marketplace bundle", runtime_readme)

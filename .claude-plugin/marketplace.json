@@ -7,10 +7,10 @@
   },
   "plugins": [
     {
-      "name": "odoo-skills",
-      "source": "./dist/marketplace/plugins/odoo-skills",
+      "name": "odoo-skills-v19",
+      "source": "./dist/marketplace/plugins/odoo-skills-v19",
       "description": "Odoo-focused skill library",
-      "version": "19.0.0"
+      "version": "1.0.0"
     }
   ]
 }

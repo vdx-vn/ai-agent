@@ -5,7 +5,7 @@ import shutil
 from pathlib import Path
 
 
-PLUGIN_NAME = "odoo-skills"
+PLUGIN_NAME = "odoo-skills-v19"
 MARKETPLACE_NAME = "odoo-skills-dev"
 PLUGIN_RUNTIME_PATHS = (".codex-plugin", ".claude-plugin/plugin.json", "skills", "LICENSE")
 RUNTIME_README = """# odoo-skills Runtime marketplace bundle

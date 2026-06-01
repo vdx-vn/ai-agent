@@ -23,7 +23,7 @@ def _run_command(command: list[str], *, root: Path, env: dict[str, str]) -> subp
 
 def _contains_odoo_skills(payload: Any) -> bool:
     if isinstance(payload, str):
-        return payload == "odoo-skills" or payload.split("@", 1)[0] == "odoo-skills"
+        return payload == "odoo-skills-v19" or payload.split("@", 1)[0] == "odoo-skills-v19"
 
     if isinstance(payload, list):
         return any(_contains_odoo_skills(item) for item in payload)
@@ -38,14 +38,14 @@ def smoke_install() -> int:
     root = Path(__file__).resolve().parents[1]
     marketplace_root = build_marketplace(root, root / "dist" / "marketplace")
 
-    with tempfile.TemporaryDirectory(prefix="odoo-skills-smoke-home-") as temp_home:
+    with tempfile.TemporaryDirectory(prefix="odoo-skills-v19-smoke-home-") as temp_home:
         env = os.environ.copy()
         env["HOME"] = temp_home
 
         commands = [
             ["claude", "plugin", "validate", str(marketplace_root)],
             ["claude", "plugin", "marketplace", "add", str(marketplace_root)],
-            ["claude", "plugin", "install", "odoo-skills@odoo-skills-dev", "--scope", "local"],
+            ["claude", "plugin", "install", "odoo-skills-v19@odoo-skills-v19-dev", "--scope", "local"],
             ["claude", "plugin", "list", "--json"],
         ]
 

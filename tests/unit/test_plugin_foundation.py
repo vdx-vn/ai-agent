@@ -12,7 +12,7 @@ class PluginFoundationTests(unittest.TestCase):
         self.assertTrue(plugin_path.exists(), "plugin.json should exist")
 
         plugin_data = json.loads(plugin_path.read_text(encoding="utf-8"))
-        self.assertEqual(plugin_data.get("name"), "odoo-skills")
+        self.assertEqual(plugin_data.get("name"), "odoo-skills-v19")
         self.assertEqual(plugin_data.get("license"), "Apache-2.0")
         self.assertEqual(plugin_data.get("version"), "1.0.0")
         self.assertTrue(plugin_data.get("description"), "description should exist")
@@ -23,7 +23,7 @@ class PluginFoundationTests(unittest.TestCase):
         self.assertTrue(plugin_path.exists(), "Codex plugin.json should exist")
 
         plugin_data = json.loads(plugin_path.read_text(encoding="utf-8"))
-        self.assertEqual(plugin_data.get("name"), "odoo-skills")
+        self.assertEqual(plugin_data.get("name"), "odoo-skills-v19")
         self.assertEqual(plugin_data.get("license"), "Apache-2.0")
         self.assertEqual(plugin_data.get("version"), "1.0.0")
         self.assertEqual(plugin_data.get("skills"), "./skills/")
@@ -41,8 +41,8 @@ class PluginFoundationTests(unittest.TestCase):
 
         plugins = marketplace_data.get("plugins", [])
         self.assertTrue(plugins, "plugins should be non-empty")
-        self.assertEqual(plugins[0].get("name"), "odoo-skills")
-        self.assertEqual(plugins[0].get("source"), "./dist/marketplace/plugins/odoo-skills")
+        self.assertEqual(plugins[0].get("name"), "odoo-skills-v19")
+        self.assertEqual(plugins[0].get("source"), "./dist/marketplace/plugins/odoo-skills-v19")
 
     def test_codex_marketplace_json_foundation(self) -> None:
         marketplace_path = ROOT / ".agents" / "plugins" / "marketplace.json"
@@ -54,8 +54,8 @@ class PluginFoundationTests(unittest.TestCase):
 
         plugins = marketplace_data.get("plugins", [])
         self.assertTrue(plugins, "plugins should be non-empty")
-        self.assertEqual(plugins[0].get("name"), "odoo-skills")
-        self.assertEqual(plugins[0].get("source", {}).get("path"), "./dist/marketplace/plugins/odoo-skills")
+        self.assertEqual(plugins[0].get("name"), "odoo-skills-v19")
+        self.assertEqual(plugins[0].get("source", {}).get("path"), "./dist/marketplace/plugins/odoo-skills-v19")
         self.assertEqual(plugins[0].get("policy", {}).get("installation"), "AVAILABLE")
         self.assertEqual(plugins[0].get("policy", {}).get("authentication"), "ON_INSTALL")
         self.assertEqual(plugins[0].get("category"), "Coding")
@@ -79,7 +79,7 @@ class PluginFoundationTests(unittest.TestCase):
         self.assertIn("codex plugin marketplace add /absolute/path/to/ai-agent/dist/marketplace", readme_text)
         self.assertIn("not the Odoo/project repository where you want to use the skills", readme_text)
         self.assertIn("codex plugin marketplace remove odoo-skills-dev", readme_text)
-        self.assertIn("Inside Codex, open `/plugins`, search for `odoo-skills`, and install the local plugin.", readme_text)
+        self.assertIn("Inside Codex, open `/plugins`, search for `odoo-skills-v19`, and install the local plugin.", readme_text)
         self.assertIn("OpenAI Codex CLI getting started", readme_text)
         self.assertIn("### Claude Code", readme_text)
         self.assertIn("odoo-skills install-plugin", readme_text)

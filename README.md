@@ -1,4 +1,4 @@
-# odoo-skills
+# odoo-skills-v19
 
 Odoo-focused skills for coding agents, packaged with provider metadata for Codex CLI and Claude Code.
 
@@ -47,7 +47,7 @@ codex plugin marketplace remove odoo-skills-dev
 codex plugin marketplace add "$ODOO_SKILLS_REPO/dist/marketplace"
 ```
 
-Inside Codex, open `/plugins`, search for `odoo-skills`, and install the local plugin.
+Inside Codex, open `/plugins`, search for `odoo-skills-v19`, and install the local plugin.
 
 Codex CLI installation reference: [OpenAI Codex CLI getting started](https://help.openai.com/en/articles/11096431-openai-codex-ligetting-started) and [openai/codex](https://github.com/openai/codex).
 
@@ -127,4 +127,4 @@ python3 -m tooling.setup_local
 python3 -m tooling.setup_local --uninstall
 ```
 
-Use `odoo-skills install-plugin` for Claude Code user-local installation. For Codex CLI, build the runtime marketplace, add its path as a local plugin marketplace, and install `odoo-skills` from `/plugins`. Then use `odoo-skills project-setup` only inside Odoo repositories that need local integration.
+Use `odoo-skills install-plugin` for Claude Code user-local installation. For Codex CLI, build the runtime marketplace, add its path as a local plugin marketplace, and install `odoo-skills-v19` from `/plugins`. Then use `odoo-skills project-setup` only inside Odoo repositories that need local integration.
