@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 PLUGIN_NAME = "odoo-skills-v19"
-MARKETPLACE_NAME = "odoo-skills-dev"
+MARKETPLACE_NAME = "odoo-skills-v19"
 PLUGIN_RUNTIME_PATHS = (".codex-plugin", ".claude-plugin/plugin.json", "skills", "LICENSE")
 RUNTIME_README = """# odoo-skills Runtime marketplace bundle
 
@@ -23,7 +23,7 @@ codex
 
 ```bash
 claude plugin marketplace add ./dist/marketplace
-claude plugin install odoo-skills@odoo-skills-dev --scope local
+claude plugin install odoo-skills@odoo-skills-v19 --scope local
 ```
 
 ## Optional: configure a local Odoo project

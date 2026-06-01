@@ -35,7 +35,7 @@ class PluginFoundationTests(unittest.TestCase):
         self.assertTrue(marketplace_path.exists(), "marketplace.json should exist")
 
         marketplace_data = json.loads(marketplace_path.read_text(encoding="utf-8"))
-        self.assertEqual(marketplace_data.get("name"), "odoo-skills-dev")
+        self.assertEqual(marketplace_data.get("name"), "odoo-skills-v19")
         self.assertEqual(marketplace_data.get("owner", {}).get("name"), "TruongPX")
         self.assertTrue(marketplace_data.get("metadata", {}).get("description"), "metadata.description should exist")
 
@@ -49,7 +49,7 @@ class PluginFoundationTests(unittest.TestCase):
         self.assertTrue(marketplace_path.exists(), "Codex marketplace.json should exist")
 
         marketplace_data = json.loads(marketplace_path.read_text(encoding="utf-8"))
-        self.assertEqual(marketplace_data.get("name"), "odoo-skills-dev")
+        self.assertEqual(marketplace_data.get("name"), "odoo-skills-v19")
         self.assertEqual(marketplace_data.get("interface", {}).get("displayName"), "Odoo Skills Dev")
 
         plugins = marketplace_data.get("plugins", [])
@@ -78,7 +78,7 @@ class PluginFoundationTests(unittest.TestCase):
         self.assertIn('codex plugin marketplace add "$ODOO_SKILLS_REPO/dist/marketplace"', readme_text)
         self.assertIn("codex plugin marketplace add /absolute/path/to/ai-agent/dist/marketplace", readme_text)
         self.assertIn("not the Odoo/project repository where you want to use the skills", readme_text)
-        self.assertIn("codex plugin marketplace remove odoo-skills-dev", readme_text)
+        self.assertIn("codex plugin marketplace remove odoo-skills-v19", readme_text)
         self.assertIn("Inside Codex, open `/plugins`, search for `odoo-skills-v19`, and install the local plugin.", readme_text)
         self.assertIn("OpenAI Codex CLI getting started", readme_text)
         self.assertIn("### Claude Code", readme_text)

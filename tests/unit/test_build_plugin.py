@@ -40,7 +40,7 @@ class BuildPluginTests(unittest.TestCase):
             self.assertIn("codex plugin marketplace add ./dist/marketplace", runtime_readme)
             self.assertIn("## Claude Code", runtime_readme)
             self.assertIn("claude plugin marketplace add ./dist/marketplace", runtime_readme)
-            self.assertIn("claude plugin install odoo-skills@odoo-skills-dev --scope local", runtime_readme)
+            self.assertIn("claude plugin install odoo-skills@odoo-skills-v19 --scope local", runtime_readme)
             self.assertIn("## Optional: configure a local Odoo project", runtime_readme)
             self.assertIn("python3 -m pip install -e .", runtime_readme)
             self.assertIn("odoo-skills project-setup", runtime_readme)
@@ -56,7 +56,7 @@ class BuildPluginTests(unittest.TestCase):
             self.assertNotIn("## Fastest local marketplace install", runtime_readme)
             self.assertLess(
                 runtime_readme.index("claude plugin marketplace add ./dist/marketplace"),
-                runtime_readme.index("claude plugin install odoo-skills@odoo-skills-dev --scope local"),
+                runtime_readme.index("claude plugin install odoo-skills@odoo-skills-v19 --scope local"),
             )
             self.assertLess(
                 runtime_readme.index("python3 -m pip install -e ."),

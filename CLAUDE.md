@@ -88,7 +88,7 @@ Test local marketplace install manually:
 
 ```bash
 claude plugin marketplace add ./dist/marketplace
-claude plugin install odoo-skills@odoo-skills-dev --scope local
+claude plugin install odoo-skills@odoo-skills-v19 --scope local
 claude plugin list --json
 ```
 

@@ -43,7 +43,7 @@ codex plugin marketplace add /absolute/path/to/ai-agent/dist/marketplace
 If you previously added the source repository root, replace it after building:
 
 ```bash
-codex plugin marketplace remove odoo-skills-dev
+codex plugin marketplace remove odoo-skills-v19
 codex plugin marketplace add "$ODOO_SKILLS_REPO/dist/marketplace"
 ```
 
