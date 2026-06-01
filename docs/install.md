@@ -32,7 +32,7 @@ Fallback if the shell entrypoint is unavailable:
 python3 -m tooling.install_plugin
 ```
 
-The install flow builds `dist/marketplace`, validates the plugin, adds the local marketplace, and installs `odoo-skills` for the current Claude user/environment with Claude plugin local scope.
+The install flow builds `dist/marketplace`, validates the plugin, adds the local marketplace, and installs `odoo-skills-v19` for the current Claude Code user with local plugin scope.
 
 ## Verify
 
