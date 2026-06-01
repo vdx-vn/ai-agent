@@ -190,10 +190,24 @@ def _print_summary(project_root: Path, version: str, base_cmd_source: str, *, dr
     print(f"Base command source: {base_cmd_source}")
 
 
+def _find_extra_addons_candidate(project_root: Path, start_dir: Path) -> Path | None:
+    for base in (start_dir, project_root):
+        candidate = base / "extra-addons"
+        if candidate.is_dir():
+            return candidate
+    for candidate in project_root.rglob("extra-addons"):
+        if candidate.is_dir():
+            return candidate
+    return None
+
+
 def run_project_setup(args: argparse.Namespace, *, cwd: Path | None = None) -> int:
-    project_root = resolve_project_root(cwd or Path.cwd())
-    if not repo_looks_odoo(project_root):
-        raise SystemExit(f"Current directory does not look like an Odoo project: {project_root}")
+    start_dir = (cwd or Path.cwd()).resolve()
+    project_root = resolve_project_root(start_dir)
+    if not repo_looks_odoo(project_root) and not repo_looks_odoo(start_dir):
+        extra = _find_extra_addons_candidate(project_root, start_dir)
+        if extra is None or not repo_looks_odoo(extra):
+            raise SystemExit(f"Current directory does not look like an Odoo project: {project_root}")
 
     existing = load_existing_project_setup(project_root)
     shared_path = project_root / SHARED_CONFIG_RELATIVE_PATH

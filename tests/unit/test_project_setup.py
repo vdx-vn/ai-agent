@@ -8,7 +8,7 @@ from unittest.mock import patch
 
 from tooling.cli import main as cli_main
 from tooling.local_setup_common import repo_looks_odoo, resolve_project_root
-from tooling.project_setup import parse_args, run_project_setup
+from tooling.project_setup import _find_extra_addons_candidate, parse_args, run_project_setup
 
 
 class ProjectRootHelpersTests(unittest.TestCase):
@@ -20,6 +20,40 @@ class ProjectRootHelpersTests(unittest.TestCase):
             (addon_dir / "__manifest__.py").write_text("{}\n", encoding="utf-8")
 
             self.assertTrue(repo_looks_odoo(repo_root))
+
+    def test_project_setup_accepts_cwd_that_is_addons_dir_even_if_git_root_is_not_odoo(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            git_root = Path(tmp) / "repo"
+            extra_addons = git_root / "sources" / "extra-addons"
+            extra_addons.mkdir(parents=True)
+            (extra_addons / "my_addon" / "__manifest__.py").parent.mkdir()
+            (extra_addons / "my_addon" / "__manifest__.py").write_text("{}\n", encoding="utf-8")
+
+            self.assertFalse(repo_looks_odoo(git_root))
+            self.assertTrue(repo_looks_odoo(extra_addons))
+
+    def test_find_extra_addons_candidate_finds_nested_extra_addons(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            git_root = Path(tmp) / "repo"
+            extra_addons = git_root / "sources" / "extra-addons"
+            extra_addons.mkdir(parents=True)
+
+            result = _find_extra_addons_candidate(git_root, git_root)
+
+            self.assertEqual(result, extra_addons)
+
+    def test_find_extra_addons_candidate_prefers_start_dir_child(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            git_root = Path(tmp) / "repo"
+            start_dir = git_root / "sources"
+            local_extra = start_dir / "extra-addons"
+            local_extra.mkdir(parents=True)
+            nested_extra = git_root / "other" / "extra-addons"
+            nested_extra.mkdir(parents=True)
+
+            result = _find_extra_addons_candidate(git_root, start_dir)
+
+            self.assertEqual(result, local_extra)
 
     def test_resolve_project_root_prefers_git_toplevel(self) -> None:
         start = Path("/tmp/work/custom/addons/demo")
