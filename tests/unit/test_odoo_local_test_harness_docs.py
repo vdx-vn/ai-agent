@@ -17,6 +17,9 @@ class OdooLocalTestHarnessDocsTests(unittest.TestCase):
         self.assertIn("# Output contract", harness_text)
         self.assertIn("references/overview.md", harness_text)
         self.assertIn("automatic disposable database and filestore cleanup", harness_text)
+        self.assertIn("Codex CLI can read that file directly", harness_text)
+        self.assertIn("shell_environment_policy", harness_text)
+        self.assertIn("Do not use `ODOO_TEST` or `DB`", harness_text)
 
         overview_text = overview.read_text()
         self.assertIn("## Primary routing rule", overview_text)

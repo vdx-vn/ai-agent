@@ -3,6 +3,7 @@
 ## Intake
 - [ ] Confirm the request depends on project-local Odoo test execution.
 - [ ] Read the base command from `ODOO_TEST_BASE_CMD` or `.odoo-skills/project.json`, or stop.
+- [ ] Treat `.odoo-skills/project.json` as the default Codex CLI setup and `.claude/settings.local.json` as Claude Code compatibility.
 - [ ] Identify db name, test tags, install or update scope, and whether pre-run cleanup or dry-run is needed.
 - [ ] Identify whether `odoo-test` or `odoo-delivery-ops` owns the final answer.
 

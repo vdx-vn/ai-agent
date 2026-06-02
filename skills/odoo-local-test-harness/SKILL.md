@@ -7,7 +7,7 @@ description: "Use when working across multiple local Odoo projects with differen
 
 # Purpose
 Run local Odoo tests across different projects and Odoo versions using one shared harness.
-Project-specific setup lives in `.odoo-skills/project.json` as `odooTestBaseCmd`; Claude Code also receives the same command from `.claude/settings.local.json` as `ODOO_TEST_BASE_CMD`.
+Project-specific setup lives in `.odoo-skills/project.json` as `odooTestBaseCmd`; Codex CLI can read that file directly. Claude Code also receives the same command from `.claude/settings.local.json` as `ODOO_TEST_BASE_CMD`.
 
 # Primary routing rule
 Use this skill when the task depends on a project-local Odoo test command or shared local cleanup behavior.
@@ -27,7 +27,7 @@ If the primary output is only CLI semantics, compose with `odoo-delivery-ops`.
 
 # Required inputs
 - current repository root and local Odoo project context
-- `.odoo-skills/project.json`, `.claude/settings.local.json`, or the resolved base command value
+- `.odoo-skills/project.json`, Codex CLI `shell_environment_policy`, `.claude/settings.local.json`, or the resolved base command value
 - requested disposable database name, test tags, install or update targets, and whether pre-run cleanup or dry-run is needed
 
 ## Config contract
@@ -43,6 +43,15 @@ Treat `odooTestBaseCmd` / `ODOO_TEST_BASE_CMD` as immutable base command.
 Parse it safely, then append normalized arguments. If it is missing, stop and ask the user to provide it.
 The configured base command must already include `-c` or `--config`.
 Do not pre-configure runtime-managed flags in the base command; the harness owns `-d`, `--test-tags`, `--test-enable`, `-i`, `-u`, and `--stop-after-init`.
+
+Codex CLI setup options:
+- preferred: keep `odooTestBaseCmd` in `.odoo-skills/project.json`
+- optional: forward `ODOO_TEST_BASE_CMD` to shell commands with `shell_environment_policy.set` in `~/.codex/config.toml` or a trusted project `.codex/config.toml`
+
+Claude Code setup option:
+- keep the generated `.claude/settings.local.json` so Claude injects `ODOO_TEST_BASE_CMD`
+
+Do not use `ODOO_TEST` or `DB` as harness configuration variables. The database is a runtime harness argument, normally `--db <disposable_db_name>`.
 
 # Workflow
 1. Read the base command from `ODOO_TEST_BASE_CMD` when present, otherwise from `.odoo-skills/project.json`.

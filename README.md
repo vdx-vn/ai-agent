@@ -83,6 +83,24 @@ python3 -m tooling.cli project-setup
 
 For prerequisites, prompts, written files, reruns, and examples, see [docs/project-setup.md](docs/project-setup.md).
 
+The supported shared test-harness configuration is `.odoo-skills/project.json`:
+
+```json
+{
+  "odooTestBaseCmd": "/path/to/python /path/to/odoo-bin -c /path/to/odoo.conf"
+}
+```
+
+Claude Code receives the same value through `.claude/settings.local.json` as `ODOO_TEST_BASE_CMD`. Codex CLI reads `.odoo-skills/project.json` directly; if you prefer environment injection for Codex shell commands, add this to `~/.codex/config.toml` or the trusted project `.codex/config.toml`:
+
+```toml
+[shell_environment_policy]
+inherit = "core"
+set = { ODOO_TEST_BASE_CMD = "/path/to/python /path/to/odoo-bin -c /path/to/odoo.conf" }
+```
+
+Keep `ODOO_TEST_BASE_CMD` as the immutable base command only. Do not include runtime-managed flags like `-d`, `--test-tags`, `-i`, `-u`, `--test-enable`, or `--stop-after-init`; the local harness appends those.
+
 ## Repository Contents
 
 Runtime plugin payload:

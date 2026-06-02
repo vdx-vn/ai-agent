@@ -89,6 +89,9 @@ class PluginFoundationTests(unittest.TestCase):
             "Only do this if you want local Odoo docs/source paths and local test harness setup inside a specific Odoo repository.",
             readme_text,
         )
+        self.assertIn("Codex CLI reads `.odoo-skills/project.json` directly", readme_text)
+        self.assertIn("shell_environment_policy", readme_text)
+        self.assertIn("Do not include runtime-managed flags", readme_text)
         self.assertIn("[docs/install.md](docs/install.md)", readme_text)
         self.assertIn("[docs/project-setup.md](docs/project-setup.md)", readme_text)
         self.assertIn("odoo-skills verify", readme_text)
@@ -137,6 +140,9 @@ class PluginFoundationTests(unittest.TestCase):
         self.assertIn("- `.claude/odoo-skill-paths.json`", project_setup_text)
         self.assertIn("`ODOO_TEST_BASE_CMD`", project_setup_text)
         self.assertIn("`odooTestBaseCmd`", project_setup_text)
+        self.assertIn("This is the default Codex CLI path.", project_setup_text)
+        self.assertIn("shell_environment_policy", project_setup_text)
+        self.assertIn("Do not use `ODOO_TEST` or `DB` for this harness.", project_setup_text)
         self.assertIn(
             "These files are separate from the user-local agent plugin installation.",
             project_setup_text,

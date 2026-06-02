@@ -23,7 +23,7 @@ Set these values for your environment before using the skill library:
 3. From Odoo project root, run `odoo-skills project-setup`.
 4. If `odoo-skills` is not on PATH, run `python3 -m tooling.cli project-setup`.
 5. Command will ask for docs root, source root, version if auto-detection fails, `odoo-bin`, and config path, then write `.odoo-skills/project.json`, `.claude/odoo-skill-paths.json`, and `.claude/settings.local.json` for this project.
-6. Keep local test harness base command in `.odoo-skills/project.json` under `odooTestBaseCmd`; Claude Code also receives it through `.claude/settings.local.json` under `ODOO_TEST_BASE_CMD`.
+6. Keep local test harness base command in `.odoo-skills/project.json` under `odooTestBaseCmd`; Codex CLI reads that file directly, and Claude Code also receives it through `.claude/settings.local.json` under `ODOO_TEST_BASE_CMD`.
 7. If you prefer to keep placeholders, mentally substitute `<ODOO_DOCS_ROOT>` and `<ODOO_SOURCE_ROOT>` when reading skill references.
 
 ## Version target
@@ -43,3 +43,13 @@ For each Odoo project, keep the local base test command in `.odoo-skills/project
 
 `odoo-local-test-harness` treats this as the immutable base command, then appends `-d`, `--test-tags`, `--test-enable`, `-i` or `-u`, and `--stop-after-init` safely.
 Keep this file local and uncommitted.
+
+For Codex CLI, this file is enough. If you want Codex to inject the same value into spawned shell commands, configure `shell_environment_policy.set` in `~/.codex/config.toml` or a trusted project `.codex/config.toml`:
+
+```toml
+[shell_environment_policy]
+inherit = "core"
+set = { ODOO_TEST_BASE_CMD = "/path/to/python /path/to/odoo-bin -c /path/to/odoo.conf" }
+```
+
+For Claude Code, keep the generated `.claude/settings.local.json`. Do not configure `ODOO_TEST` or `DB`; pass the runtime database with the harness `--db` argument.
