@@ -1,8 +1,8 @@
 # odoo-skills-v19
 
-Odoo-focused skills for coding agents, packaged with provider metadata for Codex CLI and Claude Code.
+Odoo-focused skills for coding agents. Compatible with Claude Code, Codex CLI, Antigravity CLI (agy), and any agent CLI that reads `SKILL.md` files.
 
-This repository follows the top-level skill-library layout used by `obra/superpowers`: plugin metadata lives in provider-specific directories, while the shipped skills live in `skills/`.
+Plugin metadata lives in provider-specific directories; shipped skills live in `skills/`. Native workspace skills live in `.agents/skills/` (symlinked to `skills/`).
 
 ## Installation
 
@@ -14,6 +14,41 @@ cd ai-agent
 python3 -m pip install -e .
 export ODOO_SKILLS_REPO="$PWD"
 ```
+
+### Antigravity CLI (agy)
+
+Skills are auto-discovered from `.agents/skills/` when you work inside this repository. No install step needed — open agy from this repo root and skills are available immediately:
+
+```bash
+cd /path/to/ai-agent
+agy
+```
+
+To use skills from a separate Odoo project, symlink or copy `.agents/skills/` into that project's root:
+
+```bash
+ln -s /path/to/ai-agent/.agents/skills /path/to/your-odoo-project/.agents/skills
+```
+
+Then open agy from your Odoo project and skills will be discovered automatically.
+
+### Claude Code
+
+Install the plugin for your Claude Code user:
+
+```bash
+odoo-skills install-plugin
+claude plugin list --json
+```
+
+Fallback if the shell entrypoint is unavailable:
+
+```bash
+python3 -m tooling.install_plugin
+claude plugin list --json
+```
+
+For detailed Claude Code install, verification, troubleshooting, and uninstall guidance, see [docs/install.md](docs/install.md).
 
 ### Codex CLI
 
@@ -51,23 +86,9 @@ Inside Codex, open `/plugins`, search for `odoo-skills-v19`, and install the loc
 
 Codex CLI installation reference: [OpenAI Codex CLI getting started](https://help.openai.com/en/articles/11096431-openai-codex-ligetting-started) and [openai/codex](https://github.com/openai/codex).
 
-### Claude Code
+### Other CLIs
 
-Install the plugin for your Claude Code user:
-
-```bash
-odoo-skills install-plugin
-claude plugin list --json
-```
-
-Fallback if the shell entrypoint is unavailable:
-
-```bash
-python3 -m tooling.install_plugin
-claude plugin list --json
-```
-
-For detailed Claude Code install, verification, troubleshooting, and uninstall guidance, see [docs/install.md](docs/install.md).
+Any agent CLI that reads `{workspace}/.agents/skills/{skill_name}/SKILL.md` will discover these skills automatically. Skills use standard YAML frontmatter (`name`, `description`) with no CLI-specific syntax.
 
 ## Optional Project Setup
 
@@ -105,9 +126,10 @@ Keep `ODOO_TEST_BASE_CMD` as the immutable base command only. Do not include run
 
 Runtime plugin payload:
 
+- `.agents/skills/` - native workspace skills (symlinks to `skills/`); auto-discovered by agy and compatible CLIs
 - `.codex-plugin/` - Codex plugin metadata
 - `.claude-plugin/` - Claude Code plugin metadata and local marketplace metadata
-- `skills/` - public shipped skill library
+- `skills/` - canonical public skill library (source of truth)
 - `README.md`, `LICENSE`
 
 Development-only support:
