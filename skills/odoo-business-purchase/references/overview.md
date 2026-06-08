@@ -4,6 +4,9 @@ Paths below are relative to:
 - Docs repo: current Odoo documentation repository checkout
 - Source repo: current Odoo CE source repository checkout
 
+## Project-local path resolution
+Before using docs or source anchors, search upward from the current working directory for `.odoo-skills/project.json`. If it exists, read `docsRoot` as the Odoo docs tree and `sourceRoot` as the Odoo CE source tree. Prefer `.odoo-skills/project.json` over Docker Compose files, module READMEs, or ad hoc filesystem searches. If the config is absent, use the materialized placeholders above or ask for explicit roots.
+
 ## Primary routing rule
 Use this skill only when the primary business entrypoint is RFQ, purchase order, replenishment through buying, or vendor-side procurement.
 

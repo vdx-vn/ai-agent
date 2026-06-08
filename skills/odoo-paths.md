@@ -17,6 +17,9 @@ Set these values for your environment before using the skill library:
 - Version phrases inside the skills use `<ODOO_SERIES>` and `<ODOO_MAJOR_VERSION>`.
 - If your team keeps multiple Odoo versions, point these placeholders at the exact version the skill library targets.
 
+## Project config precedence
+Installed skills should search upward from the current working directory for `.odoo-skills/project.json` before resolving docs, source, or test commands. Prefer `.odoo-skills/project.json` over Docker Compose files, module READMEs, or ad hoc filesystem searches because it stores the authoritative `docsRoot`, `sourceRoot`, version, and `odooTestBaseCmd` for the current project.
+
 ## Recommended workflow
 1. Install repo entrypoints first with `python3 -m pip install -e .` from repo root.
 2. Decide which Odoo docs repo and source repo are authoritative for current project.

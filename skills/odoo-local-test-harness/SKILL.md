@@ -43,6 +43,7 @@ Treat `odooTestBaseCmd` / `ODOO_TEST_BASE_CMD` as immutable base command.
 Parse it safely, then append normalized arguments. If it is missing, stop and ask the user to provide it.
 The configured base command must already include `-c` or `--config`.
 Do not pre-configure runtime-managed flags in the base command; the harness owns `-d`, `--test-tags`, `--test-enable`, `-i`, `-u`, and `--stop-after-init`.
+Prefer the configured base command over Docker Compose files, PostgreSQL image discovery, module READMEs, or inferred `odoo-bin` commands.
 
 Codex CLI setup options:
 - preferred: keep `odooTestBaseCmd` in `.odoo-skills/project.json`
@@ -55,11 +56,12 @@ Do not use `ODOO_TEST` or `DB` as harness configuration variables. The database 
 
 # Workflow
 1. Read the base command from `ODOO_TEST_BASE_CMD` when present, otherwise from `.odoo-skills/project.json`.
-2. Read `references/overview.md` for routing, boundaries, and local execution anchors.
-3. Parse it into argv through `scripts/run_odoo_test.py`, not shell concatenation.
-4. Normalize `-d`, `--test-tags`, `--test-enable`, `-i`, `-u`, and `--stop-after-init`.
-5. Run optional pre-run cleanup plus automatic post-run cleanup through `scripts/delete_unused_odoo_db.py` when the flow uses a disposable local database, terminating leftover sessions on that database before `dropdb` when needed.
-6. Return the resolved base command source, appended arguments, cleanup action, and boundary decision.
+2. Do not probe Docker images, PostgreSQL images, module READMEs, or nearby `odoo-bin` files when a configured base command exists.
+3. Read `references/overview.md` for routing, boundaries, and local execution anchors.
+4. Parse it into argv through `scripts/run_odoo_test.py`, not shell concatenation.
+5. Normalize `-d`, `--test-tags`, `--test-enable`, `-i`, `-u`, and `--stop-after-init`.
+6. Run optional pre-run cleanup plus automatic post-run cleanup through `scripts/delete_unused_odoo_db.py` when the flow uses a disposable local database, terminating leftover sessions on that database before `dropdb` when needed.
+7. Return the resolved base command source, appended arguments, cleanup action, and boundary decision.
 
 # Output contract
 Return a concise result that includes:

@@ -4,10 +4,13 @@ Paths below are relative to:
 - Docs repo: `<ODOO_DOCS_ROOT>`
 - Source repo: `<ODOO_SOURCE_ROOT>`
 
+## Project-local path resolution
+Before using docs or source anchors, search upward from the current working directory for `.odoo-skills/project.json`. If it exists, read `docsRoot` as the Odoo docs tree and `sourceRoot` as the Odoo CE source tree. Prefer `.odoo-skills/project.json` over Docker Compose files, module READMEs, or ad hoc filesystem searches. If the config is absent, use the materialized placeholders above or ask for explicit roots.
+
 ## Primary routing rule
 Use this skill only when the primary requested output is a scoping brief or impact diagnosis. If the user wants ordered steps, file-by-file actions, or acceptance criteria, hand off to `odoo-plan`.
 
-Replace the placeholders above with your local repo paths. All anchors below are relative to those roots. See `../../odoo-paths.md` for shared setup.
+Resolve the roots above from project setup first. All anchors below are relative to those roots. See `../../odoo-paths.md` for shared setup.
 
 ## Scope
 Frame the request, identify impacted modules, business entrypoints, risks, and unknowns before any execution plan or implementation begins.

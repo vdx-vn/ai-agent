@@ -7,6 +7,7 @@
 - [ ] Identify nearest-neighbor skill and why it does not own the request.
 - [ ] Identify whether local execution needs `odoo-local-test-harness`.
 - [ ] Compose with `odoo-local-test-harness` when local execution depends on `ODOO_TEST_BASE_CMD` or shared DB and filestore cleanup.
+- [ ] When the harness applies, prefer the configured base command over Docker Compose files, PostgreSQL image discovery, module READMEs, or inferred `odoo-bin` commands.
 
 ## Analysis
 - [ ] Choose test type by change surface: unit, transaction, HTTP, JS, tour, performance.
