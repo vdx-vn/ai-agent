@@ -45,7 +45,7 @@ def smoke_install() -> int:
         commands = [
             ["claude", "plugin", "validate", str(marketplace_root)],
             ["claude", "plugin", "marketplace", "add", str(marketplace_root)],
-            ["claude", "plugin", "install", "odoo-skills-v19@odoo-skills-v19-dev", "--scope", "local"],
+            ["claude", "plugin", "install", "odoo-skills-v19@odoo-skills-v19", "--scope", "local"],
             ["claude", "plugin", "list", "--json"],
         ]
 

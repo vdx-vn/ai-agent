@@ -31,6 +31,7 @@ class ReferenceDocsTests(unittest.TestCase):
             "Only do this for a local Odoo repository that needs local docs/source/test integration.",
             "Run `odoo-skills project-setup` from the Odoo project root.",
             "Keep local test harness base command",
+            "Prefer `.odoo-skills/project.json` over Docker Compose files, module READMEs, or ad hoc filesystem searches",
         ]
 
         for path in (
@@ -40,6 +41,22 @@ class ReferenceDocsTests(unittest.TestCase):
             content = path.read_text(encoding="utf-8")
             for snippet in expected_snippets:
                 self.assertIn(snippet, content, f"Missing expected text in {path}: {snippet}")
+
+    def test_odoo_overviews_define_project_local_path_resolution(self) -> None:
+        required_snippets = [
+            ".odoo-skills/project.json",
+            "docsRoot",
+            "sourceRoot",
+            "Prefer `.odoo-skills/project.json` over Docker Compose files, module READMEs, or ad hoc filesystem searches",
+        ]
+
+        for path in sorted((ROOT / "skills").glob("odoo-*/references/overview.md")):
+            text = path.read_text(encoding="utf-8")
+            if "Key docs anchors" not in text and "Key source anchors" not in text and "Paths below are relative to" not in text:
+                continue
+            for snippet in required_snippets:
+                with self.subTest(path=path, snippet=snippet):
+                    self.assertIn(snippet, text)
 
     def test_skill_inventory_names_match_skills_directory_names(self) -> None:
         inventory_path = ROOT / "docs" / "reference" / "skill-inventory.json"

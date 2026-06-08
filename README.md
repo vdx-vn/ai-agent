@@ -32,24 +32,6 @@ ln -s /path/to/ai-agent/.agents/skills /path/to/your-odoo-project/.agents/skills
 
 Then open agy from your Odoo project and skills will be discovered automatically.
 
-### Claude Code
-
-Install the plugin for your Claude Code user:
-
-```bash
-odoo-skills install-plugin
-claude plugin list --json
-```
-
-Fallback if the shell entrypoint is unavailable:
-
-```bash
-python3 -m tooling.install_plugin
-claude plugin list --json
-```
-
-For detailed Claude Code install, verification, troubleshooting, and uninstall guidance, see [docs/install.md](docs/install.md).
-
 ### Codex CLI
 
 Install Codex CLI if it is not already available:
@@ -85,6 +67,24 @@ codex plugin marketplace add "$ODOO_SKILLS_REPO/dist/marketplace"
 Inside Codex, open `/plugins`, search for `odoo-skills-v19`, and install the local plugin.
 
 Codex CLI installation reference: [OpenAI Codex CLI getting started](https://help.openai.com/en/articles/11096431-openai-codex-ligetting-started) and [openai/codex](https://github.com/openai/codex).
+
+### Claude Code
+
+Install the plugin for your Claude Code user:
+
+```bash
+odoo-skills install-plugin
+claude plugin list --json
+```
+
+Fallback if the shell entrypoint is unavailable:
+
+```bash
+python3 -m tooling.install_plugin
+claude plugin list --json
+```
+
+For detailed Claude Code install, verification, troubleshooting, and uninstall guidance, see [docs/install.md](docs/install.md).
 
 ### Other CLIs
 

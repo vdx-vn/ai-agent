@@ -20,12 +20,20 @@ class OdooLocalTestHarnessDocsTests(unittest.TestCase):
         self.assertIn("Codex CLI can read that file directly", harness_text)
         self.assertIn("shell_environment_policy", harness_text)
         self.assertIn("Do not use `ODOO_TEST` or `DB`", harness_text)
+        self.assertIn(
+            "Prefer the configured base command over Docker Compose files, PostgreSQL image discovery, module READMEs, or inferred `odoo-bin` commands",
+            harness_text,
+        )
 
         overview_text = overview.read_text()
         self.assertIn("## Primary routing rule", overview_text)
         self.assertIn("ODOO_TEST_BASE_CMD", overview_text)
         self.assertIn("dry-run", overview_text)
         self.assertIn("terminate leftover sessions", overview_text)
+        self.assertIn(
+            "Prefer `.odoo-skills/project.json` over Docker Compose files, module READMEs, or ad hoc filesystem searches",
+            overview_text,
+        )
 
     def test_sibling_skills_reference_harness(self) -> None:
         odoo_test = (ROOT / "odoo-test" / "SKILL.md").read_text()

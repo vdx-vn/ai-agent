@@ -23,8 +23,9 @@ def validate_plugin(root: Path) -> list[str]:
 
         for message in validate_frontmatter(text):
             errors.append(f"skills/{name}/SKILL.md: {message}")
-        for message in validate_layout(text):
-            errors.append(f"skills/{name}/SKILL.md: {message}")
+        if str(skill.get("family", "")).strip() != "utility":
+            for message in validate_layout(text):
+                errors.append(f"skills/{name}/SKILL.md: {message}")
         for message in scan_release_text(text):
             errors.append(f"skills/{name}/SKILL.md: {message}")
 

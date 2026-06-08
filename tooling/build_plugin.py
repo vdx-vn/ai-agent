@@ -23,7 +23,7 @@ codex
 
 ```bash
 claude plugin marketplace add ./dist/marketplace
-claude plugin install odoo-skills@odoo-skills-v19 --scope local
+claude plugin install odoo-skills-v19@odoo-skills-v19 --scope local
 ```
 
 ## Optional: configure a local Odoo project

@@ -3,6 +3,8 @@ import sys
 import tempfile
 import textwrap
 import unittest
+from contextlib import redirect_stdout
+from io import StringIO
 from pathlib import Path
 from unittest.mock import call, patch
 
@@ -227,6 +229,55 @@ class RunOdooTestTests(unittest.TestCase):
         )
 
         self.assertEqual(exit_code, 0)
+        cleanup_mock.assert_not_called()
+        run_mock.assert_not_called()
+
+    @patch("run_odoo_test.cleanup_database")
+    @patch("run_odoo_test.subprocess.run")
+    def test_main_dry_run_uses_project_config_from_nested_addon_dir(self, run_mock, cleanup_mock) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            project_root = Path(temp_dir)
+            nested_addon_dir = project_root / "sources" / "extra-addons" / "demo_addon"
+            nested_addon_dir.mkdir(parents=True)
+            config_dir = project_root / ".odoo-skills"
+            config_dir.mkdir()
+            odoo_conf = project_root / "conf" / "odoo.conf"
+            odoo_conf.parent.mkdir()
+            odoo_conf.write_text("[options]\n", encoding="utf-8")
+            (config_dir / "project.json").write_text(
+                textwrap.dedent(
+                    f"""
+                    {{
+                      "odooTestBaseCmd": "python3 /opt/odoo/odoo-bin -c {odoo_conf}"
+                    }}
+                    """
+                ),
+                encoding="utf-8",
+            )
+
+            stdout = StringIO()
+            with redirect_stdout(stdout):
+                exit_code = run_odoo_test.main(
+                    [
+                        "--db",
+                        "tmp_nested_addon",
+                        "--update",
+                        "demo_addon",
+                        "--test-tags",
+                        "/demo_addon",
+                        "--dry-run",
+                    ],
+                    env={},
+                    cwd=nested_addon_dir,
+                )
+
+        self.assertEqual(exit_code, 0)
+        output = stdout.getvalue()
+        self.assertIn("Resolved base command: python3 /opt/odoo/odoo-bin -c", output)
+        self.assertIn("-d tmp_nested_addon", output)
+        self.assertIn("-u demo_addon", output)
+        self.assertIn("--test-tags /demo_addon --test-enable", output)
+        self.assertNotIn("docker compose", output)
         cleanup_mock.assert_not_called()
         run_mock.assert_not_called()
 

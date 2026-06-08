@@ -6,6 +6,13 @@ ROOT = Path(__file__).resolve().parents[2]
 PUBLIC_SKILLS_ROOT = ROOT / "skills"
 
 REQUIRED_PUBLIC_SKILLS = {
+    "cavecrew",
+    "caveman",
+    "caveman-commit",
+    "caveman-compress",
+    "caveman-help",
+    "caveman-review",
+    "caveman-stats",
     "odoo-think",
     "odoo-plan",
     "odoo-build",

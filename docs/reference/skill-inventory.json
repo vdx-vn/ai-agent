@@ -129,6 +129,41 @@
     "name": "odoo-local-test-harness",
     "family": "technical",
     "artifact": "Operational mechanics guidance covering local Odoo test harness setup and command construction."
+  },
+  {
+    "name": "cavecrew",
+    "family": "utility",
+    "artifact": "Decision guide for compressed subagent delegation with investigator, builder, and reviewer presets."
+  },
+  {
+    "name": "caveman",
+    "family": "utility",
+    "artifact": "Ultra-compressed communication mode for token-efficient technical responses."
+  },
+  {
+    "name": "caveman-commit",
+    "family": "utility",
+    "artifact": "Compressed conventional commit message generator."
+  },
+  {
+    "name": "caveman-compress",
+    "family": "utility",
+    "artifact": "Compressor for natural-language memory files while preserving technical substance."
+  },
+  {
+    "name": "caveman-help",
+    "family": "utility",
+    "artifact": "Quick-reference card for caveman modes, skills, and commands."
+  },
+  {
+    "name": "caveman-review",
+    "family": "utility",
+    "artifact": "Compressed one-line code review comment formatter."
+  },
+  {
+    "name": "caveman-stats",
+    "family": "utility",
+    "artifact": "Token usage and estimated savings reporter for caveman sessions."
     },
     {
       "name": "pylint-code-review",
