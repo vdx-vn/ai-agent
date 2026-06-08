@@ -5,43 +5,43 @@
       "source": "JuliusBrussee/caveman",
       "sourceType": "github",
       "skillPath": "skills/cavecrew/SKILL.md",
-      "computedHash": "505d836228d1c5e14834ff5d62aad72390c7d27f79c6aa7f9a7a55ed6606d6a2"
+      "computedHash": "b74f374f6aae6e9a31e78e7d876860406fe5833378e9298536edf176c12f379b"
     },
     "caveman": {
       "source": "JuliusBrussee/caveman",
       "sourceType": "github",
       "skillPath": "skills/caveman/SKILL.md",
-      "computedHash": "dfbf85749fd474feeb0bbe60c779795ecd5dbec0083299b56e68916bc3ddd8c9"
+      "computedHash": "f9c83a2b20fc3b3503af9d1ae1cf2098c9f8c3d326c203c236b160ebe81ac8f0"
     },
     "caveman-commit": {
       "source": "JuliusBrussee/caveman",
       "sourceType": "github",
       "skillPath": "skills/caveman-commit/SKILL.md",
-      "computedHash": "f456ea0564875e46858890ac39ee701ecb9c601c72a2da1e6ce6bd5f9fc5d817"
+      "computedHash": "9ea361c8617aaabb0dada200c0bbe3f3eb9e4a28d44366b1d3a6e4ef600e96e2"
     },
     "caveman-compress": {
       "source": "JuliusBrussee/caveman",
       "sourceType": "github",
       "skillPath": "skills/caveman-compress/SKILL.md",
-      "computedHash": "b8cbfec00b620f0944960a9bb4072f262cf816c1d3c82e6dbded35c30b4c5d0b"
+      "computedHash": "1c7997b306c23a34ec9998da515aff3d9a6fd7973225f0c4faeeb00b851b87f4"
     },
     "caveman-help": {
       "source": "JuliusBrussee/caveman",
       "sourceType": "github",
       "skillPath": "skills/caveman-help/SKILL.md",
-      "computedHash": "2c21437427e98df1eacabaa0b055b5256a308b2191feea3ca2df6a9418e76cb1"
+      "computedHash": "46f86b3ff5184f4d43f0794c4f54b1b53fee284014613428f0f477e17edad06f"
     },
     "caveman-review": {
       "source": "JuliusBrussee/caveman",
       "sourceType": "github",
       "skillPath": "skills/caveman-review/SKILL.md",
-      "computedHash": "fb7214a1c5793bae6ba8b1be4329e2e6f40dbec6dd911dfb335ad29f09c316a1"
+      "computedHash": "9ef09065f26b9781275b5a4775e14870e331fab833efb2a2aa33f3205a2b83c3"
     },
     "caveman-stats": {
       "source": "JuliusBrussee/caveman",
       "sourceType": "github",
       "skillPath": "skills/caveman-stats/SKILL.md",
-      "computedHash": "47ce2de3d6cb39a75047b5c962e4eb3da15594e7397c94103e9a104d42626553"
+      "computedHash": "b9e49e46ede956e0c1633eae82a695c996f728bc48f3903f001d301068a2b0ea"
     }
   }
 }
