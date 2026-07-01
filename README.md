@@ -6,3 +6,8 @@
 + [Claude memory](https://github.com/thedotmack/claude-mem)
 + [Super power](https://github.com/obra/superpowers)
 + [RTK](https://github.com/rtk-ai/rtk): token saver
+
+## MCP
++ [DrawIO MCP](https://github.com/jgraph/drawio-mcp)
++ [NotebookLM MCP](https://github.com/jacob-bd/notebooklm-mcp-cli)
++ [Agent Mail MCP](https://github.com/Dicklesworthstone/mcp_agent_mail)
