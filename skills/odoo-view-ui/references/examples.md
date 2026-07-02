@@ -16,9 +16,8 @@
 
 ## Tie-breaker
 - Prompt: "Should this website action open a tree view first or a form view first?"
-- Why this skill wins: The request is about UI behavior and action mechanics, so `odoo-view-ui` should win over `odoo-business-website-ecommerce`.
+- Why this skill wins: The request is about UI behavior and action mechanics, which is this skill's core domain.
 
 ## Nearby skills to consider
 - `odoo-build`
-- `odoo-business-website-ecommerce`
 - `odoo-architecture`
