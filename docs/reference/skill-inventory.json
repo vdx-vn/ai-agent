@@ -81,51 +81,6 @@
     "artifact": "Operational mechanics guidance covering commands, flags, environment behavior, and runtime cautions."
   },
   {
-    "name": "odoo-business-sales",
-    "family": "business",
-    "artifact": "Sales process map from a backend sales entrypoint, with downstream documents, roles, and cross-app impacts."
-  },
-  {
-    "name": "odoo-business-purchase",
-    "family": "business",
-    "artifact": "Purchase process map with entrypoint, downstream documents, roles, and cross-app impacts."
-  },
-  {
-    "name": "odoo-business-inventory",
-    "family": "business",
-    "artifact": "Inventory process map from a warehouse or stock-document entrypoint, with route logic, valuation, and cross-app effects."
-  },
-  {
-    "name": "odoo-business-manufacturing",
-    "family": "business",
-    "artifact": "Manufacturing process map from a BoM or MO entrypoint, with operations, stock effects, and downstream cross-app impacts."
-  },
-  {
-    "name": "odoo-business-accounting",
-    "family": "business",
-    "artifact": "Accounting process map with finance documents, posting impacts, and cross-app implications."
-  },
-  {
-    "name": "odoo-business-hr",
-    "family": "business",
-    "artifact": "HR process map from a workforce entrypoint, with employee lifecycle touchpoints and cross-app dependencies."
-  },
-  {
-    "name": "odoo-business-timesheet-project-services",
-    "family": "business",
-    "artifact": "Service-delivery process map with task, time, billing, and cross-app impacts."
-  },
-  {
-    "name": "odoo-business-expenses",
-    "family": "business",
-    "artifact": "Expense process map from an expense-claim entrypoint, with states, roles, accounting impacts, and related HR links."
-  },
-  {
-    "name": "odoo-business-website-ecommerce",
-    "family": "business",
-    "artifact": "Website and ecommerce process map from a public or portal entrypoint, with customer journey, downstream sales flow, and cross-app impacts."
-  },
-  {
     "name": "odoo-local-test-harness",
     "family": "technical",
     "artifact": "Operational mechanics guidance covering local Odoo test harness setup and command construction."
