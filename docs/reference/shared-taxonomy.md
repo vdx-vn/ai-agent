@@ -20,18 +20,10 @@ Paths below are relative to:
 - **noupdate**: data record should not be overwritten on module update.
 - **HttpCase / tour**: browser-facing test patterns.
 
-## Primary business entrypoints used for tie-breaking
-- Backend sales: opportunity, quotation, salesperson action, backend order
-- Website ecommerce: public page, public form, shop, cart, checkout, portal
-- Inventory: receipt, delivery, transfer, route, replenishment, stock move
-- Manufacturing: BoM, MO, work center, routing, subcontracting
-- HR: employee, contract, attendance, time off, payroll prerequisite
-- Expenses: expense claim, expense sheet, reimbursement, posting
-
 ## UI mechanics vs website business flow
 - **UI mechanics**: view inheritance, xpath placement, QWeb template structure, action targets, menu placement, OWL behavior, or web-client interaction details.
 - **Website business flow**: public or portal customer journey, lead capture, cart behavior, checkout behavior, downstream sales or stock effects, or portal decision points.
-- Mixed website prompts route by primary requested output. If the user asks how the customer journey behaves, use `odoo-business-website-ecommerce`. If the user asks how a template, view, action, xpath, or OWL behavior should be structured, use `odoo-view-ui`.
+- Mixed website prompts route by primary requested output. If the user asks how a template, view, action, xpath, or OWL behavior should be structured, use `odoo-view-ui`. Pure customer-journey process questions have no dedicated skill; answer from Odoo docs and CE source.
 
 ## Core bridge addons to watch
 - `sale_stock`
