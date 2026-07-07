@@ -36,16 +36,15 @@ Confirm → Read anchors → Apply checklist → Answer with guidance → State 
 # Guardrails
 - Answer only this skill's domain. Anchor to Odoo docs + CE source, not generic ERP intuition.
 - Highlight cross-app, accounting, or security effects. Redirect to task skills for planning/building/testing/shipping.
-- Keep customer journey or checkout process meaning with `odoo-business-website-ecommerce`; keep template, xpath, and action mechanics here.
+- Keep focus on template, xpath, and action mechanics; explain surrounding customer-journey behavior only as far as needed to justify the UI change.
 
 # Must hand off when
-- If the UI question starts from website cart, checkout, portal, or public form entrypoints but the user mainly wants process meaning, compose with `odoo-business-website-ecommerce`.
+- If the question starts from website cart, checkout, portal, or public form entrypoints but the user mainly wants business-process meaning rather than UI structure, say the library has no dedicated business-process skill and answer the UI-mechanics portion from Odoo docs and CE source.
 - If model semantics dominate, hand off to `odoo-orm-modeling`.
 - If addon placement dominates, hand off to `odoo-architecture`.
 
 # Compose with sibling skills
 - `odoo-build`
-- `odoo-business-website-ecommerce`
 - `odoo-architecture`
 - `odoo-orm-modeling`
 

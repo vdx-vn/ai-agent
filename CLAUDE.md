@@ -143,10 +143,9 @@ If adding or renaming public skills, update `skills/`, `docs/reference/skill-inv
 
 ### Skill library design
 
-Public skills split into three groups:
+Public skills split into two groups:
 - sprint task skills: `odoo-think`, `odoo-plan`, `odoo-build`, `odoo-review`, `odoo-test`, `odoo-ship`, `odoo-reflect`
 - technical reference skills: architecture, ORM, UI, security, testing, performance, integrations, upgrade, delivery ops, local test harness
-- business reference skills: sales, purchase, inventory, manufacturing, accounting, HR, timesheets/services, expenses, website/ecommerce
 
 Big idea: routing is artifact-first, not keyword-first.
 - `docs/reference/trigger-matrix.md` defines hard boundaries and tie-breakers between adjacent skills.

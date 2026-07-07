@@ -30,15 +30,6 @@ REQUIRED_PUBLIC_SKILLS = {
     "odoo-performance",
     "odoo-integration-api",
     "odoo-upgrade-migration",
-    "odoo-business-sales",
-    "odoo-business-purchase",
-    "odoo-business-inventory",
-    "odoo-business-manufacturing",
-    "odoo-business-accounting",
-    "odoo-business-hr",
-    "odoo-business-timesheet-project-services",
-    "odoo-business-expenses",
-    "odoo-business-website-ecommerce",
     "pylint-code-review",
 }
 

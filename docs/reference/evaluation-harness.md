@@ -39,30 +39,9 @@
 9. "Can portal users escalate access through this controller?"
    - Primary: `odoo-security`
    - Why: exposure and trust boundary are central
-10. "What happens when a shopper checks out with an out-of-stock item?"
-    - Primary: `odoo-business-website-ecommerce`
-    - Why: entrypoint is cart and checkout
-11. "How does a salesperson convert an opportunity to a quotation and then an invoice?"
-    - Primary: `odoo-business-sales`
-    - Why: entrypoint is backend CRM and quotation flow
-12. "How do replenishment rules create transfers and valuation changes?"
-    - Primary: `odoo-business-inventory`
-    - Why: entrypoint is warehouse routing and stock documents
-13. "How does a BoM shortage affect component reservation and MO progress?"
-    - Primary: `odoo-business-manufacturing`
-    - Why: entrypoint is MO and BoM behavior
-14. "How do contracts and attendances affect payroll prerequisites?"
-    - Primary: `odoo-business-hr`
-    - Why: entrypoint is workforce and payroll prerequisite logic
-15. "How are employee-paid expenses reimbursed and posted?"
-    - Primary: `odoo-business-expenses`
-    - Why: entrypoint is expense claim lifecycle
-16. "Should this checkout template use xpath inheritance or a full QWeb override?"
+10. "Should this checkout template use xpath inheritance or a full QWeb override?"
     - Primary: `odoo-view-ui`
     - Why: asks for template mechanics, not customer journey meaning
-17. "What business steps fire after a portal user completes checkout?"
-    - Primary: `odoo-business-website-ecommerce`
-    - Why: asks for public or portal flow and downstream business effects
 
 ## Manual production check
 1. Read the skill description only. Decide which skill should trigger for each collision prompt.

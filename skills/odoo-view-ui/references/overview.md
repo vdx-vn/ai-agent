@@ -36,5 +36,4 @@ UI guidance with view strategy, inheritance notes, and action or menu recommenda
 
 ## Frequent sibling skills
 - `odoo-build`
-- `odoo-business-website-ecommerce`
 - `odoo-architecture`
