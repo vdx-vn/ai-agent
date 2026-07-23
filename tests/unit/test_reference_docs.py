@@ -28,9 +28,9 @@ class ReferenceDocsTests(unittest.TestCase):
     def test_odoo_path_docs_scope_project_setup_to_local_repositories(self) -> None:
         expected_snippets = [
             "Install repo entrypoints first with `python3 -m pip install -e .` from repo root.",
-            "Only do this for a local Odoo repository that needs local docs/source/test integration.",
+            "Only do this for a local Odoo repository that needs local docs/source integration.",
             "Run `odoo-skills project-setup` from the Odoo project root.",
-            "Keep local test harness base command",
+            "odoo runtime-test",
             "Prefer `.odoo-skills/project.json` over Docker Compose files, module READMEs, or ad hoc filesystem searches",
         ]
 

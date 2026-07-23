@@ -145,7 +145,7 @@ If adding or renaming public skills, update `skills/`, `docs/reference/skill-inv
 
 Public skills split into two groups:
 - sprint task skills: `odoo-think`, `odoo-plan`, `odoo-build`, `odoo-review`, `odoo-test`, `odoo-ship`, `odoo-reflect`
-- technical reference skills: architecture, ORM, UI, security, testing, performance, integrations, upgrade, delivery ops, local test harness
+- technical reference skills: architecture, ORM, UI, security, testing, performance, integrations, upgrade, delivery ops
 
 Big idea: routing is artifact-first, not keyword-first.
 - `docs/reference/trigger-matrix.md` defines hard boundaries and tie-breakers between adjacent skills.
@@ -159,18 +159,10 @@ When editing skill behavior, preserve narrow routing boundaries. Neighbor collis
 This repo contains authoring support for Odoo-specific path placeholders.
 
 - `tooling/materialization/materialize_odoo_skill_paths.py` replaces `<ODOO_DOCS_ROOT>`, `<ODOO_SOURCE_ROOT>`, `<ODOO_SERIES>`, and `<ODOO_MAJOR_VERSION>` inside a skills tree and writes `.claude/odoo-skill-paths.json`.
-- `tooling/materialization/suggest_odoo_skill_setup.py` detects new Odoo-project context and suggests materialization or local test harness setup.
+- `tooling/materialization/suggest_odoo_skill_setup.py` detects new Odoo-project context and suggests docs/source materialization setup.
 - `.claude/settings.json` wires that suggestion script into `SessionStart` and `UserPromptSubmit` hooks.
 
-This materialization flow supports local Claude workspace usage. It is separate from packaged public `skills/` runtime payload.
-
-### Local Odoo test harness helper
-
-`skills/odoo-local-test-harness/` includes scripts and tests for building project-local Odoo test commands safely.
-
-Core rule: `.claude/settings.local.json` must define `ODOO_TEST_BASE_CMD` under `env`. That base command must already include `-c` or `--config`, and must not include runtime-managed flags like `-d`, `--test-tags`, `-i`, `-u`, `--test-enable`, or `--stop-after-init`.
-
-Harness scripts then append runtime flags and optional cleanup deterministically instead of using shell string concatenation.
+This materialization flow supports local Claude workspace usage. It is separate from packaged public `skills/` runtime payload. Odoo test execution is handled by the separately-installed `odoo-cli` package.
 
 ### Test strategy
 
@@ -182,7 +174,6 @@ Coverage is layered:
 - validator tests for frontmatter, release markers, and verify command
 - build tests for runtime subset contents
 - integration smoke-install test for actual Claude CLI install flow when `claude` exists
-- focused tests for local test harness scripts
 
 ## Files worth reading before major changes
 

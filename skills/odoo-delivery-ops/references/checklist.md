@@ -5,7 +5,7 @@
 - [ ] Identify main module, bridge module, or business or technical entrypoint.
 - [ ] Identify adjacent skills needed for composition.
 - [ ] Identify nearest-neighbor skill and why it does not own the request.
-- [ ] Compose with `odoo-local-test-harness` when the answer depends on `ODOO_TEST_BASE_CMD` or shared cleanup.
+- [ ] Redirect to `odoo-test` and `odoo runtime-test` (odoo-cli) when the answer is about running tests, not CLI/runtime semantics.
 
 ## Analysis
 - [ ] Separate CLI semantics from migration strategy.

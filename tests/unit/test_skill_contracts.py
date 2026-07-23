@@ -15,7 +15,6 @@ TASK_TECH_SKILLS = [
     "odoo-ship",
     "odoo-reflect",
     "odoo-delivery-ops",
-    "odoo-local-test-harness",
     "odoo-architecture",
     "odoo-orm-modeling",
     "odoo-view-ui",

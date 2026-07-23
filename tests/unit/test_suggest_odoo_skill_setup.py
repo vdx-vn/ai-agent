@@ -23,17 +23,9 @@ PROJECT_SETUP_FALLBACK = "python3 -m tooling.cli project-setup"
 
 class SuggestOdooSkillSetupTests(unittest.TestCase):
     def test_missing_base_command_adds_odoo_test_base_cmd_message(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            repo_root = Path(tmp)
-            (repo_root / "odoo-bin").write_text("", encoding="utf-8")
-
-            message = build_system_message(
-                raw="",
-                repo_root=repo_root,
-                mode="session-start",
-            )
-
-            self.assertIn("odooTestBaseCmd", message)
+        # This test is no longer relevant after removing the local test harness.
+        # The test harness has been replaced with the separately-installed odoo-cli.
+        pass
 
     def test_dev_settings_use_tooling_materialization_script_path(self) -> None:
         settings = (ROOT / ".claude" / "settings.json").read_text(encoding="utf-8")
@@ -74,8 +66,7 @@ class SuggestOdooSkillSetupTests(unittest.TestCase):
                 message,
             )
             self.assertIn(".odoo-skills/project.json", message)
-            self.assertIn(".claude/settings.local.json", message)
-            self.assertIn("local Odoo test base command", message)
+            self.assertIn("odoo runtime-test", message)
 
     def test_non_odoo_session_start_stays_silent(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -110,8 +101,7 @@ class SuggestOdooSkillSetupTests(unittest.TestCase):
                 self.assertIn("<ODOO_DOCS_ROOT>", content)
                 self.assertIn("<ODOO_SOURCE_ROOT>", content)
                 self.assertIn(".odoo-skills/project.json", content)
-                self.assertIn("odooTestBaseCmd", content)
-                self.assertIn(".claude/settings.local.json", content)
+                self.assertIn("odoo runtime-test", content)
 
     def test_materialize_parse_args_defaults_use_root_skills_path(self) -> None:
         with patch(

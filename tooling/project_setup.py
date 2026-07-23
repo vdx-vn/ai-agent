@@ -1,21 +1,17 @@
 from __future__ import annotations
 
 import argparse
-import shlex
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 from tooling.local_setup_common import (
-    build_base_cmd,
     load_json_file,
-    merge_settings_local,
     repo_looks_odoo,
     require_existing_path,
     resolve_project_root,
     resolve_version_or_prompt,
-    validate_base_cmd,
     write_json_file,
 )
 from tooling.materialization.materialize_odoo_skill_paths import normalize_series
@@ -23,18 +19,13 @@ from tooling.materialization.materialize_odoo_skill_paths import normalize_serie
 
 @dataclass(frozen=True)
 class ExistingProjectSetup:
-    settings_path: Path
     state_path: Path
-    settings_data: dict[str, Any]
     state_data: dict[str, Any]
-    base_cmd: str | None
-    base_cmd_valid: bool
     state_valid: bool
 
 
 MANAGED_STATE_KEYS = ("docsRoot", "sourceRoot", "version", "majorVersion")
 SHARED_CONFIG_RELATIVE_PATH = Path(".odoo-skills") / "project.json"
-CLAUDE_SETTINGS_RELATIVE_PATH = Path(".claude") / "settings.local.json"
 CLAUDE_STATE_RELATIVE_PATH = Path(".claude") / "odoo-skill-paths.json"
 
 
@@ -42,10 +33,6 @@ def _register_parser_arguments(parser: argparse.ArgumentParser) -> argparse.Argu
     parser.add_argument("--docs-root", help="Absolute path to Odoo documentation repo")
     parser.add_argument("--source-root", help="Absolute path to Odoo source repo")
     parser.add_argument("--version", help="Odoo series like 18.0")
-    parser.add_argument("--python-bin", default=None, help="Python executable to run odoo-bin")
-    parser.add_argument("--odoo-bin", help="Absolute path to odoo-bin")
-    parser.add_argument("--config", help="Absolute path to Odoo config file")
-    parser.add_argument("--base-cmd", help="Full ODOO_TEST_BASE_CMD to store directly")
     parser.add_argument("--yes", action="store_true", help="Run non-interactively")
     parser.add_argument("--force", action="store_true", help="Refresh managed values")
     parser.add_argument("--dry-run", action="store_true", help="Print what would change without writing files")
@@ -61,8 +48,6 @@ def _build_parser(*, prog: str | None = None) -> argparse.ArgumentParser:
 
 
 def validate_project_setup_args(args: argparse.Namespace, parser: argparse.ArgumentParser) -> argparse.Namespace:
-    if args.base_cmd and (args.odoo_bin or args.config):
-        parser.error("--base-cmd cannot be combined with --odoo-bin or --config")
     return args
 
 
@@ -81,54 +66,12 @@ def add_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]) 
     return _register_parser_arguments(parser)
 
 
-def _extract_config_path(base_argv: list[str]) -> str | None:
-    for index, token in enumerate(base_argv):
-        if token == "-c" and index + 1 < len(base_argv):
-            return base_argv[index + 1]
-        if token.startswith("--config="):
-            return token.split("=", 1)[1]
-        if token == "--config" and index + 1 < len(base_argv):
-            return base_argv[index + 1]
-    return None
-
-
-def _derive_saved_command_parts(base_cmd: str | None) -> tuple[str | None, str | None, str | None]:
-    if not base_cmd:
-        return None, None, None
-    argv = shlex.split(base_cmd)
-    python_bin = argv[0] if argv else None
-    odoo_bin = argv[1] if len(argv) > 1 else None
-    config_path = _extract_config_path(argv)
-    return python_bin, odoo_bin, config_path
-
-
-def _saved_base_cmd_paths_are_usable(base_cmd: str | None) -> bool:
-    _, odoo_bin, config_path = _derive_saved_command_parts(base_cmd)
-    if not odoo_bin or not config_path:
-        return False
-    return Path(odoo_bin).is_file() and Path(config_path).is_file()
-
-
 def load_existing_project_setup(project_root: Path) -> ExistingProjectSetup:
-    settings_path = project_root / CLAUDE_SETTINGS_RELATIVE_PATH
     state_path = project_root / CLAUDE_STATE_RELATIVE_PATH
     shared_path = project_root / SHARED_CONFIG_RELATIVE_PATH
-    settings_data = load_json_file(settings_path)
     legacy_state_data = load_json_file(state_path)
     shared_data = load_json_file(shared_path)
     state_data = shared_data or legacy_state_data
-
-    env = settings_data.get("env")
-    raw_base_cmd = str(state_data.get("odooTestBaseCmd", "")).strip()
-    if not raw_base_cmd and isinstance(env, dict):
-        raw_base_cmd = str(env.get("ODOO_TEST_BASE_CMD", "")).strip()
-
-    try:
-        base_cmd = validate_base_cmd(raw_base_cmd) if raw_base_cmd else None
-        base_cmd_valid = bool(base_cmd) and _saved_base_cmd_paths_are_usable(base_cmd)
-    except SystemExit:
-        base_cmd = None
-        base_cmd_valid = False
 
     state_valid = all(str(state_data.get(key, "")).strip() for key in MANAGED_STATE_KEYS) and all(
         Path(str(state_data.get(path_key, "")).strip()).is_dir()
@@ -136,12 +79,8 @@ def load_existing_project_setup(project_root: Path) -> ExistingProjectSetup:
     )
 
     return ExistingProjectSetup(
-        settings_path=settings_path,
         state_path=state_path,
-        settings_data=settings_data,
         state_data=state_data,
-        base_cmd=base_cmd,
-        base_cmd_valid=base_cmd_valid,
         state_valid=state_valid,
     )
 
@@ -166,28 +105,16 @@ def build_state_payload(
     }
 
 
-def build_shared_project_payload(
-    *,
-    state_payload: dict[str, str],
-    base_cmd: str,
-) -> dict[str, str]:
-    payload = dict(state_payload)
-    payload["odooTestBaseCmd"] = base_cmd
-    payload["schemaVersion"] = "1"
-    return payload
-
-
 def _merge_state(existing_state: dict[str, Any], managed_payload: dict[str, str]) -> dict[str, Any]:
     merged = dict(existing_state)
     merged.update(managed_payload)
     return merged
 
 
-def _print_summary(project_root: Path, version: str, base_cmd_source: str, *, dry_run: bool) -> None:
+def _print_summary(project_root: Path, version: str, *, dry_run: bool) -> None:
     prefix = "Dry run" if dry_run else "Configured"
     print(f"{prefix} project setup for {project_root}")
     print(f"Odoo version: {version}")
-    print(f"Base command source: {base_cmd_source}")
 
 
 def _find_extra_addons_candidate(project_root: Path, start_dir: Path) -> Path | None:
@@ -212,23 +139,19 @@ def run_project_setup(args: argparse.Namespace, *, cwd: Path | None = None) -> i
     existing = load_existing_project_setup(project_root)
     shared_path = project_root / SHARED_CONFIG_RELATIVE_PATH
     if (
-        existing.base_cmd_valid
-        and existing.state_valid
+        existing.state_valid
         and shared_path.exists()
-        and existing.settings_path.exists()
         and existing.state_path.exists()
         and not args.force
     ):
         print(f"Project setup already exists for {project_root}")
         print(f"Odoo version: {existing.state_data['version']}")
-        print("Base command source: project setup config")
         return 0
 
     interactive = not args.yes
     saved_docs_root = str(existing.state_data.get("docsRoot", "")).strip() or None
     saved_source_root = str(existing.state_data.get("sourceRoot", "")).strip() or None
     saved_version = str(existing.state_data.get("version", "")).strip() or None
-    saved_python_bin, saved_odoo_bin, saved_config_path = _derive_saved_command_parts(existing.base_cmd)
 
     docs_root = require_existing_path(
         args.docs_root or saved_docs_root,
@@ -259,31 +182,6 @@ def run_project_setup(args: argparse.Namespace, *, cwd: Path | None = None) -> i
             interactive=interactive,
         )
 
-    if args.base_cmd:
-        base_cmd = validate_base_cmd(args.base_cmd)
-        base_cmd_source = "--base-cmd"
-    elif existing.base_cmd_valid and not args.force and not args.odoo_bin and not args.config:
-        base_cmd = existing.base_cmd
-        base_cmd_source = ".claude/settings.local.json"
-    else:
-        python_bin = args.python_bin or saved_python_bin or "python3"
-        odoo_bin = require_existing_path(
-            args.odoo_bin or saved_odoo_bin,
-            "--odoo-bin",
-            "odoo-bin path",
-            interactive,
-            expected_kind="file",
-        )
-        config_path = require_existing_path(
-            args.config or saved_config_path,
-            "--config",
-            "Odoo config path",
-            interactive,
-            expected_kind="file",
-        )
-        base_cmd = validate_base_cmd(build_base_cmd(python_bin, odoo_bin, config_path))
-        base_cmd_source = "built from paths"
-
     state_payload = build_state_payload(
         project_root=project_root,
         docs_root=docs_root,
@@ -292,26 +190,18 @@ def run_project_setup(args: argparse.Namespace, *, cwd: Path | None = None) -> i
         version_source=version_source,
     )
     merged_state = _merge_state(existing.state_data, state_payload)
-    shared_project = build_shared_project_payload(state_payload=merged_state, base_cmd=base_cmd)
-    merged_settings = merge_settings_local(existing.settings_data, base_cmd)
-    legacy_state = dict(merged_state)
-    legacy_state.pop("odooTestBaseCmd", None)
-    legacy_state.pop("schemaVersion", None)
+    merged_state["schemaVersion"] = "1"
 
     if args.dry_run:
-        _print_summary(project_root, version, base_cmd_source, dry_run=True)
-        print(f"Final ODOO_TEST_BASE_CMD: {base_cmd}")
+        _print_summary(project_root, version, dry_run=True)
         print(f"Would write: {shared_path}")
-        print(f"Would write: {existing.settings_path}")
         print(f"Would write: {existing.state_path}")
         return 0
 
-    write_json_file(shared_path, shared_project)
-    write_json_file(existing.settings_path, merged_settings)
-    write_json_file(existing.state_path, legacy_state)
-    _print_summary(project_root, version, base_cmd_source, dry_run=False)
+    write_json_file(shared_path, merged_state)
+    write_json_file(existing.state_path, merged_state)
+    _print_summary(project_root, version, dry_run=False)
     print(f"Wrote: {shared_path}")
-    print(f"Wrote: {existing.settings_path}")
     print(f"Wrote: {existing.state_path}")
     return 0
 

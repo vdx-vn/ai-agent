@@ -14,7 +14,7 @@ class PluginFoundationTests(unittest.TestCase):
         plugin_data = json.loads(plugin_path.read_text(encoding="utf-8"))
         self.assertEqual(plugin_data.get("name"), "odoo-skills-v19")
         self.assertEqual(plugin_data.get("license"), "Apache-2.0")
-        self.assertEqual(plugin_data.get("version"), "1.0.0")
+        self.assertEqual(plugin_data.get("version"), "2.0.0")
         self.assertTrue(plugin_data.get("description"), "description should exist")
         self.assertEqual(plugin_data.get("keywords"), ["odoo", "claude-code", "skills"])
 
@@ -25,7 +25,7 @@ class PluginFoundationTests(unittest.TestCase):
         plugin_data = json.loads(plugin_path.read_text(encoding="utf-8"))
         self.assertEqual(plugin_data.get("name"), "odoo-skills-v19")
         self.assertEqual(plugin_data.get("license"), "Apache-2.0")
-        self.assertEqual(plugin_data.get("version"), "1.0.0")
+        self.assertEqual(plugin_data.get("version"), "2.0.0")
         self.assertEqual(plugin_data.get("skills"), "./skills/")
         self.assertTrue(plugin_data.get("interface", {}).get("displayName"))
         self.assertIn("codex", plugin_data.get("keywords", []))
@@ -86,12 +86,10 @@ class PluginFoundationTests(unittest.TestCase):
         self.assertIn("python3 -m tooling.install_plugin", readme_text)
         self.assertIn("## Optional Project Setup", readme_text)
         self.assertIn(
-            "Only do this if you want local Odoo docs/source paths and local test harness setup inside a specific Odoo repository.",
+            "Only do this if you want local Odoo docs/source paths resolved inside a specific Odoo repository.",
             readme_text,
         )
-        self.assertIn("Codex CLI reads `.odoo-skills/project.json` directly", readme_text)
-        self.assertIn("shell_environment_policy", readme_text)
-        self.assertIn("Do not include runtime-managed flags", readme_text)
+        self.assertIn("odoo runtime-test", readme_text)
         self.assertIn("[docs/install.md](docs/install.md)", readme_text)
         self.assertIn("[docs/project-setup.md](docs/project-setup.md)", readme_text)
         self.assertIn("odoo-skills verify", readme_text)
@@ -136,15 +134,9 @@ class PluginFoundationTests(unittest.TestCase):
         self.assertIn("optional and project-local", project_setup_text)
         self.assertIn("From inside the target Odoo repository", project_setup_text)
         self.assertIn("- `.odoo-skills/project.json`", project_setup_text)
-        self.assertIn("- `.claude/settings.local.json`", project_setup_text)
         self.assertIn("- `.claude/odoo-skill-paths.json`", project_setup_text)
-        self.assertIn("`ODOO_TEST_BASE_CMD`", project_setup_text)
-        self.assertIn("`odooTestBaseCmd`", project_setup_text)
-        self.assertIn("This is the default Codex CLI path.", project_setup_text)
-        self.assertIn("shell_environment_policy", project_setup_text)
-        self.assertIn("Do not use `ODOO_TEST` or `DB` for this harness.", project_setup_text)
         self.assertIn(
-            "These files are separate from the user-local agent plugin installation.",
+            "These files store the docs/source path materialization configuration",
             project_setup_text,
         )
 

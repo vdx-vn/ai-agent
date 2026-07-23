@@ -10,7 +10,7 @@
       "name": "odoo-skills-v19",
       "source": "./dist/marketplace/plugins/odoo-skills-v19",
       "description": "Odoo-focused skill library",
-      "version": "1.0.0"
+      "version": "2.0.0"
     }
   ]
 }

@@ -5,15 +5,12 @@
 - [ ] Identify main module, bridge module, or business or technical entrypoint.
 - [ ] Identify adjacent skills needed for composition.
 - [ ] Identify nearest-neighbor skill and why it does not own the request.
-- [ ] Identify whether local execution needs `odoo-local-test-harness`.
-- [ ] Compose with `odoo-local-test-harness` when local execution depends on `ODOO_TEST_BASE_CMD` or shared DB and filestore cleanup.
-- [ ] When the harness applies, prefer the configured base command over Docker Compose files, PostgreSQL image discovery, module READMEs, or inferred `odoo-bin` commands.
+- [ ] Confirm `odoo` (odoo-cli) is installed in the project's Python environment before running tests.
 
 ## Analysis
 - [ ] Choose test type by change surface: unit, transaction, HTTP, JS, tour, performance.
-- [ ] Use a named disposable database when local harness execution is requested.
-- [ ] Confirm shared cleanup expectations when the local harness is used.
-- [ ] Cover install and update paths when relevant.
+- [ ] Run `odoo runtime-test --module <name...>` for the module(s) under change; add `--tests` for specific files and `--db` for the target database.
+- [ ] Use `--init update` (or `--init install`) on `odoo runtime-test` to cover install and update paths when relevant.
 - [ ] Include security and multi-company checks when behavior changes.
 - [ ] Report gaps, not only pass or fail.
 
@@ -22,13 +19,12 @@
 - [ ] Name migration or data-shape impact when relevant.
 - [ ] Name cross-app modules and bridge addons touched.
 - [ ] Name rollback or staging concerns when release or data risk exists.
-- [ ] Name cleanup expectations explicitly when local harness execution is used.
 
 ## Output
 - [ ] Return evidence status: executed, planned, or blocked
 - [ ] Return test matrix
-- [ ] Return commands or suites run
-- [ ] Return local database and cleanup action when the harness is used
+- [ ] Return exact `odoo runtime-test` invocation(s) run
+- [ ] Return the `output_file` path from the run's condensed JSON summary
 - [ ] Return observed failures or outcomes
 - [ ] Return remaining validation gaps
 - [ ] Return boundary decision

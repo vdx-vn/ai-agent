@@ -20,13 +20,12 @@ Current-change validation evidence or validation plan tied to a specific diff, a
 
 ## Key checks
 - Choose the smallest validation surface that can prove the current change.
-- Use a named disposable database when local harness execution is requested.
-- Compose with shared DB and filestore cleanup when local execution uses `odoo-local-test-harness`.
+- Run tests with `odoo runtime-test --module <name...>` (odoo-cli, installed in the project's Python environment) — the only supported test-execution command; do not invoke `odoo-bin`/pytest-odoo directly.
+- Use `--init update` on `odoo runtime-test` to cover install/update paths, `--tests` to target specific files, and `--db` to select the target database.
 - Choose test type by change surface: unit, transaction, HTTP, JS, tour, performance.
 - Cover install and update paths when relevant.
 - Include security and multi-company checks when behavior changes.
 - Report gaps, not only pass/fail.
-- Compose with `odoo-local-test-harness` when local execution depends on `ODOO_TEST_BASE_CMD` or shared DB and filestore cleanup.
 
 ## Key docs anchors
 - `content/developer/reference/backend/testing.rst`

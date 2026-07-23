@@ -41,14 +41,9 @@ Use `ODOO_RC` instead. The old variable still works but emits a deprecation warn
 
 ## 5. Module name starts with a digit (e.g. `3s_mobile_app_api`)
 
-Python rejects it as an invalid identifier — pytest-odoo import fails before any test executes.
+Python rejects it as an invalid identifier — pytest-odoo import fails before any test executes. `odoo runtime-test` (odoo-cli) runs on pytest-odoo underneath, so it hits the same limitation; there is no CLI flag that works around it.
 
-**Fix:** Use the standard Odoo runner only for these modules:
-
-```bash
-python odoo-bin -c odoo.conf -d <db> \
-  --test-enable --test-tags=post_install -u 3s_module_name --stop-after-init
-```
+**Fix:** Use `--init update` on `odoo runtime-test` to update the module first, then accept that pytest-odoo cannot discover tests for this module by name — reference its test paths explicitly via `--tests` instead of module-name discovery, or rename the module if renaming is in scope.
 
 ---
 
@@ -88,13 +83,7 @@ def _force_exit_after_session(request):
 
 ### Fix B — Odoo runner: override workers to 0
 
-`workers = 2` in `odoo_config` spawns subprocesses that never stop after `--stop-after-init`.
-
-```bash
-python odoo-bin -c odoo.conf -d <db> \
-  --test-enable --test-tags=post_install -u <module> --stop-after-init \
-  --workers=0
-```
+`workers = 2` in the `odoo.conf` passed to `odoo runtime-test` (via `--rc`) spawns subprocesses that never stop after the run. Set `workers = 0` in that conf, or pass a test-specific conf with `--rc` that already sets it.
 
 ### Fix C — remove queue_job from server_wide_modules during tests
 

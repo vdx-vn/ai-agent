@@ -18,8 +18,6 @@ PROMPT_PATTERNS = [
     r"\binit(ialize)?\s+(an?\s+)?(new\s+)?odoo\s+(project|addon|module)\b",
 ]
 
-ODOO_TEST_BASE_CMD_ENV = "ODOO_TEST_BASE_CMD"
-
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Suggest Odoo skill path setup for new projects")
@@ -42,43 +40,10 @@ def make_message(project_root: Path) -> str:
         "Detected new Odoo project setup context. Install repo entrypoints first with `python3 -m pip install -e .`.\n"
         "From project root, run `odoo-skills project-setup`.\n"
         "If `odoo-skills` is not on PATH, use `python3 -m tooling.cli project-setup`.\n"
-        "This writes `.odoo-skills/project.json` for Codex CLI plus `.claude/odoo-skill-paths.json` and `.claude/settings.local.json` for Claude Code, including the local Odoo test base command.\n"
+        "This writes `.odoo-skills/project.json` plus `.claude/odoo-skill-paths.json` for local docs/source path materialization.\n"
+        "For Odoo test execution, install the separately-packaged `odoo-cli` and run `odoo runtime-test`.\n"
         "Shared setup guide: `docs/reference/odoo-paths.md`"
     )
-
-
-def load_settings_local_env(repo_root: Path) -> dict[str, str]:
-    settings_path = repo_root / ".claude" / "settings.local.json"
-    if not settings_path.exists():
-        return {}
-    try:
-        data = json.loads(settings_path.read_text())
-    except json.JSONDecodeError:
-        return {}
-    env = data.get("env", {})
-    return env if isinstance(env, dict) else {}
-
-
-def load_shared_project_config(repo_root: Path) -> dict[str, str]:
-    config_path = repo_root / ".odoo-skills" / "project.json"
-    if not config_path.exists():
-        return {}
-    try:
-        data = json.loads(config_path.read_text())
-    except json.JSONDecodeError:
-        return {}
-    return data if isinstance(data, dict) else {}
-
-
-def malformed_settings_local_json(repo_root: Path) -> bool:
-    settings_path = repo_root / ".claude" / "settings.local.json"
-    if not settings_path.exists():
-        return False
-    try:
-        json.loads(settings_path.read_text())
-    except json.JSONDecodeError:
-        return True
-    return False
 
 
 def malformed_shared_project_json(repo_root: Path) -> bool:
@@ -92,22 +57,9 @@ def malformed_shared_project_json(repo_root: Path) -> bool:
     return False
 
 
-def missing_odoo_test_base_command(repo_root: Path) -> bool:
-    shared_value = str(load_shared_project_config(repo_root).get("odooTestBaseCmd", "")).strip()
-    env_value = str(load_settings_local_env(repo_root).get(ODOO_TEST_BASE_CMD_ENV, "")).strip()
-    return not shared_value and not env_value
-
-
-def make_harness_message() -> str:
+def make_malformed_setup_message() -> str:
     return (
-        "Detected Odoo project without local test command. Run `odoo-skills project-setup` from the project root to write `.odoo-skills/project.json` with `odooTestBaseCmd` and Claude compatibility settings.\n"
-        "Then `odoo-local-test-harness` can append database names, test tags, install or update flags, and `--stop-after-init` automatically."
-    )
-
-
-def make_malformed_harness_message() -> str:
-    return (
-        "Detected malformed local Odoo setup JSON. Fix `.odoo-skills/project.json` or `.claude/settings.local.json`, then run `odoo-skills project-setup --force` if the project paths need to be refreshed."
+        "Detected malformed Odoo setup JSON. Fix `.odoo-skills/project.json`, then run `odoo-skills project-setup --force` if the project paths need to be refreshed."
     )
 
 
@@ -118,16 +70,12 @@ def build_system_message(raw: str, repo_root: Path, mode: str) -> str:
     if not odooish:
         return ""
     should_suggest_path_setup = matched if mode == "prompt-submit" else (matched or odooish)
-    should_suggest_harness = odooish and (matched if mode == "prompt-submit" else True)
 
     messages: list[str] = []
     if not config_path.exists() and should_suggest_path_setup:
         messages.append(make_message(repo_root))
-    if should_suggest_harness:
-        if malformed_shared_project_json(repo_root) or malformed_settings_local_json(repo_root):
-            messages.append(make_malformed_harness_message())
-        elif missing_odoo_test_base_command(repo_root):
-            messages.append(make_harness_message())
+    if malformed_shared_project_json(repo_root):
+        messages.append(make_malformed_setup_message())
     return "\n\n".join(messages)
 
 

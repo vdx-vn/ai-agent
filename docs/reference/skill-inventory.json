@@ -81,11 +81,6 @@
     "artifact": "Operational mechanics guidance covering commands, flags, environment behavior, and runtime cautions."
   },
   {
-    "name": "odoo-local-test-harness",
-    "family": "technical",
-    "artifact": "Operational mechanics guidance covering local Odoo test harness setup and command construction."
-  },
-  {
     "name": "cavecrew",
     "family": "utility",
     "artifact": "Decision guide for compressed subagent delegation with investigator, builder, and reviewer presets."
@@ -119,11 +114,11 @@
     "name": "caveman-stats",
     "family": "utility",
     "artifact": "Token usage and estimated savings reporter for caveman sessions."
-    },
-    {
-      "name": "pylint-code-review",
-      "family": "technical",
-      "artifact": "Structured Python static-analysis review findings with pylint rule names, grouped issues, and fix guidance."
-    }
+  },
+  {
+    "name": "pylint-code-review",
+    "family": "technical",
+    "artifact": "Structured Python static-analysis review findings with pylint rule names, grouped issues, and fix guidance."
+  }
   ]
 }
